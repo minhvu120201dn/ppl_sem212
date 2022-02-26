@@ -1,0 +1,12 @@
+Class Program {
+    Val arr: Array[Int,5] = Array(1,2,3,4,5);
+    Var $arr: Array[String,5] = Array("str1","str2","str3","str4","str5");
+    Val temp_str: String = "Temporary string";
+    main() {
+        $arr[1] = "element 1 ";
+        $arr[2] = "element 2 ";
+        $arr[3] = "element 3 ";
+        $arr[4] = $arr[1] +. $arr[2] +. "another string";
+        $arr[5] = Self.temp_str;
+    }
+}

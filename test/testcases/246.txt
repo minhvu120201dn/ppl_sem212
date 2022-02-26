@@ -1,0 +1,9 @@
+Class Program {
+    main() {
+        Foreach(i In 0 .. 1 By 0) {
+            If ("hello" +. " " +. "world" ==. "hello world") { Break; }
+            Else { Return "There can\'t be any other way"; }
+        }
+        Return 0;
+    }
+}

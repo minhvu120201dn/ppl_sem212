@@ -1,0 +1,5 @@
+Class Program {
+    main() {
+        Continue; ## Continue statement cannot be put here. ##
+    }
+}

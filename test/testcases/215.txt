@@ -1,0 +1,4 @@
+Class Program {
+    Var $a, $b, $c; ## Declare without type specification ##
+    func() {}
+}

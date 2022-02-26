@@ -1,0 +1,6 @@
+Class Program {
+    main() {
+        Foreach(i In 0 .. 100.2 By 3) {}
+        Return 0;
+    }
+}

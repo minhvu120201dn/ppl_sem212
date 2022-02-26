@@ -1,0 +1,4 @@
+Class Program {
+    Var illegalStr: String = "Hello" + "World";
+    main() {}
+}

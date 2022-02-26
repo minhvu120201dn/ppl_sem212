@@ -1,0 +1,4 @@
+Class Program {
+    Var a, b: Float = (1 + 2) * 3, 1000;
+    main() {}
+}

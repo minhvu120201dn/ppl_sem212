@@ -1,0 +1,9 @@
+
+Class _class1 {
+    Var a, b: Int;
+    Var $c: Float;
+}
+Class _class2 {
+    Var $d: Boolean;
+    Var e, $f: String;
+}

@@ -1,0 +1,7 @@
+
+Class Program {
+    Var a, b: Int;
+    Var $c: Float;
+    Var $d: Boolean;
+    Var e, $f: String;
+}

@@ -1,0 +1,10 @@
+## This line does not contain anything ##
+Class tempClass {
+    Constructor() {}
+}
+Class Program {
+    main() {
+        Var ins1 : tempClass = Null;
+        Var ins2 : tempClass = New tempClass();
+    }
+}

@@ -1,0 +1,11 @@
+## This line does not contain anything##
+Class class1 {}
+Class class2 : class1 {}
+Class class3 : class2 {}
+Class class4 : class3 { func(){} }
+Class Program {
+    main() {
+        Var ins3: class3 = New class3();
+        Var ins4: class4 = Null;
+    }
+}

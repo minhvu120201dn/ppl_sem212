@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(class1),[]),ClassDecl(Id(class2),[]),ClassDecl(Id(class3),Id(parent),[])])

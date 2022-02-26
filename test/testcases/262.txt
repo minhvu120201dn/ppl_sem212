@@ -1,0 +1,5 @@
+Class Program {
+    Var arr: Array[String,5] = Array("str0","str1","str2","str3","str4");
+    Var a,b,c: String = arr[1], arr[2], arr[3] +. arr[4] +. arr[5];
+    main() {}
+}

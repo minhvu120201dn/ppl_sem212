@@ -1,0 +1,14 @@
+Class Program {
+    Var $abc, $def: Int;
+    Val temp1, temp2: Boolean = True, False;
+    main() {
+        If (temp1 || temp2) { $abc = 10; }
+        Elseif (temp1) { Return temp2; }
+        Elseif (temp2) { Return temp1; }
+        Else {
+            If (1 + 2 == 3) { Return "This is obvious"; } 
+            Elseif (1 + 2 == 4) { Return "This can never happen!"; }
+            Else { Return 10; }
+        }
+    }
+}

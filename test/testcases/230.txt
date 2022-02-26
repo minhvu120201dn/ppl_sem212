@@ -1,0 +1,18 @@
+## This line does not contain anything ##
+Class tempClass {
+    Var immutable: String = "immutable attribute";
+
+    Constructor() {}
+    immutableFunc() { immutable = "immutable"; Return "immutable function"; }
+    $mutableFunc() { Return "mutable function"; }
+    Destructor() {}
+}
+Class Program {
+    Var instance: tempClass = New tempClass();
+    main() {
+        instance.immutable = instance.immutableFunc();
+        instance.immutable = tempClass::$mutableFunc();
+        Var tempStr: String = "hello world";
+        tempStr = instance.immutable = instance.immutableFunc();
+    }
+}

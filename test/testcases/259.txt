@@ -1,0 +1,8 @@
+## This line does not contain anything ##
+Class tempClass {
+    Constructor(){}
+}
+Class Program {
+    Var instance: tempClass = "Wrong string expression";
+    main() {}
+}

@@ -1,0 +1,6 @@
+Class Program {
+    Var arr: Array[Int,5] = Array(1,2,3,4,"expected an integer, got a string instead");
+    main() {
+        Return "Expected an error";
+    }
+}

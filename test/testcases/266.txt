@@ -1,0 +1,11 @@
+## This line does not contain anything##
+Class Program {
+    Var var1, var2, $var3: String = "variable 1", "variable 2", "variable 3";    
+    Val $val1, $val2, val3: String = "constant 1", "constant 2", "constant 3";
+    main() {
+        Val not_global_value: String = "hehehe";
+        Var not_global_variable: String;
+        not_global_variable = var1 = var2 = $var3 = $val1;
+        Return;
+    }
+}

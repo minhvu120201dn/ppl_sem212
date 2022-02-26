@@ -1,0 +1,7 @@
+Class big_class {
+    Class class_in_class {
+        func() {
+            Return "This class is not legal!!!";
+        }
+    }
+}

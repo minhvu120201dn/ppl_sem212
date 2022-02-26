@@ -1,0 +1,4 @@
+Class Program {
+    Var arr: Array[Int,5];
+    Var $arr: Array[String,5];
+}

@@ -1,0 +1,7 @@
+Class Program {
+    Var a, b: Int = (1 + 2) * 0x3, a % 1000;
+    Var c: Float = 1000 * 5;
+    Var d: String = "legal string" +. "legal operation";
+    Var e, f: Boolean = True, False;
+    main() {}
+}

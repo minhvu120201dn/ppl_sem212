@@ -1,0 +1,7 @@
+Class Program {
+    func() {
+        {}
+        {}{{}}
+        { ## This scope needs to be closed ##
+    }
+}

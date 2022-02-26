@@ -1,0 +1,4 @@
+Class Program {
+    Val abc, value, variable: String = "val1", "val2", "var3";
+    func() {}
+}

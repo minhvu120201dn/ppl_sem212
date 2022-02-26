@@ -1,0 +1,6 @@
+Class Program {
+    func(a,b,c,d,e:String) {}
+    main() {
+        func("1","2","3","4","5"
+    }
+}

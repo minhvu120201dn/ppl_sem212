@@ -1,0 +1,8 @@
+
+Class Program {
+    Val a, b: Boolean = !True, !False;
+    Var $a, $b, $c, $d, $e, $f: Boolean = 1 + 1.0 == 10, 1 + 1.0 != 10, 1 + 1.0 < 10, 1 + 1.0 <= 10, 1 + 1.0 > 10, 1 + 1.0 >= 10;
+    Var $g: Boolean = "hello" +. "world" ==. "helloworld";
+    Val c, d: Boolean = $a || $b, $c && $d;
+    Val xor: Boolean = (!c && d) || (c && !d);
+}

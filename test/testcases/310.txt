@@ -1,0 +1,5 @@
+
+Class Program {
+    Var _: Array[Int,5] = Array(1,2,3,4,2+3);
+    Val $_: Array[Array[Boolean,2],2] = Array(Array(1,2),Array(3,4));
+}

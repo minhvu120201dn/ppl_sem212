@@ -1,0 +1,7 @@
+
+Class Program {
+    Var a, $a: Array[Int,5];
+    Var b, $b: Array[Float,5];
+    Var c: Array[Array[Boolean,5],5];
+    Var $c: Array[Array[String,5],5];
+}

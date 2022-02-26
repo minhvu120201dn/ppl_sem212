@@ -1,0 +1,8 @@
+Class Program {
+    main() {
+        System::$Println("Looking for trouble to troubleshoot");
+        System::$Sleep("5 minutes");
+        System::$Println("No problem found");
+        Return;
+    }
+}

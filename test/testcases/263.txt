@@ -1,0 +1,13 @@
+## This line does not contain anything ##
+Class _ {
+    $fact(n:Int) {
+        If (n < 0) { Return "Type error"; }
+        Else {
+            If (n == 0) { Return 1; }
+            Else { Return $face(n-1) * n; }
+        }
+    }
+}
+Class Program {
+    main() {}
+}

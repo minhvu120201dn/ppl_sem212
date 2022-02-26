@@ -1,0 +1,5 @@
+Class Program {
+    Val val1, val2: String = "first string", "second string";
+    Var illegalStr: String = val1 + val2;
+    main() {}
+}

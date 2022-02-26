@@ -1,0 +1,6 @@
+Class Program {
+    main() {
+        Foreach(i In 0b1111 .. 0xCAFE_1234 By 01) {}
+        Return 0;
+    }
+}

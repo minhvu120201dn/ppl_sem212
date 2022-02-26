@@ -1,0 +1,14 @@
+## This line does not contain anything ##
+Class tempClass {
+    Var immutable: String = "immutable attribute";
+    Var $mutable: String = "mutable attribute";
+
+    Constructor() {}
+    Destructor() {}
+}
+Class Program {
+    Var instance: tempClass = New tempClass();
+    main() {
+        tempClass.$mutable = "unavailable assignment statement";
+    }
+}

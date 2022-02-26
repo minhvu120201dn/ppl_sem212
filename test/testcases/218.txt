@@ -1,0 +1,5 @@
+Class Program {
+    Var a, b, c: Int;
+    Var $a, $b, $c: String;
+    func() {}
+}

@@ -1,0 +1,4 @@
+Class Program {
+    Var arr: Array[String,100.5];
+    main() {}
+}

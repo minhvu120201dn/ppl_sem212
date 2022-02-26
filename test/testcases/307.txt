@@ -1,0 +1,5 @@
+
+Class Program {
+    Val a, b: String = "hello" +. "world", "hello" +. "hcmut";
+    Var $a: String = a +. b +. "abcde\n";
+}

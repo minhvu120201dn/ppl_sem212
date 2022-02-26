@@ -1,0 +1,5 @@
+Class Program {
+    Var arr: Array[Int,5] = Array(0,1,2,3,4);
+    Var a,b,c: Int = arr[1], arr[2], arr[3] * arr[4] % arr[5];
+    main() {}
+}

@@ -1,0 +1,10 @@
+## This line does not contain anything##
+Class _ {
+    Val $static_attribute: String = "static attribute";
+}
+Class Program {
+    main() {
+        _::$static_attribute = "non-static attribute";
+        Return;
+    }
+}

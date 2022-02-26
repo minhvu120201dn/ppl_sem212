@@ -1,0 +1,21 @@
+Class Program {
+    $pow(a,n:Int) {
+        Var powa, ans: Int = a, 1;
+        Foreach(temp In 0 .. 1 By 0) {
+            If (n % 2 == 1) { ans = ans * powa; }
+            n = n / 2; powa = powa * powa;
+            If (n == 0) { Break; }
+        }
+        Return ans;
+    }
+    main() {
+        Var temp_variable: Int = $pow(100,200000);
+        {
+            Var temp_variable: Int = $pow(2000,200000);
+            Return;
+        }
+        {} {} {{}}
+        {{{}}}
+        {{}{}}
+    }
+}

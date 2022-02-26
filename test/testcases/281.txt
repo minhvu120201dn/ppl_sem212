@@ -1,0 +1,5 @@
+Class Program {
+    main(## main function should have no parameter ##) {
+        Return ## main function does not return anything ##;
+    }
+}

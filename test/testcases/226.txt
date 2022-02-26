@@ -1,0 +1,4 @@
+Class Program {
+    Val arr: Array[Int,5] = Array(1,2,3,4,5);
+    Var $arr: Array[String,5] = Array("str1","str2","str3","str4","str5");
+}

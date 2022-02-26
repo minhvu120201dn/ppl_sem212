@@ -1,0 +1,4 @@
+Class Program {
+    Val wrong_formula, right_formula: Boolean = 1 + 2 >= 3 + 4, "hello " +. "world" ==. "hello world";
+    main() {}
+}

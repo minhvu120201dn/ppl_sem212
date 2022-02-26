@@ -1,0 +1,5 @@
+Class Program {
+    Val val1, val2: Int = 1, 2;
+    Var wrongExpression: Boolean = val1 + val2;
+    main() {}
+}

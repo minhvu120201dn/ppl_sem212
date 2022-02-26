@@ -1,0 +1,7 @@
+
+Class Program {
+    Var a, b: Int = 123, 0xCA_FE;
+    Val $c: Float = 0.3141592653589e1;
+    Var $d: Boolean = True;
+    Val e, $f: String = "first", "second";
+}

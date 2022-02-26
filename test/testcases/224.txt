@@ -1,0 +1,7 @@
+Class Program {
+    main() {
+        If (True) { Return 1; }
+        Elseif (1 + 2 == 3) { Return -1; }
+        Else { Return 2; }
+    }
+}

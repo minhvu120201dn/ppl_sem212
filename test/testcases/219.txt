@@ -1,0 +1,8 @@
+Class Program {
+    Val a, b, c: Int = 1 + 2, 2 + 3, a + b;
+    Var $a, $b, $c: String = "hello" +. " " +. "world", "string" +. " second", "string" +. " third";
+    Val temp1, temp2: Boolean = True, False;
+    func() {
+        Var $ABCDE: Boolean = (True && False) || (True || False) || !(temp1 && !temp2);
+    }
+}

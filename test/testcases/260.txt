@@ -1,0 +1,4 @@
+Class Program {
+    Var attribute_of_type_int: Int = Null;
+    main() {}
+}

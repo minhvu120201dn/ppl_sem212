@@ -1,0 +1,8 @@
+##This program was written by me##
+Class _ { ##There is nothing here##
+    Var $attr1: String = "hello world"; ## String var attributes ##
+    Var $attr2, $attr3: Boolean = True, True && False; ## Boolean var attributes ##
+    func() {
+        Val new_value : Int = 10 + 90; ## Declare a temporary value ##
+    }
+}

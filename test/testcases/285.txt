@@ -1,0 +1,13 @@
+## This line does not contain anything##
+Class member {
+    Constructor() {}
+    Constructor(i:Int) {}
+}
+Class Program {
+    Var arr: Array[Array[member,5],5] = Array(Array(Null, New member(), Null, New member(0), Null),
+                                              Array(Null, New member(), Null, New member(1), Null),
+                                              Array(Null, New member(), Null, New member(2), Null),
+                                              Array(Null, New member(), Null, New member(3), Null),
+                                              Array(Null, New member(), Null, New member(4), Null));
+    main() {}
+}

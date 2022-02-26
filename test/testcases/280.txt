@@ -1,0 +1,13 @@
+Class Cookie {
+    Var message: String;
+    Constructor() { message = "Don\'t ask me why!!"; }
+    $askForPermission() { Return True; }
+    $collectFromUser() { Return New Cookie(); Return Null; }
+}
+Class Program {
+    Var userCookie: Cookie;
+    main() {
+        If (Cookie::$askForPermission()) { userCookie = Cookie::$collectFromUser(); }
+        Else { Return; }
+    }
+}

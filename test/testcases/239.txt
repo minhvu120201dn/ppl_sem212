@@ -1,0 +1,12 @@
+## This line does not contain anything ##
+Class _ {
+    Constructor() {}
+    $func() { Return 0; }
+    func(a,b,c:Int) { Return "null"; }    
+}
+Class Program {
+    main() {
+        Var ins : _ = New _();
+        ins.func(_::$func(), _::$func(), (_::$func()+1)*2);
+    }
+}

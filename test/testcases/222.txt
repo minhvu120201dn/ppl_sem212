@@ -1,0 +1,10 @@
+Class Program {
+    main() {
+        If ("I do not like your voice" ==. "I like your voice") {
+            Return "This doesn\'t make any sense!";
+        }
+        Elseif ("This is just a string") {
+            Return "This return statement will never run";
+        }
+    }
+}

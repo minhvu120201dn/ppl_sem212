@@ -1,0 +1,14 @@
+## This line does not contain anything##
+Class member {
+    Constructor() {}
+    Var message: String;
+    message() { Return "hello world"; }
+}
+Class Program {
+    Var arr: Array[member,5] = Array(Null, New member(), Null, New member(), Null);
+    main() {
+        Foreach (i In 1 .. 5) {
+            arr[i].message = arr[i].message();
+        }
+    }
+}

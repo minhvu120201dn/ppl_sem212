@@ -1,0 +1,1 @@
+New instance_for_class()

@@ -1,0 +1,4 @@
+
+Class class1{}
+Class class2{}
+Class class3 : parent{}

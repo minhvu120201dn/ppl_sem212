@@ -1,0 +1,6 @@
+Class Program {
+    main() {
+        Foreach(i In 0 .. (100 % 1_0_0_0) By 10 / 5) {}
+        Return 0;
+    }
+}

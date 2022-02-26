@@ -1,0 +1,2 @@
+Class class1 { func1(){} func2(){} }
+                   Class class2 { Constructor(){} Constructor(a,b,c:String){} Destructor(){} }

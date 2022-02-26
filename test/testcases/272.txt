@@ -1,0 +1,11 @@
+## This line does not contain anything##
+Class _ {
+    $staticFunc() { Return "static function"; }
+}
+Class Program {
+    main() {
+        Val str1: String = _::$staticFunc();
+        Val str2: String = _.$staticFunc();
+        Return;
+    }
+}

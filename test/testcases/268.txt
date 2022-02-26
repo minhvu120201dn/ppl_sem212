@@ -1,0 +1,12 @@
+## This line does not contain anything##
+Class Program {
+    Val val1, val2: Int = 5, 0x123_456_ABC_DEF;
+    main() {
+        Var sum: Int = 0;
+        Val expected_sum: Int = 1_000_000_000;
+        Foreach (i In 1 .. val2 By val1) {
+            If (sum == expected_sum) { Return; }
+            Else { sum = sum + i; }
+        }
+    }
+}

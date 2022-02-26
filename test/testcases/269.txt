@@ -1,0 +1,15 @@
+## This line does not contain anything##
+Class Program {
+    Val val1, val2: Int = 5, 0x123_456_ABC_DEF;
+    main() {
+        Var sum: Int = 0;
+        Val expected_sum: Int = 1_000_000_000;
+        Var announcement: String = "";
+        Foreach (i In 1 .. val2 + val1 By val1) {
+            If (sum == expected_sum) { Return; }
+            Else { sum = sum + 1; }
+            announcement = announcement +. "This is not the end yet\n";
+            Continue;
+        }
+    }
+}

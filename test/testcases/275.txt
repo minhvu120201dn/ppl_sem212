@@ -1,0 +1,5 @@
+Class Program {
+    main() {
+        Var message: String = "I forgot to close the scope, "
+                              +. "and it leads to an error";
+}

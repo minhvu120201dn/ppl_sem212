@@ -1,0 +1,24 @@
+## This line does not contain anything ##
+Class _ {
+    $fact(n:Int) {
+        If (n < 0) { Return "Type error"; }
+        Else {
+            If (n == 0) { Return 1; }
+            Else { Return $face(n-1) * n; }
+        }
+    }
+    $P(n,k:Int) {
+        Return $fact(n) / $fact(k);
+    }
+    $C(n,k:Int) {
+        Return $fact(n) / ($fact(k) * $fact(n-k));
+    }
+}
+
+Class Program {
+    main() {
+        If (_::$fact(0) != 1) { Return; }
+        Elseif (_::$P(1,0) != 1) { Return; }
+        Return;
+    }
+}

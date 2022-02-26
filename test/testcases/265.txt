@@ -1,0 +1,22 @@
+## This line does not contain anything##
+Class Shape {
+    Var area: Float;
+}
+Class Rectangle : Shape {
+    Var height, width: Float;
+    Constructor(h,w:Int) {
+        Self.height = h;
+        Self.width = w;
+        Self.area = h * w;
+    }
+    Destructor() {}
+}
+Class Program {
+    main() {
+        Val rect: Rectangle = New Rectangle(10,20);
+        Val myarea1: Float = rect.area;
+        Val myarea2: Float = New Rectangle(100,200).area;
+        Val myarea3: Float = Null.area;
+        Return;
+    }
+}
