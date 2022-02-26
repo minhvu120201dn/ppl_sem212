@@ -144,6 +144,11 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by D96Parser#exprList.
+    def visitExprList(self, ctx:D96Parser.ExprListContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by D96Parser#arrDec.
     def visitArrDec(self, ctx:D96Parser.ArrDecContext):
         return self.visitChildren(ctx)

@@ -37,8 +37,8 @@ idList: identifier (COMMA identifier)* COLON (INT_ | FLOAT_ | BOOL_ | STR_);
 // Statements
 scope: LCB stmt* RCB;
 stmt: declare | asnStmt | ifStmt | forStmt | retStmt | callMethod SEMI | scope
-    | expr DOT ID LB (expr (COMMA expr)*)? RB SEMI // instance method
-    | ID CSMEM VID LB (expr (COMMA expr)*)? RB SEMI; // static method
+    | expr DOT ID exprList SEMI // instance method
+    | ID CSMEM VID exprList SEMI; // static method
 
 //scopeMain: LCB stmtMain* RCB;
 //stmtMain: declare | asnStmt | ifStmt | forStmt | insAttr | staAttr | insMethod | staMethod;
@@ -52,7 +52,7 @@ notvalBody: identifier (COMMA identifier)* COLON vartype;
 identifier: ID | VID;
 
 asnStmt: <assoc=right> lhs ASNOP expr SEMI;
-lhs: identifier
+lhs: ID | SELF_
    | lhs LSB expr RSB
    | lhs DOT lhs;
 
@@ -65,17 +65,18 @@ ifStmtLoop: IF_ LB expr RB scopeLoop (ELSEIF_ LB expr RB scopeLoop)* (ELSE_ scop
 breakStmt: BREAK_ SEMI;
 contStmt: CONTINUE_ SEMI;
 
-callMethod: identifier LB (expr (COMMA expr)*)? RB;
+callMethod: identifier exprList;
 
 retStmt: RETURN_ expr? SEMI;
 
 // Expressions
-expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit | identifier // literals and identifiers
+expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit // literals
+    | identifier | callMethod // already-existed
     | LB expr RB // brackets
-    | NEW_ ID LB (expr (COMMA expr)*)? RB // object creation
-    | ID CSMEM VID ((LB expr (COMMA expr)*)? RB)? // static access
-    | expr DOT ID (LB expr (COMMA expr)* RB)? // instance access
-    | expr (LSB expr RSB) // index operator
+    | NEW_ ID exprList // object creation
+    | ID CSMEM VID exprList? // static access
+    | expr DOT ID exprList? // instance access
+    | expr (LSB expr RSB)+ // index operator
     | SUBOP expr // sign
     | NOTOP expr // logical not
     | expr (MULOP | DIVOP | MODOP) expr // multiplying
@@ -83,13 +84,14 @@ expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit | identifier
     | expr (ANDOP | OROP) expr // logical
     | expr (EQCMP | DIFCMP | LESCMP | GRECMP | LEQCMP | GEQCMP) expr // relational
     | expr (SADDOP | SEQCMP) expr; //string
+exprList: LB (expr (COMMA expr)*)? RB;
 /*
-objExpr: NEW_ ID LB (expr (COMMA expr)*)? RB
+objExpr: NEW_ ID exprList
        | NULL_ | SELF_;
 insAttr: expr DOT ID;
 staAttr: ID CSMEM VID;
-insMethod: expr DOT ID LB (expr (COMMA expr)*)? RB;
-staMethod: ID CSMEM VID LB (expr (COMMA expr)*)? RB;
+insMethod: expr DOT ID exprList;
+staMethod: ID CSMEM VID exprList;
 */
 
 arrDec: ARRAY_ LSB vartype COMMA INTLIT RSB;
@@ -129,7 +131,7 @@ fragment REGULAR_CHAR: ~('\b'  | '\f'  | '\r'  | '\n'  | '\t'  | '\''   | '\\'  
 fragment SPECIAL_CHAR:   '\\b' | '\\f' | '\\r' | '\\n' | '\\t' | '\\\'' | '\\\\' | '\'"' ;
 
 // Array
-arrLit: ARRAY_ LB (expr (COMMA expr)*)? RB;
+arrLit: ARRAY_ exprList;
 
 
 /////////////////////////////////////////

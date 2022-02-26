@@ -156,7 +156,7 @@ Class _ { ##There is nothing here##
         Return 10;
     }
 }"""
-        expect = "successful"
+        expect = "Error on line 5 col 35: ="
         self.assertTrue(TestParser.test(input,expect,220))
 
     def test_ifelse2(self):
@@ -174,7 +174,7 @@ Class _ { ##There is nothing here##
         }
     }
 }"""
-        expect = "successful"
+        expect = "Error on line 5 col 35: ="
         self.assertTrue(TestParser.test(input,expect,221))
 
     def test_ifelse3(self):
@@ -188,7 +188,7 @@ Class _ { ##There is nothing here##
         }
     }
 }"""
-        expect = "Error on line 6 col 39: )"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,222))
 
     def test_ifelse4(self):
@@ -229,15 +229,14 @@ Class _ { ##There is nothing here##
 
     def test_array3(self):
         input = """Class Program {
-    Val arr: Array[Int,5] = Array(1,2,3,4,5);
-    Var $arr: Array[String,5] = Array("str1","str2","str3","str4","str5");
+    Val arr: Array[String,5] = Array("1","2","3","4","5");
     Val temp_str: String = "Temporary string";
     main() {
-        $arr[1] = "element 1 ";
-        $arr[2] = "element 2 ";
-        $arr[3] = "element 3 ";
-        $arr[4] = $arr[1] +. $arr[2] +. "another string";
-        $arr[5] = Self.temp_str;
+        arr[1] = "element 1 ";
+        arr[2] = "element 2 ";
+        arr[3] = "element 3 ";
+        arr[4] = arr[1] +. arr[2] +. "another string";
+        arr[5] = Self.temp_str;
     }
 }"""
         expect = "successful"
@@ -511,11 +510,11 @@ Class Program {
     def test_loop8(self):
         input = """Class Program {
     main() {
-        Foreach(i In 0 .. 100.2 By 3) {}
+        Foreach(i In 0 .. 100 By 3) {}
         Return 0;
     }
 }"""
-        expect = "Error on line 3 col 26: 100.2"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,248))
 
     def test_loop9(self):
@@ -562,7 +561,7 @@ Class Program {
     Var a, b: Float = (1 + 2) * 3, a % 1000;
     main() {}
 }"""
-        expect = "Error on line 2 col 37: %"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,253))
 
     def test_expression4(self):
@@ -589,7 +588,7 @@ Class Program {
     Var illegalStr: String = "Hello" + "World";
     main() {}
 }"""
-        expect = "Error on line 2 col 37: +"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,256))
 
     def test_expression7(self):
@@ -598,7 +597,7 @@ Class Program {
     Var illegalStr: String = val1 + val2;
     main() {}
 }"""
-        expect = "Error on line 3 col 34: +"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,257))
 
     def test_expression8(self):
@@ -607,7 +606,7 @@ Class Program {
     Var wrongExpression: Boolean = val1 + val2;
     main() {}
 }"""
-        expect = "Error on line 3 col 46: ;"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,258))
 
     def test_expression9(self):
@@ -619,7 +618,7 @@ Class Program {
     Var instance: tempClass = "Wrong string expression";
     main() {}
 }"""
-        expect = "Error on line 6 col 30: \"Wrong string expression\""
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,259))
 
     def test_expression10(self):
@@ -627,7 +626,7 @@ Class Program {
     Var attribute_of_type_int: Int = Null;
     main() {}
 }"""
-        expect = "Error on line 2 col 41: ;"
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,260))
 
     def test_expression11(self):
@@ -823,7 +822,7 @@ Class Program {
         Return;
     }
 }"""
-        expect = "Error on line 8 col 29: $staticFunc"
+        expect = "Error on line 8 col 28: ."
         self.assertTrue(TestParser.test(input,expect,272))
 
     def test_complex_program11(self):
