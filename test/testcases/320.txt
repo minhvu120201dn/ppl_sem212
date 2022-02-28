@@ -1,0 +1,7 @@
+
+Class Program {
+    main() {}
+    $main() {}
+    Constructor(a,b:Int; c:Float) {}
+    Destructor() {}
+}

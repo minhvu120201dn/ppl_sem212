@@ -1,0 +1,5 @@
+
+Class Program {
+    Val $_: Array[Array[Float,2],2] = Array(Array(1,2),Array(3,4));
+    Val _: Array[Float,4] = Array($_[0][0.0], $_[0][1.0], $_[1][0], $_[1][1*1]);
+}

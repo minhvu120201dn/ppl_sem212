@@ -1,0 +1,9 @@
+
+Class _class {
+    Var x, $x: Int = 1, 1;
+}
+Class Program {
+    Var obj: _class = New _class();
+    Var x: Int = obj.x;
+    Var y: Int = _class::$x;
+}

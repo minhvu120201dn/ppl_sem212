@@ -1,0 +1,4 @@
+
+Class Program {
+    Val arr: Array[String,3] = Array("hello", "world", "hello" +. "world");
+}

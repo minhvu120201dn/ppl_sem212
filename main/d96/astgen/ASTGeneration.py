@@ -29,33 +29,47 @@ class ASTGeneration(D96Visitor):
 
 
     def visitMethod(self, ctx:D96Parser.MethodContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return [ctx.getChild(0).accept(self)]
+
+
+    def visitNormalMet(self, ctx:D96Parser.NormalMetContext):
+        if ctx.VID():
+            kind = Static()
+            name = Id(ctx.VID().getText())
+        else:
+            kind = Instance()
+            name = Id(ctx.ID().getText())
+        return MethodDecl(name= name,
+                          kind= kind,
+                          param= ctx.paraList().accept(self) if ctx.paraList() else [],
+                          body= ctx.scope().accept(self))
 
 
     def visitConstructor(self, ctx:D96Parser.ConstructorContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return MethodDecl(name= Id('Constructor'),
+                          kind= Instance(),
+                          param= ctx.paraList().accept(self) if ctx.paraList() else [],
+                          body= ctx.scope().accept(self))
 
 
     def visitDestructor(self, ctx:D96Parser.DestructorContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return MethodDecl(name= Id('Destructor'),
+                          kind= Instance(),
+                          param= [],
+                          body= ctx.scope().accept(self))
 
 
     def visitParaList(self, ctx:D96Parser.ParaListContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return reduce(lambda l, c: l + c, [idList.accept(self) for idList in ctx.idList()], [])
 
 
     def visitIdList(self, ctx:D96Parser.IdListContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        type = ctx.vartype().accept(self)
+        return [VarDecl(ident.accept(self), type) for ident in ctx.identifier()]
 
 
     def visitScope(self, ctx:D96Parser.ScopeContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return [stmt.accept(self) for stmt in ctx.stmt()]
 
 
     def visitStmt(self, ctx:D96Parser.StmtContext):
@@ -92,7 +106,7 @@ class ASTGeneration(D96Visitor):
         vars = [ident.accept(self) for ident in ctx.identifier()]
         inits = [None] * len(ctx.identifier())
         type = ctx.vartype().accept(self)
-        return vars, inits, type;
+        return vars, inits, type
 
 
     def visitIdentifier(self, ctx:D96Parser.IdentifierContext):
@@ -167,12 +181,24 @@ class ASTGeneration(D96Visitor):
         elif ctx.LB() and ctx.RB():
             return ctx.expr(0).accept(self)
         elif ctx.NEW_():
-            return NewExpr(classname= ctx.ID().getText(),
+            return NewExpr(classname= Id(ctx.ID().getText()),
                            param= ctx.exprList().accept(self))
         elif ctx.CSMEM():
-            pass
+            if ctx.exprList():
+                return CallExpr(obj= Id(ctx.ID().getText()),
+                                method= Id(ctx.VID().getText()),
+                                param= ctx.exprList().accept(self))
+            else:
+                return FieldAccess(obj= Id(ctx.ID().getText()),
+                                   fieldname = Id(ctx.VID().getText()))
         elif ctx.DOT():
-            pass
+            if ctx.exprList():
+                return CallExpr(obj= Id(ctx.expr(0).accept(self)),
+                                method= Id(ctx.ID().getText()),
+                                param= ctx.exprList().accept(self))
+            else:
+                return FieldAccess(obj= ctx.expr(0).accept(self),
+                                   fieldname = Id(ctx.ID().getText()))
         elif ctx.LSB() and ctx.RSB():
             expr_list = [e.accept(self) for e in ctx.expr()]
             return ArrayCell(arr= expr_list[0],

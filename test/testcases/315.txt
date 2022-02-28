@@ -1,0 +1,6 @@
+
+Class _class {}
+Class Program {
+    Var x, $x: _class;
+    Val y, $y: _class = New _class(), New _class();
+}

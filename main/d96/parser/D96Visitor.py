@@ -34,6 +34,11 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by D96Parser#normalMet.
+    def visitNormalMet(self, ctx:D96Parser.NormalMetContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by D96Parser#constructor.
     def visitConstructor(self, ctx:D96Parser.ConstructorContext):
         return self.visitChildren(ctx)

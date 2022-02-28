@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Instance,[],[]),MethodDecl(Id($main),Static,[],[]),MethodDecl(Id(Constructor),Instance,[param(Id(a),IntType),param(Id(b),IntType),param(Id(c),FloatType)],[]),MethodDecl(Id(Destructor),Instance,[],[])])])

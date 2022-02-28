@@ -1,0 +1,4 @@
+
+Class Program {
+    Var x: Int = Array(1,2,3,4,5)[0];
+}

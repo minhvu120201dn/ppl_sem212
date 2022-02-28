@@ -1,0 +1,4 @@
+
+Class Program {
+    Var x: String = _class::$obj1[1].obj2.obj3[3].obj4[4].obj5;
+}

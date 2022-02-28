@@ -1,5 +1,5 @@
 
 Class Program {
-    Var _: Array[Int,5] = Array(1,2,3,4,2+3);
     Val $_: Array[Array[Int,2],2] = Array(Array(1,2),Array(3,4));
+    Val _: Array[Int,4] = Array($_[0][0], $_[0][1], $_[1][0], $_[1][1*1]);
 }

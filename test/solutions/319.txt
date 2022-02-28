@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Program),[AttributeDecl(Instance,VarDecl(Id(x),StringType,FieldAccess(ArrayCell(FieldAccess(ArrayCell(FieldAccess(FieldAccess(ArrayCell(FieldAccess(Id(_class),Id($obj1)),[IntLit(1)]),Id(obj2)),Id(obj3)),[IntLit(3)]),Id(obj4)),[IntLit(4)]),Id(obj5))))])])

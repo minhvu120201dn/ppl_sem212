@@ -27,12 +27,13 @@ classMem: attribute | method;
 
 attribute: declare;
 
-method: identifier LB paraList? RB scope | constructor | destructor;
+method: normalMet | constructor | destructor;
+normalMet: (ID | VID) LB paraList? RB scope;
 constructor: CONSTRUCTOR_ LB paraList? RB scope;
 destructor: DESTRUCTOR_ LB RB scope;
 //methodMain: MAIN_ LB RB scopeMain;
 paraList: idList (SEMI idList)*;
-idList: identifier (COMMA identifier)* COLON (INT_ | FLOAT_ | BOOL_ | STR_);
+idList: identifier (COMMA identifier)* COLON vartype;
 
 // Statements
 scope: LCB stmt* RCB;
@@ -73,12 +74,12 @@ retStmt: RETURN_ expr? SEMI;
 expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit // literals
     | identifier | callMethod // already-existed
     | LB expr RB // brackets
-    | NEW_ ID exprList // object creation
+    | <assoc=right> NEW_ ID exprList // object creation
     | ID CSMEM VID exprList? // static access
     | expr DOT ID exprList? // instance access
     | expr (LSB expr RSB)+ // index operator
-    | SUBOP expr // sign
-    | NOTOP expr // logical not
+    | <assoc=right> SUBOP expr // sign
+    | <assoc=right> NOTOP expr // logical not
     | expr (MULOP | DIVOP | MODOP) expr // multiplying
     | expr (ADDOP | SUBOP) expr // adding
     | expr (ANDOP | OROP) expr // logical
