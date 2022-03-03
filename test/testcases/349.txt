@@ -1,0 +1,12 @@
+
+Class Program {
+    main() {
+        Foreach (i In 1 .. 100) {
+            If (True) {
+                Var j: Int;
+                Continue;
+                Break;
+            }
+        }
+    }
+}

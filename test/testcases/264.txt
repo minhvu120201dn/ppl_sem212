@@ -4,14 +4,14 @@ Class _ {
         If (n < 0) { Return "Type error"; }
         Else {
             If (n == 0) { Return 1; }
-            Else { Return $face(n-1) * n; }
+            Else { Return _::$face(n-1) * n; }
         }
     }
     $P(n,k:Int) {
-        Return $fact(n) / $fact(k);
+        Return _::$fact(n) / _::$fact(k);
     }
     $C(n,k:Int) {
-        Return $fact(n) / ($fact(k) * $fact(n-k));
+        Return _::$fact(n) / (_::$fact(k) * _::$fact(n-k));
     }
 }
 

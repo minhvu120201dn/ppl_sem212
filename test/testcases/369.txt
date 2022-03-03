@@ -1,0 +1,5 @@
+Class Program {
+           main() {
+               a[1][exp::$b().c[exp::$b().c[exp::$b().c]]] = 1;
+           }
+       }

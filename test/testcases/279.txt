@@ -9,9 +9,9 @@ Class Program {
         Return ans;
     }
     main() {
-        Var temp_variable: Int = $pow(100,200000);
+        Var temp_variable: Int = Program::$pow(100,200000);
         {
-            Var temp_variable: Int = $pow(2000,200000);
+            Var temp_variable: Int = Program::$pow(2000,200000);
             Return;
         }
         {} {} {{}}

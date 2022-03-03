@@ -1,0 +1,10 @@
+
+Class _class {
+    Var x: Int = 1;
+}
+Class Program {
+    main() {
+        Var objs: Array[_class,5];
+        Var x: Int = objs[4].x;
+    }
+}

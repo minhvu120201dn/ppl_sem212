@@ -29,6 +29,16 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by D96Parser#attrBody.
+    def visitAttrBody(self, ctx:D96Parser.AttrBodyContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by D96Parser#attrNonInit.
+    def visitAttrNonInit(self, ctx:D96Parser.AttrNonInitContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by D96Parser#method.
     def visitMethod(self, ctx:D96Parser.MethodContext):
         return self.visitChildren(ctx)
@@ -69,8 +79,8 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by D96Parser#declare.
-    def visitDeclare(self, ctx:D96Parser.DeclareContext):
+    # Visit a parse tree produced by D96Parser#declStmt.
+    def visitDeclStmt(self, ctx:D96Parser.DeclStmtContext):
         return self.visitChildren(ctx)
 
 
@@ -79,8 +89,8 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by D96Parser#notvalBody.
-    def visitNotvalBody(self, ctx:D96Parser.NotvalBodyContext):
+    # Visit a parse tree produced by D96Parser#declNonInit.
+    def visitDeclNonInit(self, ctx:D96Parser.DeclNonInitContext):
         return self.visitChildren(ctx)
 
 
@@ -104,23 +114,18 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by D96Parser#elifStmt.
+    def visitElifStmt(self, ctx:D96Parser.ElifStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by D96Parser#elseStmt.
+    def visitElseStmt(self, ctx:D96Parser.ElseStmtContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by D96Parser#forStmt.
     def visitForStmt(self, ctx:D96Parser.ForStmtContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#scopeLoop.
-    def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#stmtLoop.
-    def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#ifStmtLoop.
-    def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
         return self.visitChildren(ctx)
 
 
@@ -134,8 +139,13 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by D96Parser#callMethod.
-    def visitCallMethod(self, ctx:D96Parser.CallMethodContext):
+    # Visit a parse tree produced by D96Parser#insMetStmt.
+    def visitInsMetStmt(self, ctx:D96Parser.InsMetStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by D96Parser#staMetStmt.
+    def visitStaMetStmt(self, ctx:D96Parser.StaMetStmtContext):
         return self.visitChildren(ctx)
 
 

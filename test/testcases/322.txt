@@ -1,0 +1,8 @@
+
+Class Program {
+    Var x, $x: Boolean;
+    main() {
+        x = True;
+        $x = False || x;
+    }
+}

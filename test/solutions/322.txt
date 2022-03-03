@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Program),[AttributeDecl(Instance,VarDecl(Id(x),BoolType)),AttributeDecl(Static,VarDecl(Id($x),BoolType)),MethodDecl(Id(main),Static,[],Block([AssignStmt(Id(x),BooleanLit(True)),AssignStmt(Id($x),BinaryOp(||,BooleanLit(False),Id(x)))]))])])

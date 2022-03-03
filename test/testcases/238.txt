@@ -1,7 +1,7 @@
 Class Program {
     func(a,b,c:Int; d:String; e:Boolean) { Return 0; }
     main() {
-        Val num : Int = func(1,2,3,"hello",True);
+        Val num : Int = Self.func(1,2,3,"hello",True);
         Var var : Int = num + 12345;
     }
 }

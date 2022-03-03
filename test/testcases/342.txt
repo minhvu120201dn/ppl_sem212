@@ -1,0 +1,9 @@
+
+Class Program {
+    main() {
+        If (True) {}
+        Elseif (False) {}
+        Elseif (1+1==2) {}
+        Else {}
+    }
+}

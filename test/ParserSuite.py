@@ -80,8 +80,8 @@ Class _ { ##There is nothing here##
     func() {
         Val const: String = "a string";
         {
-            Var $temp : Int = 1;
-            Var $temp2, $a, $b : Boolean = True, False, !True;
+            Var temp : Int = 1;
+            Var temp2, a, b : Boolean = True, False, !True;
             { ## Scope in scope ##
                 Val pi: Float = 3.14;            
             }
@@ -141,7 +141,7 @@ Class _ { ##There is nothing here##
     Var $a, $b, $c: String = "hello" +. " " +. "world", "string" +. " second", "string" +. " third";
     Val temp1, temp2: Boolean = True, False;
     func() {
-        Var $ABCDE: Boolean = (True && False) || (True || False) || !(temp1 && !temp2);
+        Var ABCDE: Boolean = (True && False) || (True || False) || !(temp1 && !temp2);
     }
 }"""
         expect = "successful"
@@ -156,7 +156,7 @@ Class _ { ##There is nothing here##
         Return 10;
     }
 }"""
-        expect = "Error on line 5 col 35: ="
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,220))
 
     def test_ifelse2(self):
@@ -174,7 +174,7 @@ Class _ { ##There is nothing here##
         }
     }
 }"""
-        expect = "Error on line 5 col 35: ="
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,221))
 
     def test_ifelse3(self):
@@ -395,7 +395,7 @@ Class Program {
         input = """Class Program {
     func(a,b,c:Int; d:String; e:Boolean) { Return 0; }
     main() {
-        Val num : Int = func(1,2,3,"hello",True);
+        Val num : Int = Self.func(1,2,3,"hello",True);
         Var var : Int = num + 12345;
     }
 }
@@ -527,15 +527,15 @@ Class Program {
         expect = "successful"
         self.assertTrue(TestParser.test(input,expect,249))
 
-    def test_function3(self):
-        input = """Class Program {
-    func(a,b,c,d,e:String) {}
-    main() {
-        func("1","2","3","4","5"
-    }
-}"""
-        expect = "Error on line 5 col 4: }"
-        self.assertTrue(TestParser.test(input,expect,250))
+#     def test_function3(self):
+#         input = """Class Program {
+#     func(a,b,c,d,e:String) {}
+#     main() {
+#         func("1","2","3","4","5"
+#     }
+# }"""
+#         expect = "Error on line 5 col 4: }"
+#         self.assertTrue(TestParser.test(input,expect,-1))
 
     def test_expression1(self):
         input = """Class Program {
@@ -654,7 +654,7 @@ Class _ {
         If (n < 0) { Return "Type error"; }
         Else {
             If (n == 0) { Return 1; }
-            Else { Return $face(n-1) * n; }
+            Else { Return _::$fact(n-1) * n; }
         }
     }
 }
@@ -671,14 +671,14 @@ Class _ {
         If (n < 0) { Return "Type error"; }
         Else {
             If (n == 0) { Return 1; }
-            Else { Return $face(n-1) * n; }
+            Else { Return _::$face(n-1) * n; }
         }
     }
     $P(n,k:Int) {
-        Return $fact(n) / $fact(k);
+        Return _::$fact(n) / _::$fact(k);
     }
     $C(n,k:Int) {
-        Return $fact(n) / ($fact(k) * $fact(n-k));
+        Return _::$fact(n) / (_::$fact(k) * _::$fact(n-k));
     }
 }
 
@@ -807,7 +807,7 @@ Class Program {
         Return;
     }
 }"""
-        expect = "Error on line 7 col 29: ="
+        expect = "successful"
         self.assertTrue(TestParser.test(input,expect,271))
 
     def test_complex_program10(self):
@@ -897,7 +897,7 @@ Class Program {
         Return ans;
     }
     main() {
-        Var temp_variable: Int = $pow(100,200000);
+        Var temp_variable: Int = Program::$pow(100,200000);
         Return;
     }
 }"""
@@ -916,9 +916,9 @@ Class Program {
         Return ans;
     }
     main() {
-        Var temp_variable: Int = $pow(100,200000);
+        Var temp_variable: Int = Program::$pow(100,200000);
         {
-            Var temp_variable: Int = $pow(2000,200000);
+            Var temp_variable: Int = Program::$pow(2000,200000);
             Return;
         }
         {} {} {{}}
@@ -971,7 +971,7 @@ Class Program {
         input = """Class Program {
     main(i:Int) { Return "This is not the main function!!!"; }
     main() {
-        If (main(0xCAFE_1234) == main(0)) { Return; }
+        If (Self.main(0xCAFE_1234) == Self.main(0)) { Return; }
     }
 }"""
         expect = "successful"

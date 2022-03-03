@@ -2,8 +2,8 @@ Class Program {
     func() {
         Val const: String = "a string";
         {
-            Var $temp : Int = 1;
-            Var $temp2, $a, $b : Boolean = True, False, !True;
+            Var temp : Int = 1;
+            Var temp2, a, b : Boolean = True, False, !True;
             { ## Scope in scope ##
                 Val pi: Float = 3.14;            
             }

@@ -1,0 +1,6 @@
+Class D{
+           Var _9f1, $_: l_;
+           foo(){
+               Var a,b:I;
+           }
+       }

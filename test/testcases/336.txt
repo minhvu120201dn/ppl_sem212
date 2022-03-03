@@ -1,0 +1,8 @@
+
+Class Program {
+    main() {
+        Var a: Array[Int,5];
+        Var b: Array[Float,5];
+        Var c: Array[Array[Boolean,5],5];
+    }
+}

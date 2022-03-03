@@ -1,0 +1,9 @@
+
+Class Program {
+    main() {
+        Return;
+        Return 1;
+        Return Array(1,2,3);
+        Return Null;
+    }
+}

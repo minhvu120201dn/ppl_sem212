@@ -1,0 +1,5 @@
+Class Program {
+           a() {
+               Val c, d : Float = .e5 , 1e-1;
+           }
+       }

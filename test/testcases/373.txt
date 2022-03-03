@@ -1,0 +1,67 @@
+
+       Class Cak {
+           abcdeFu123(str: Array[String, 10]) {
+               Val parameters: Map = SomeClass::$parseParameters(args);
+
+               Val builder : ChainedOptionsBuilder = New OptionsBuilder()
+               .include(BigMatrixMultiplicationBenchmarking.class.getSimpleName())
+               .mode(Mode.AverageTime)
+               .forks(2)
+               .warmupIterations(10)
+               .measurementIterations(10)
+               .timeUnit(TimeUnit.SECONDS);
+
+               Return New Runner(builder.build()).run();
+           }
+   homemadeMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Return HomemadeMatrix
+         .multiplyMatrices(matrixProvider.getFirstMatrix(), matrixProvider.getSecondMatrix());
+   }
+
+   nd4jMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Val firstMatrix : INDArray = Nd4j.create(matrixProvider.getFirstMatrix());
+       Val secondMatrix : INDArray = Nd4j.create(matrixProvider.getSecondMatrix());
+
+       Return firstMatrix.mmul(secondMatrix);
+   }
+
+   coltMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Val doubleFactory2D : DoubleFactory2D = DoubleFactory2D.dense;
+
+       Val firstMatrix : DoubleMatrix2D= doubleFactory2D.make(matrixProvider.getFirstMatrix());
+       Val secondMatrix : DoubleMatrix2D = doubleFactory2D.make(matrixProvider.getSecondMatrix());
+
+       Var algebra : Algebra = New Algebra();
+       Return algebra.mult(firstMatrix, secondMatrix);
+   }
+
+   ejmlMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Var firstMatrix : SimpleMatrix = New SimpleMatrix(matrixProvider.getFirstMatrix());
+       Var secondMatrix : SimpleMatrix = New SimpleMatrix(matrixProvider.getSecondMatrix());
+
+       Return firstMatrix.mult(secondMatrix);
+   }
+
+   apacheCommonsMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Var firstMatrix : RealMatrix = New Array2DRowRealMatrix(matrixProvider.getFirstMatrix());
+       Val secondMatrix : RealMatrix = New Array2DRowRealMatrix(matrixProvider.getSecondMatrix());
+
+       Return firstMatrix.multiply(secondMatrix);
+   }
+
+   la4jMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+       Val firstMatrix : TheMatrix = New Basic2DMatrix(matrixProvider.getFirstMatrix());
+       Val secondMatrix : TheMatrix = New Basic2DMatrix(matrixProvider.getSecondMatrix());
+
+       Return firstMatrix.multiply(secondMatrix);
+   }
+       }
+       Class Program {
+           main() {
+               Val const1, const2: Int = 1 + 5, 2;
+               Var x, y : Int = 0, 0;
+               Val sth : Sth = New Sth();
+               Var a : Int = a.b.c.d();
+               Return;
+           }
+       }

@@ -1,6 +1,6 @@
 Class Program {
     main(i:Int) { Return "This is not the main function!!!"; }
     main() {
-        If (main(0xCAFE_1234) == main(0)) { Return; }
+        If (Self.main(0xCAFE_1234) == Self.main(0)) { Return; }
     }
 }

@@ -1,11 +1,10 @@
 from array import ArrayType
+from ast import expr
 from xmlrpc.client import Boolean
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
 from functools import reduce
-
-from main.d96.utils.AST import AST, ArrayLiteral, AttributeDecl, BinaryOp, BoolType, BooleanLiteral, ClassDecl, ClassType, ConstDecl, FloatLiteral, FloatType, Id, Instance, IntLiteral, IntType, Program, SelfLiteral, Static, StringLiteral, StringType, UnaryOp, VarDecl
 
 
 class ASTGeneration(D96Visitor):
@@ -15,9 +14,15 @@ class ASTGeneration(D96Visitor):
 
 
     def visitClassDecl(self, ctx:D96Parser.ClassDeclContext):
-        return ClassDecl(classname=Id(ctx.ID(0).getText()),
-                         memlist=reduce(lambda l, c: l + c, [c.accept(self) for c in ctx.classMem()], []),
-                         parentname=None if len(ctx.ID()) < 2 else Id(ctx.ID(1).getText()))
+        ret = ClassDecl(classname= Id(ctx.ID(0).getText()),
+                        memlist= reduce(lambda l, c: l + c, [c.accept(self) for c in ctx.classMem()], []),
+                        parentname= None if len(ctx.ID()) < 2 else Id(ctx.ID(1).getText()))
+        if ret.classname.name == 'Program':
+            for mem in ret.memlist:
+                if type(mem) == MethodDecl:
+                    if mem.name.name == 'main' and mem.param == []:
+                        mem.kind = Static()
+        return ret
 
 
     def visitClassMem(self, ctx:D96Parser.ClassMemContext):
@@ -25,7 +30,34 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAttribute(self, ctx:D96Parser.AttributeContext):
-        return ctx.declare().accept(self)
+        decl = VarDecl if ctx.VAR_() else ConstDecl
+        vars, inits, type = ctx.attrBody().accept(self) if ctx.attrBody() else\
+                            ctx.attrNonInit().accept(self)
+        vars.reverse() if ctx.attrBody() else None
+
+        return [(AttributeDecl(kind= Static() if vars[i].name[0] == '$' else Instance(),
+                               decl= decl(vars[i], type, inits[i])))
+                for i in range(len(vars))]
+
+
+    def visitAttrBody(self, ctx:D96Parser.AttrBodyContext):
+        vars, inits, type = None, None, None
+        if ctx.attrBody():
+            vars, inits, type = ctx.attrBody().accept(self)
+            vars.append(ctx.identifier().accept(self))
+            inits.append(ctx.expr().accept(self))
+        elif ctx.ASNOP():
+            vars = [ctx.identifier().accept(self)]
+            inits = [ctx.expr().accept(self)]
+            type = ctx.vartype().accept(self)
+        return vars, inits, type
+
+
+    def visitAttrNonInit(self, ctx:D96Parser.AttrNonInitContext):
+        vars = [ident.accept(self) for ident in ctx.identifier()]
+        inits = [None] * len(ctx.identifier())
+        type = ctx.vartype().accept(self)
+        return vars, inits, type
 
 
     def visitMethod(self, ctx:D96Parser.MethodContext):
@@ -69,23 +101,21 @@ class ASTGeneration(D96Visitor):
 
 
     def visitScope(self, ctx:D96Parser.ScopeContext):
-        return [stmt.accept(self) for stmt in ctx.stmt()]
+        return Block(reduce(lambda l, c: l+c if type(c)==list else l+[c], [stmt.accept(self) for stmt in ctx.stmt()], []))
 
 
     def visitStmt(self, ctx:D96Parser.StmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return ctx.getChild(0).accept(self)
 
 
-    def visitDeclare(self, ctx:D96Parser.DeclareContext):
+    def visitDeclStmt(self, ctx:D96Parser.DeclStmtContext):
         mutable = True if ctx.VAR_() else False
         vars, inits, type = ctx.declBody().accept(self) if ctx.declBody() else\
-                            ctx.notvalBody().accept(self)
+                            ctx.declNonInit().accept(self)
         vars.reverse() if ctx.declBody() else None
 
-        return [( AttributeDecl(kind=Static() if vars[i].name[0] == '$' else Instance(),
-                                decl=VarDecl  (vars[i], type, inits[i]) if mutable else\
-                                     ConstDecl(vars[i], type, inits[i]) ) )
+        return [VarDecl  (vars[i], type, inits[i]) if mutable else\
+                ConstDecl(vars[i], type, inits[i])
                 for i in range(len(vars))]
 
 
@@ -93,18 +123,18 @@ class ASTGeneration(D96Visitor):
         vars, inits, type = None, None, None
         if ctx.declBody():
             vars, inits, type = ctx.declBody().accept(self)
-            vars.append(ctx.identifier().accept(self))
+            vars.append(Id(ctx.ID().getText()))
             inits.append(ctx.expr().accept(self))
         elif ctx.ASNOP():
-            vars = [ctx.identifier().accept(self)]
+            vars = [Id(ctx.ID().getText())]
             inits = [ctx.expr().accept(self)]
             type = ctx.vartype().accept(self)
         return vars, inits, type
 
 
-    def visitNotvalBody(self, ctx:D96Parser.NotvalBodyContext):
-        vars = [ident.accept(self) for ident in ctx.identifier()]
-        inits = [None] * len(ctx.identifier())
+    def visitDeclNonInit(self, ctx:D96Parser.DeclNonInitContext):
+        vars = [Id(ident.getText()) for ident in ctx.ID()]
+        inits = [None] * len(ctx.ID())
         type = ctx.vartype().accept(self)
         return vars, inits, type
 
@@ -114,63 +144,107 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAsnStmt(self, ctx:D96Parser.AsnStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return Assign(ctx.lhs().accept(self), ctx.expr().accept(self))
 
 
     def visitLhs(self, ctx:D96Parser.LhsContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        if ctx.identifier():
+            return ctx.identifier().accept(self)
+        elif ctx.SELF_():
+            return SelfLiteral()
+        elif ctx.LSB() and ctx.RSB():
+            return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
+        elif ctx.DOT():
+            return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
+        elif ctx.CSMEM():
+            return FieldAccess(Id(ctx.ID().getText()), Id(ctx.VID().getText()))
 
 
     def visitIfStmt(self, ctx:D96Parser.IfStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return If(expr= ctx.expr().accept(self),
+                  thenStmt= ctx.scope().accept(self),
+                  elseStmt= ctx.elifStmt().accept(self) if ctx.elifStmt() else\
+                            ctx.elseStmt().accept(self) if ctx.elseStmt() else\
+                            None)
+
+
+    def visitElifStmt(self, ctx:D96Parser.ElifStmtContext):
+        return If(expr= ctx.expr().accept(self),
+                  thenStmt= ctx.scope().accept(self),
+                  elseStmt= ctx.elifStmt().accept(self) if ctx.elifStmt() else\
+                            ctx.elseStmt().accept(self) if ctx.elseStmt() else\
+                            None)
+
+
+    def visitElseStmt(self, ctx:D96Parser.ElseStmtContext):
+        return ctx.scope().accept(self)
 
 
     def visitForStmt(self, ctx:D96Parser.ForStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        exprs = [expr.accept(self) for expr in ctx.expr()]
+        exprs.append(None)
+        return For(id= Id(ctx.ID().getText()),
+                   expr1= exprs[0],
+                   expr2= exprs[1],
+                   loop= ctx.scope().accept(self),
+                   expr3= exprs[2])
 
 
-    def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+    # def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
+    #     return Block(reduce(lambda l, c: l+c if type(c)==list else l+[c], [stmt.accept(self) for stmt in ctx.stmtLoop()], []))
 
 
-    def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+    # def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
+    #     return ctx.getChild(0).accept(self)
 
 
-    def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+    # def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
+    #     return If(expr= ctx.expr().accept(self),
+    #               thenStmt= ctx.scopeLoop().accept(self),
+    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
+    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
+    #                         None)
+
+
+    # def visitElifStmtLoop(self, ctx:D96Parser.ElifStmtLoopContext):
+    #     return If(expr= ctx.expr().accept(self),
+    #               thenStmt= ctx.scopeLoop().accept(self),
+    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
+    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
+    #                         None)
+
+
+    # def visitElseStmtLoop(self, ctx:D96Parser.ElseStmtLoopContext):
+    #     return ctx.scopeLoop().accept(self)
 
 
     def visitBreakStmt(self, ctx:D96Parser.BreakStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return Break()
 
 
     def visitContStmt(self, ctx:D96Parser.ContStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return Continue()
 
 
-    def visitCallMethod(self, ctx:D96Parser.CallMethodContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+    def visitInsMetStmt(self, ctx:D96Parser.InsMetStmtContext):
+        return CallStmt(obj= ctx.expr().accept(self),
+                        method= Id(ctx.ID().getText()),
+                        param= ctx.exprList().accept(self))
+
+
+    def visitStaMetStmt(self, ctx:D96Parser.StaMetStmtContext):
+        return CallStmt(obj= Id(ctx.ID().getText()),
+                        method= Id(ctx.VID().getText()),
+                        param= ctx.exprList().accept(self))
 
 
     def visitRetStmt(self, ctx:D96Parser.RetStmtContext):
-        return self.visitChildren(ctx)
-        #TODO: write this function
+        return Return(expr= ctx.expr().accept(self) if ctx.expr() else None)
 
 
     def visitExpr(self, ctx:D96Parser.ExprContext):
         if ctx.getChildCount() == 1:
-            return  ctx.getChild(0).accept(self) if ctx.arrLit() or ctx.identifier() or ctx.callMethod() else\
+            return  ctx.getChild(0).accept(self) if ctx.arrLit() or ctx.identifier() else\
                     IntLiteral(ctx.INTLIT().getText()) if ctx.INTLIT() else\
                     FloatLiteral(ctx.FLOATLIT().getText()) if ctx.FLOATLIT() else\
                     BooleanLiteral(ctx.BOOLLIT().getText()) if ctx.BOOLLIT() else\
@@ -193,7 +267,7 @@ class ASTGeneration(D96Visitor):
                                    fieldname = Id(ctx.VID().getText()))
         elif ctx.DOT():
             if ctx.exprList():
-                return CallExpr(obj= Id(ctx.expr(0).accept(self)),
+                return CallExpr(obj= ctx.expr(0).accept(self),
                                 method= Id(ctx.ID().getText()),
                                 param= ctx.exprList().accept(self))
             else:

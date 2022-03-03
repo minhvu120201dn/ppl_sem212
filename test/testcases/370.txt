@@ -1,0 +1,8 @@
+Class Program {
+           a() {
+               A.a.a.foo();
+               (a.a[1][2][3]).foo();
+               MotorBike::$ab.foo();
+               (MotorBike::$a.a[1][2]).foo();
+           }
+       }

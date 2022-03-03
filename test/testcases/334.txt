@@ -1,0 +1,9 @@
+
+Class Program {
+    main() {
+        Val a, b: Int = -1, 2+3;
+        Var c, d: Int = 1+2*3, (1+2)*3;
+        Val e: Int = 0123 + 0xCAFE * 0b1001  + 1_000;
+        Var f: Int = a / b;
+    }
+}

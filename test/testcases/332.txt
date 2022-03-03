@@ -1,0 +1,9 @@
+
+Class Program {
+    main() {
+        Var a, b: Int;
+        Val c: Float = 1;
+        Var d: Boolean = True && False;
+        Var e, f: String;
+    }
+}

@@ -1,0 +1,13 @@
+
+Class _class {
+    insMethod() {}
+    $staMethod() {}
+    Constructor() {}
+}
+Class Program {
+    Val obj: _class = New _class();
+    main() {
+        obj.insMethod();
+        _class::$staMethod();
+    }
+}

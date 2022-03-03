@@ -1,0 +1,4 @@
+Class Program {
+           Val b : Int = ClassABC::$a.a.c.b[1][2][3][(0 + 012 + 0xA2 + 0XA2 +0b101+0B101)];
+           Var c : Int = 0x0 + 0X0 + 0b0 + 0B0 + 00 + 0;
+       }

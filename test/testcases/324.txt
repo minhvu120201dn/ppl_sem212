@@ -1,0 +1,13 @@
+
+Class _class {
+    Var x, $x: Int;
+    Constructor() {}
+}
+Class Program {
+    Var obj: _class;
+    main() {
+        obj = New _class();
+        obj.x = 0;
+        _class::$x = 0;
+    }
+}

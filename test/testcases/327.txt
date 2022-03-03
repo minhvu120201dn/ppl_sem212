@@ -1,0 +1,13 @@
+
+Class _class {
+    insMethod() {}
+    $staMethod() {}
+    Constructor() {}
+}
+Class Program {
+    Var obj: Array[_class,5];
+    main() {
+        Self.obj[1].insMethod();
+        _class::$staMethod();
+    }
+}

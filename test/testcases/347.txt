@@ -1,0 +1,10 @@
+
+Class Program {
+    main() {
+        Foreach (i In 1 .. 100 By 0*1-0) {
+            Break;
+            Continue;
+            Return;
+        }
+    }
+}

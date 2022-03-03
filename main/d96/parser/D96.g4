@@ -23,56 +23,65 @@ program: classDecl* EOF;
 
 classDecl: CLASS_ ID (COLON ID)? LCB classMem* RCB;
 classMem: attribute | method;
-//classProgram: CLASS_ PROGRAM_ LCB (attribute | method)* methodMain (attribute | method)* RCB;
 
-attribute: declare;
+attribute: VAR_ (attrBody | attrNonInit) SEMI
+         | VAL_ attrBody SEMI;
+attrBody: identifier COLON vartype ASNOP expr
+        | identifier COMMA attrBody COMMA expr;
+attrNonInit: identifier (COMMA identifier)* COLON vartype;
 
 method: normalMet | constructor | destructor;
 normalMet: (ID | VID) LB paraList? RB scope;
 constructor: CONSTRUCTOR_ LB paraList? RB scope;
 destructor: DESTRUCTOR_ LB RB scope;
-//methodMain: MAIN_ LB RB scopeMain;
 paraList: idList (SEMI idList)*;
 idList: identifier (COMMA identifier)* COLON vartype;
 
 // Statements
 scope: LCB stmt* RCB;
-stmt: declare | asnStmt | ifStmt | forStmt | retStmt | callMethod SEMI | scope
-    | expr DOT ID exprList SEMI // instance method
-    | ID CSMEM VID exprList SEMI; // static method
+stmt: declStmt | asnStmt | ifStmt | forStmt | breakStmt | contStmt | retStmt | insMetStmt | staMetStmt | scope;
 
-//scopeMain: LCB stmtMain* RCB;
-//stmtMain: declare | asnStmt | ifStmt | forStmt | insAttr | staAttr | insMethod | staMethod;
-
-declare: VAR_ (declBody | notvalBody) SEMI
-       | VAL_ declBody SEMI;
-declBody: identifier COLON vartype ASNOP expr
-        | identifier COMMA declBody COMMA expr;
-notvalBody: identifier (COMMA identifier)* COLON vartype;
+declStmt: VAR_ (declBody | declNonInit) SEMI
+        | VAL_ declBody SEMI;
+declBody: ID COLON vartype ASNOP expr
+        | ID COMMA declBody COMMA expr;
+declNonInit: ID (COMMA ID)* COLON vartype;
 
 identifier: ID | VID;
 
-asnStmt: <assoc=right> lhs ASNOP expr SEMI;
-lhs: ID | SELF_
-   | lhs LSB expr RSB
-   | lhs DOT lhs;
+asnStmt: lhs ASNOP expr SEMI;
+lhs: identifier | SELF_
+   | lhs (LSB expr RSB)+
+   | lhs DOT ID
+   | ID CSMEM VID;
 
-ifStmt: IF_ LB expr RB scope (ELSEIF_ LB expr RB scope)* (ELSE_ scope)?;
+ifStmt: IF_ LB expr RB scope (elifStmt | elseStmt)?;
+elifStmt: ELSEIF_ LB expr RB scope (elifStmt | elseStmt)?;
+elseStmt: ELSE_ scope;
 
-forStmt: FOREACH_ LB ID IN_ expr DOUBLEDOT expr (BY_ expr)? RB scopeLoop;
+forStmt: FOREACH_ LB ID IN_ expr DOUBLEDOT expr (BY_ expr)? RB scope;
+/*
 scopeLoop: LCB stmtLoop* RCB;
 stmtLoop: stmt | ifStmtLoop | breakStmt | contStmt;
-ifStmtLoop: IF_ LB expr RB scopeLoop (ELSEIF_ LB expr RB scopeLoop)* (ELSE_ scopeLoop)?;
+ifStmtLoop: IF_ LB expr RB scopeLoop (elifStmtLoop | elseStmtLoop)?;
+elifStmtLoop: ELSEIF_ LB expr RB scopeLoop (elifStmtLoop | elseStmtLoop)?;
+elseStmtLoop: ELSE_ scopeLoop;
+*/
 breakStmt: BREAK_ SEMI;
 contStmt: CONTINUE_ SEMI;
 
-callMethod: identifier exprList;
+//callMetStmt: callMethod SEMI;
+//callMethod: identifier exprList;
+
+insMetStmt: expr DOT ID exprList SEMI; // instance method
+
+staMetStmt: ID CSMEM VID exprList SEMI; // static method
 
 retStmt: RETURN_ expr? SEMI;
 
 // Expressions
 expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit // literals
-    | identifier | callMethod // already-existed
+    | identifier // identifier
     | LB expr RB // brackets
     | <assoc=right> NEW_ ID exprList // object creation
     | ID CSMEM VID exprList? // static access
@@ -86,14 +95,6 @@ expr: INTLIT | FLOATLIT | BOOLLIT | STRLIT | NULL_ | SELF_ | arrLit // literals
     | expr (EQCMP | DIFCMP | LESCMP | GRECMP | LEQCMP | GEQCMP) expr // relational
     | expr (SADDOP | SEQCMP) expr; //string
 exprList: LB (expr (COMMA expr)*)? RB;
-/*
-objExpr: NEW_ ID exprList
-       | NULL_ | SELF_;
-insAttr: expr DOT ID;
-staAttr: ID CSMEM VID;
-insMethod: expr DOT ID exprList;
-staMethod: ID CSMEM VID exprList;
-*/
 
 arrDec: ARRAY_ LSB vartype COMMA INTLIT RSB;
 vartype: INT_ | FLOAT_ | BOOL_ | STR_ | arrDec | ID;
@@ -144,30 +145,30 @@ arrLit: ARRAY_ exprList;
 //MAIN_: 'main';
 
 // Keywords
-BREAK_:			'Break';
+BREAK_:		'Break';
 CONTINUE_:		'Continue';
 IF_:			'If';
 ELSEIF_:		'Elseif';
 ELSE_:			'Else';
 FOREACH_:		'Foreach';
 TRUE_:			'True';
-FALSE_:			'False';
-ARRAY_:			'Array';
+FALSE_:		'False';
+ARRAY_:		'Array';
 IN_:			'In';
 INT_:			'Int';
-FLOAT_:			'Float';
+FLOAT_:		'Float';
 BOOL_:			'Boolean';
 STR_:			'String';
 RETURN_:		'Return';
 NULL_:			'Null';
-CLASS_:			'Class';
+CLASS_:		'Class';
 VAL_:			'Val';
 VAR_:			'Var';
-CONSTRUCTOR_:	'Constructor';
-DESTRUCTOR_:	'Destructor';
+CONSTRUCTOR_:	       'Constructor';
+DESTRUCTOR_:	       'Destructor';
 NEW_:			'New';
 BY_:			'By';
-SELF_:          'Self';
+SELF_:               'Self';
 
 // Separators
 SEMI:       ';';
@@ -193,16 +194,14 @@ ANDOP:		'&&';
 OROP:		'||';
 EQCMP:		'==';
 ASNOP:		'=';
-DIFCMP:		'!=';
-LESCMP:		'<';
-LEQCMP:		'<=';
-GRECMP:		'>';
-GEQCMP:		'>=';
+DIFCMP:	'!=';
+LESCMP:	'<';
+LEQCMP:	'<=';
+GRECMP:	'>';
+GEQCMP:	'>=';
 SEQCMP:  	'==.';
-SADDOP:	    '+.';
-//CIMEM:	'.';
+SADDOP:	'+.';
 CSMEM:		'::';
-//NEW:		'New';
 
 
 /////////////////////////////////////////

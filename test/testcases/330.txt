@@ -1,0 +1,10 @@
+
+Class Program {
+    Constructor() {}
+    main() {
+        Return;
+        Return 1+1*2.0;
+        Return Self.main();
+        Return New Program();
+    }
+}

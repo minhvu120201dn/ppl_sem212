@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([VarDecl(Id(a),IntType),VarDecl(Id(b),IntType),ConstDecl(Id(c),FloatType,IntLit(1)),VarDecl(Id(d),BoolType,BinaryOp(&&,BooleanLit(True),BooleanLit(False))),VarDecl(Id(e),StringType),VarDecl(Id(f),StringType)]))])])

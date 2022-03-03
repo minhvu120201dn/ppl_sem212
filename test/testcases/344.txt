@@ -1,0 +1,8 @@
+
+Class _ {
+    main() {}
+}
+Class Program {
+    main() {}
+    main(x:Int) {}
+}

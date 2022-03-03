@@ -1,0 +1,10 @@
+
+Class Program {
+    main() {
+        Val a, b: Boolean = !True, !False;
+        Var c, d, e, f, g, h: Boolean = 1 + 1.0 == 10, 1 + 1.0 != 10, 1 + 1.0 < 10, 1 + 1.0 <= 10, 1 + 1.0 > 10, 1 + 1.0 >= 10;
+        Var i: Boolean = "hello" +. "world" ==. "helloworld";
+        Val j, k: Boolean = c || d, e && f;
+        Val l: Boolean = (!c && d) || (c && !d);
+    }
+}

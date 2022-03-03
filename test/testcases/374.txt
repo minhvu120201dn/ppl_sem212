@@ -1,0 +1,48 @@
+
+       Class Map {
+           Val bean: Array[String, 10];
+           Val value: Array[String, 10];
+           Constructor(bean: Array[String, 10]; value: Array[String, 10]) {
+               Self.bean = bean;
+               Self.value = value;
+               Return;
+           }
+           Destructor() {
+               Self.clean(Self.bean);
+               Self.clean(Self.value);
+               Return;
+           }
+           clean() {
+               Out.println("Cleaning");
+               Foreach (k In 0 .. Self.bean.length() By 1)
+               {
+                   el = Self.bean[k];
+
+                   Self.free(el);
+                   Self.bean = Null;
+               }
+               Self.free(bean);
+               Self.bean = Null;
+               Foreach (v In 0 .. Self.value.length() By 1)
+               {
+                   el = Self.value.a[v];
+
+                   Self.free(el);
+                   Self.value = Null;
+               }
+               Self.free(value);
+               Self.value = Null;
+               Val a : Boolean = True;
+               Val b : Int = 1;
+               Return (True || False) && (a == b);
+           }
+       }
+       Class Program {
+           mainA() {
+               Val const1, const2: Int = 1 + 5, 2;
+               Var x, y : Int = 0, 0;
+               Val sth : Sth = New Sth();
+               Return;
+           }
+       }
+       

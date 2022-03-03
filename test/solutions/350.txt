@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(_),Id(k),[MethodDecl(Id(Constructor),Instance,[param(Id(O),ClassType(Id(G))),param(Id(Cy),ClassType(Id(G)))],Block([Continue])),AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(___)))),AttributeDecl(Instance,VarDecl(Id(J),ClassType(Id(___)))),AttributeDecl(Instance,VarDecl(Id(J_8),ClassType(Id(___))))])])
