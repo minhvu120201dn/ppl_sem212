@@ -1,4 +1,1 @@
-Class Program {
-    Val arr: Array[Int,5] = Array(1,2,3,4,5);
-    Var $arr: Array[String,5] = Array("str1","str2","str3","str4","str5");
-}
+Class _{Destructor (){}Constructor (){Continue ;}Destructor (){Return ;Break ;}Constructor (S,BT:_g;_,SJ,D_2z_P9:String ;d_:Int ;_8_,_,__e:Array [Array [Array [Boolean ,0x2A],0B11],02]){} }

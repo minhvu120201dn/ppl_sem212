@@ -1,1 +1,1 @@
-1,__2345,<EOF>
+Program([ClassDecl(Id(KZo),Id(_),[AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(54,ArrayType(8,BoolType)),None))]),ClassDecl(Id(_),Id(_),[MethodDecl(Id($7),Static,[param(Id(C),BoolType),param(Id(O),ArrayType(95,FloatType))],Block([]))]),ClassDecl(Id(_),Id(I_735_5S),[AttributeDecl(Static,VarDecl(Id($O),ArrayType(2,BoolType))),AttributeDecl(Instance,VarDecl(Id(_2_),ArrayType(2,BoolType)))]),ClassDecl(Id(h),Id(___4C),[])])

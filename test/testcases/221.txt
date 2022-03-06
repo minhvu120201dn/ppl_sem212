@@ -1,14 +1,1 @@
-Class Program {
-    Var $abc, $def: Int;
-    Val temp1, temp2: Boolean = True, False;
-    main() {
-        If (temp1 || temp2) { $abc = 10; }
-        Elseif (temp1) { Return temp2; }
-        Elseif (temp2) { Return temp1; }
-        Else {
-            If (1 + 2 == 3) { Return "This is obvious"; } 
-            Elseif (1 + 2 == 4) { Return "This can never happen!"; }
-            Else { Return 10; }
-        }
-    }
-}
+Class c:_2{Var m,_:Array [Array [Array [String ,0b1000011],0B10_0],0X4C];Val $9:Array [String ,0x9];Constructor (__,_c_:__;K,__te,_,_:q){}Destructor (){}Destructor (){Continue ;Continue ;} }

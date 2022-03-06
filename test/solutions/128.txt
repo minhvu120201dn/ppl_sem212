@@ -1,1 +1,1 @@
-____123,<EOF>
+Program([ClassDecl(Id(_14),[MethodDecl(Id(Destructor),Instance,[],Block([ConstDecl(Id(WC),ClassType(Id(_DV)),None),Break])),MethodDecl(Id(j),Instance,[param(Id(Z),ClassType(Id(_0))),param(Id(dFD),StringType),param(Id(__4),StringType),param(Id(C),ArrayType(45,ArrayType(54,IntType))),param(Id(L7__),ArrayType(54,ArrayType(22,IntType))),param(Id(_),ArrayType(4,ArrayType(22,ArrayType(6,IntType))))],Block([]))])])

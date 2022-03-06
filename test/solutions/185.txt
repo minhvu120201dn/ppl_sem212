@@ -1,1 +1,1 @@
-Array,(,1,,,2,,,3,,,4,,,5,),<EOF>
+Program([ClassDecl(Id(s),Id(_),[]),ClassDecl(Id(_),[]),ClassDecl(Id(_H),[AttributeDecl(Instance,ConstDecl(Id(v_),ClassType(Id(P)),None)),MethodDecl(Id(Constructor),Instance,[param(Id(_),ArrayType(32,BoolType)),param(Id(_),ArrayType(32,BoolType))],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(_),ArrayType(9,IntType)),param(Id(_8),ArrayType(84,FloatType))],Block([Continue,Continue,Break]))]),ClassDecl(Id(_Y2),[]),ClassDecl(Id(_),[])])

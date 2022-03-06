@@ -1,1 +1,1 @@
-{,123,},[,456,],<EOF>
+Program([ClassDecl(Id(l7r),Id(__),[AttributeDecl(Static,ConstDecl(Id($O_),IntType,None))]),ClassDecl(Id(F),Id(__),[]),ClassDecl(Id(M),[AttributeDecl(Static,ConstDecl(Id($9_gG),ArrayType(1,ArrayType(2,ArrayType(6,BoolType))),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(1,ArrayType(2,ArrayType(6,BoolType))),None))]),ClassDecl(Id(D2_),Id(U),[MethodDecl(Id(Constructor),Instance,[],Block([])),AttributeDecl(Instance,VarDecl(Id(__Z_U),ClassType(Id(V)),NullLiteral())),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(u),[])])

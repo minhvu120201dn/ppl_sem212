@@ -1,7 +1,1 @@
-Class Program {
-    func(a,b,c:Int; d:String; e:Boolean) { Return 0; }
-    main() {
-        Val num : Int = Self.func(1,2,3,"hello",True);
-        Var var : Int = num + 12345;
-    }
-}
+Class _{Constructor (__:_o9M4;_4:Array [Int ,0b1001110];_,_0,_O6F:Array [Array [Int ,0x6],0b110_0_0]){}Var $_,_2i,$0wZ,x_4,$1_K4P:Array [Array [Array [Float ,2],0x1],5_7_1];}Class D{Val $z,KP:String ;}

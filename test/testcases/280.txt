@@ -1,13 +1,1 @@
-Class Cookie {
-    Var message: String;
-    Constructor() { message = "Don\'t ask me why!!"; }
-    $askForPermission() { Return True; }
-    $collectFromUser() { Return New Cookie(); Return Null; }
-}
-Class Program {
-    Var userCookie: Cookie;
-    main() {
-        If (Cookie::$askForPermission()) { userCookie = Cookie::$collectFromUser(); }
-        Else { Return; }
-    }
-}
+Class _:_{}Class _:_{_(_6:Array [Int ,0b1111];_r5,s:Array [Boolean ,40];_0Sy:Boolean ;_:Float ;_6__p,F66930:Array [Array [Array [Float ,0b1],0x9],055_76_5];_:Array [Array [Boolean ,030],6]){}Destructor (){} }Class Z{Var $JZX,$_:n__;Constructor (){}Var _:_;}

@@ -1,1 +1,1 @@
-00,0,<EOF>
+Program([ClassDecl(Id(F),[MethodDecl(Id(Constructor),Instance,[param(Id(p),ArrayType(57,ArrayType(3,ArrayType(29,ArrayType(29,BoolType))))),param(Id(_o2),StringType),param(Id(_),ClassType(Id(__7))),param(Id(X),ClassType(Id(__7))),param(Id(_4),ClassType(Id(__7))),param(Id(UK_),ClassType(Id(i))),param(Id(_),ClassType(Id(__))),param(Id(_),ArrayType(85,ArrayType(15,FloatType))),param(Id(df),ArrayType(85,ArrayType(15,FloatType)))],Block([]))]),ClassDecl(Id(_8),Id(F6),[])])

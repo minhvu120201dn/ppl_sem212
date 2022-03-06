@@ -1,18 +1,1 @@
-## This line does not contain anything ##
-Class tempClass {
-    Var immutable: String = "immutable attribute";
-
-    Constructor() {}
-    immutableFunc() { immutable = "immutable"; Return "immutable function"; }
-    $mutableFunc() { Return "mutable function"; }
-    Destructor() {}
-}
-Class Program {
-    Var instance: tempClass = New tempClass();
-    main() {
-        instance.immutable = instance.immutableFunc();
-        instance.immutable = tempClass::$mutableFunc();
-        Var tempStr: String = "hello world";
-        tempStr = instance.immutable = instance.immutableFunc();
-    }
-}
+Class J:u{}Class Gr_4{_(HDD1:Array [Array [Array [Array [Array [Array [Array [Array [Float ,0x3],0B1],93],0B110110],046],046],0b1],0b1];J1:M4){}Constructor (){}Val _m4:Boolean ;___(_:Boolean ;F,_:Array [Array [Array [String ,1],0B110110],046]){Return ;} }

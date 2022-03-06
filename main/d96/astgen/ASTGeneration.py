@@ -14,9 +14,9 @@ class ASTGeneration(D96Visitor):
 
 
     def visitClassDecl(self, ctx:D96Parser.ClassDeclContext):
-        ret = ClassDecl(classname= Id(ctx.ID(0).getText()),
-                        memlist= reduce(lambda l, c: l + c, [c.accept(self) for c in ctx.classMem()], []),
-                        parentname= None if len(ctx.ID()) < 2 else Id(ctx.ID(1).getText()))
+        ret = ClassDecl(Id(ctx.ID(0).getText()),
+                        reduce(lambda l, c: l + c, [c.accept(self) for c in ctx.classMem()], []),
+                        None if len(ctx.ID()) < 2 else Id(ctx.ID(1).getText()))
         if ret.classname.name == 'Program':
             for mem in ret.memlist:
                 if type(mem) == MethodDecl:
@@ -30,13 +30,13 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAttribute(self, ctx:D96Parser.AttributeContext):
-        decl = VarDecl if ctx.VAR_() else ConstDecl
+        self.decl = VarDecl if ctx.VAR_() else ConstDecl
         vars, inits, type = ctx.attrBody().accept(self) if ctx.attrBody() else\
                             ctx.attrNonInit().accept(self)
         vars.reverse() if ctx.attrBody() else None
 
-        return [(AttributeDecl(kind= Static() if vars[i].name[0] == '$' else Instance(),
-                               decl= decl(vars[i], type, inits[i])))
+        return [(AttributeDecl(Static() if vars[i].name[0] == '$' else Instance(),
+                               self.decl(vars[i], type, inits[i])))
                 for i in range(len(vars))]
 
 
@@ -55,9 +55,9 @@ class ASTGeneration(D96Visitor):
 
     def visitAttrNonInit(self, ctx:D96Parser.AttrNonInitContext):
         vars = [ident.accept(self) for ident in ctx.identifier()]
-        inits = [None] * len(ctx.identifier())
-        type = ctx.vartype().accept(self)
-        return vars, inits, type
+        typ = ctx.vartype().accept(self)
+        inits = [NullLiteral() if type(typ) == ClassType and self.decl == VarDecl else None] * len(ctx.identifier())
+        return vars, inits, typ
 
 
     def visitMethod(self, ctx:D96Parser.MethodContext):
@@ -71,24 +71,24 @@ class ASTGeneration(D96Visitor):
         else:
             kind = Instance()
             name = Id(ctx.ID().getText())
-        return MethodDecl(name= name,
-                          kind= kind,
-                          param= ctx.paraList().accept(self) if ctx.paraList() else [],
-                          body= ctx.scope().accept(self))
+        return MethodDecl(kind,
+                          name,
+                          ctx.paraList().accept(self) if ctx.paraList() else [],
+                          ctx.scope().accept(self))
 
 
     def visitConstructor(self, ctx:D96Parser.ConstructorContext):
-        return MethodDecl(name= Id('Constructor'),
-                          kind= Instance(),
-                          param= ctx.paraList().accept(self) if ctx.paraList() else [],
-                          body= ctx.scope().accept(self))
+        return MethodDecl(Instance(),
+                          Id('Constructor'),
+                          ctx.paraList().accept(self) if ctx.paraList() else [],
+                          ctx.scope().accept(self))
 
 
     def visitDestructor(self, ctx:D96Parser.DestructorContext):
-        return MethodDecl(name= Id('Destructor'),
-                          kind= Instance(),
-                          param= [],
-                          body= ctx.scope().accept(self))
+        return MethodDecl(Instance(),
+                          Id('Destructor'),
+                          [],
+                          ctx.scope().accept(self))
 
 
     def visitParaList(self, ctx:D96Parser.ParaListContext):
@@ -109,14 +109,12 @@ class ASTGeneration(D96Visitor):
 
 
     def visitDeclStmt(self, ctx:D96Parser.DeclStmtContext):
-        mutable = True if ctx.VAR_() else False
+        self.decl = VarDecl if ctx.VAR_() else ConstDecl
         vars, inits, type = ctx.declBody().accept(self) if ctx.declBody() else\
                             ctx.declNonInit().accept(self)
         vars.reverse() if ctx.declBody() else None
 
-        return [VarDecl  (vars[i], type, inits[i]) if mutable else\
-                ConstDecl(vars[i], type, inits[i])
-                for i in range(len(vars))]
+        return [self.decl(vars[i], type, inits[i]) for i in range(len(vars))]
 
 
     def visitDeclBody(self, ctx:D96Parser.DeclBodyContext):
@@ -134,9 +132,9 @@ class ASTGeneration(D96Visitor):
 
     def visitDeclNonInit(self, ctx:D96Parser.DeclNonInitContext):
         vars = [Id(ident.getText()) for ident in ctx.ID()]
-        inits = [None] * len(ctx.ID())
-        type = ctx.vartype().accept(self)
-        return vars, inits, type
+        typ = ctx.vartype().accept(self)
+        inits = [NullLiteral() if type(typ) == ClassType and self.decl == VarDecl else None] * len(ctx.ID())
+        return vars, inits, typ
 
 
     def visitIdentifier(self, ctx:D96Parser.IdentifierContext):
@@ -144,36 +142,36 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAsnStmt(self, ctx:D96Parser.AsnStmtContext):
-        return Assign(ctx.lhs().accept(self), ctx.expr().accept(self))
+        return Assign(ctx.expr(0).accept(self), ctx.expr(1).accept(self))
 
 
-    def visitLhs(self, ctx:D96Parser.LhsContext):
-        if ctx.identifier():
-            return ctx.identifier().accept(self)
-        elif ctx.SELF_():
-            return SelfLiteral()
-        elif ctx.LSB() and ctx.RSB():
-            return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
-        elif ctx.DOT():
-            return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
-        elif ctx.CSMEM():
-            return FieldAccess(Id(ctx.ID().getText()), Id(ctx.VID().getText()))
+    # def visitLhs(self, ctx:D96Parser.LhsContext):
+    #     if ctx.identifier():
+    #         return ctx.identifier().accept(self)
+    #     elif ctx.SELF_():
+    #         return SelfLiteral()
+    #     elif ctx.LSB() and ctx.RSB():
+    #         return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
+    #     elif ctx.DOT():
+    #         return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
+    #     elif ctx.CSMEM():
+    #         return FieldAccess(Id(ctx.ID().getText()), Id(ctx.VID().getText()))
 
 
     def visitIfStmt(self, ctx:D96Parser.IfStmtContext):
-        return If(expr= ctx.expr().accept(self),
-                  thenStmt= ctx.scope().accept(self),
-                  elseStmt= ctx.elifStmt().accept(self) if ctx.elifStmt() else\
-                            ctx.elseStmt().accept(self) if ctx.elseStmt() else\
-                            None)
+        return If(ctx.expr().accept(self),
+                  ctx.scope().accept(self),
+                  ctx.elifStmt().accept(self) if ctx.elifStmt() else\
+                  ctx.elseStmt().accept(self) if ctx.elseStmt() else\
+                  None)
 
 
     def visitElifStmt(self, ctx:D96Parser.ElifStmtContext):
-        return If(expr= ctx.expr().accept(self),
-                  thenStmt= ctx.scope().accept(self),
-                  elseStmt= ctx.elifStmt().accept(self) if ctx.elifStmt() else\
-                            ctx.elseStmt().accept(self) if ctx.elseStmt() else\
-                            None)
+        return If(ctx.expr().accept(self),
+                  ctx.scope().accept(self),
+                  ctx.elifStmt().accept(self) if ctx.elifStmt() else\
+                  ctx.elseStmt().accept(self) if ctx.elseStmt() else\
+                  None)
 
 
     def visitElseStmt(self, ctx:D96Parser.ElseStmtContext):
@@ -183,39 +181,11 @@ class ASTGeneration(D96Visitor):
     def visitForStmt(self, ctx:D96Parser.ForStmtContext):
         exprs = [expr.accept(self) for expr in ctx.expr()]
         exprs.append(None)
-        return For(id= Id(ctx.ID().getText()),
-                   expr1= exprs[0],
-                   expr2= exprs[1],
-                   loop= ctx.scope().accept(self),
-                   expr3= exprs[2])
-
-
-    # def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
-    #     return Block(reduce(lambda l, c: l+c if type(c)==list else l+[c], [stmt.accept(self) for stmt in ctx.stmtLoop()], []))
-
-
-    # def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
-    #     return ctx.getChild(0).accept(self)
-
-
-    # def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
-    #     return If(expr= ctx.expr().accept(self),
-    #               thenStmt= ctx.scopeLoop().accept(self),
-    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
-    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
-    #                         None)
-
-
-    # def visitElifStmtLoop(self, ctx:D96Parser.ElifStmtLoopContext):
-    #     return If(expr= ctx.expr().accept(self),
-    #               thenStmt= ctx.scopeLoop().accept(self),
-    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
-    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
-    #                         None)
-
-
-    # def visitElseStmtLoop(self, ctx:D96Parser.ElseStmtLoopContext):
-    #     return ctx.scopeLoop().accept(self)
+        return For(Id(ctx.ID().getText()),
+                   exprs[0],
+                   exprs[1],
+                   ctx.scope().accept(self),
+                   exprs[2])
 
 
     def visitBreakStmt(self, ctx:D96Parser.BreakStmtContext):
@@ -227,56 +197,70 @@ class ASTGeneration(D96Visitor):
 
 
     def visitInsMetStmt(self, ctx:D96Parser.InsMetStmtContext):
-        return CallStmt(obj= ctx.expr().accept(self),
-                        method= Id(ctx.ID().getText()),
-                        param= ctx.exprList().accept(self))
+        return CallStmt(ctx.expr().accept(self),
+                        Id(ctx.ID().getText()),
+                        ctx.exprList().accept(self))
 
 
     def visitStaMetStmt(self, ctx:D96Parser.StaMetStmtContext):
-        return CallStmt(obj= Id(ctx.ID().getText()),
-                        method= Id(ctx.VID().getText()),
-                        param= ctx.exprList().accept(self))
+        return CallStmt(Id(ctx.ID().getText()),
+                        Id(ctx.VID().getText()),
+                        ctx.exprList().accept(self))
 
 
     def visitRetStmt(self, ctx:D96Parser.RetStmtContext):
-        return Return(expr= ctx.expr().accept(self) if ctx.expr() else None)
+        return Return(ctx.expr().accept(self) if ctx.expr() else None)
+
+    
+    def todec(num):
+        if len(num) == 1:
+            return num
+        elif num[0] == '0':
+            if num[1] == 'x' or num[1] == 'X':
+                return str(int(num,16))
+            elif num[1] == 'b' or num[1] == 'B':
+                return str(int(num,2))
+            else:
+                return str(int(num,8))
+        else:
+            return num
 
 
     def visitExpr(self, ctx:D96Parser.ExprContext):
         if ctx.getChildCount() == 1:
             return  ctx.getChild(0).accept(self) if ctx.arrLit() or ctx.identifier() else\
-                    IntLiteral(ctx.INTLIT().getText()) if ctx.INTLIT() else\
-                    FloatLiteral(ctx.FLOATLIT().getText()) if ctx.FLOATLIT() else\
+                    IntLiteral(ASTGeneration.todec(ctx.INTLIT().getText())) if ctx.INTLIT() else\
+                    FloatLiteral(str(float(ctx.FLOATLIT().getText()))) if ctx.FLOATLIT() else\
                     BooleanLiteral(ctx.BOOLLIT().getText()) if ctx.BOOLLIT() else\
-                    StringLiteral(ctx.STRLIT().getText()) if ctx.STRLIT() else\
+                    StringLiteral(ctx.STRLIT().getText()[1:-1]) if ctx.STRLIT() else\
                     NullLiteral() if ctx.NULL_() else\
                     SelfLiteral() if ctx.SELF_() else\
                     None
         elif ctx.LB() and ctx.RB():
             return ctx.expr(0).accept(self)
         elif ctx.NEW_():
-            return NewExpr(classname= Id(ctx.ID().getText()),
-                           param= ctx.exprList().accept(self))
+            return NewExpr(Id(ctx.ID().getText()),
+                           ctx.exprList().accept(self))
         elif ctx.CSMEM():
             if ctx.exprList():
-                return CallExpr(obj= Id(ctx.ID().getText()),
-                                method= Id(ctx.VID().getText()),
-                                param= ctx.exprList().accept(self))
+                return CallExpr(Id(ctx.ID().getText()),
+                                Id(ctx.VID().getText()),
+                                ctx.exprList().accept(self))
             else:
-                return FieldAccess(obj= Id(ctx.ID().getText()),
-                                   fieldname = Id(ctx.VID().getText()))
+                return FieldAccess(Id(ctx.ID().getText()),
+                                   Id(ctx.VID().getText()))
         elif ctx.DOT():
             if ctx.exprList():
-                return CallExpr(obj= ctx.expr(0).accept(self),
-                                method= Id(ctx.ID().getText()),
-                                param= ctx.exprList().accept(self))
+                return CallExpr(ctx.expr(0).accept(self),
+                                Id(ctx.ID().getText()),
+                                ctx.exprList().accept(self))
             else:
-                return FieldAccess(obj= ctx.expr(0).accept(self),
-                                   fieldname = Id(ctx.ID().getText()))
+                return FieldAccess(ctx.expr(0).accept(self),
+                                   Id(ctx.ID().getText()))
         elif ctx.LSB() and ctx.RSB():
             expr_list = [e.accept(self) for e in ctx.expr()]
-            return ArrayCell(arr= expr_list[0],
-                             idx= expr_list[1:])
+            return ArrayCell(expr_list[0],
+                             expr_list[1:])
         elif ctx.getChildCount() == 2:
             return UnaryOp(ctx.getChild(0).getText(), ctx.getChild(1).accept(self))
         elif ctx.getChildCount() == 3:
@@ -288,7 +272,7 @@ class ASTGeneration(D96Visitor):
 
 
     def visitArrDec(self, ctx:D96Parser.ArrDecContext):
-        return ArrayType(size=int(ctx.INTLIT().getText()),
+        return ArrayType(size=int(ASTGeneration.todec(ctx.INTLIT().getText())),
                          eleType=ctx.vartype().accept(self))
 
 

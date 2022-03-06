@@ -1,1 +1,1 @@
-successful
+Program([ClassDecl(Id(_J),[MethodDecl(Id($fG__0_),Static,[param(Id(e),BoolType),param(Id(_),ArrayType(71,ArrayType(67,ArrayType(5,ArrayType(294,ArrayType(50,ArrayType(2,ArrayType(50,ArrayType(220,ArrayType(67,ArrayType(18,BoolType))))))))))),param(Id(s_),BoolType),param(Id(vO),BoolType)],Block([]))])])

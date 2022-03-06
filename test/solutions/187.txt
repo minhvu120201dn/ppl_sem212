@@ -1,1 +1,1 @@
-__id1__,__id2__,<EOF>
+Program([ClassDecl(Id(t),[MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Static,ConstDecl(Id($_qhP7),ClassType(Id(j)),None)),MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(r),ArrayType(67,ArrayType(50,BoolType)))],Block([]))]),ClassDecl(Id(S),Id(g_a9E8l),[]),ClassDecl(Id(R7_),Id(K_Z),[MethodDecl(Id(_6),Instance,[param(Id(_J),BoolType),param(Id(__1),BoolType),param(Id(j),BoolType),param(Id(p),BoolType)],Block([Break]))])])

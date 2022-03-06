@@ -1,1 +1,1 @@
-Else,<EOF>
+Program([ClassDecl(Id(_),[]),ClassDecl(Id(p_b_),Id(_),[MethodDecl(Id($_),Static,[param(Id(j_6Q),ArrayType(65,ArrayType(61,ArrayType(61,ArrayType(65,ArrayType(1,ArrayType(17,BoolType))))))),param(Id(_),ArrayType(2,ArrayType(65,IntType))),param(Id(_),ArrayType(2,ArrayType(65,IntType)))],Block([Break,Block([])])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_),[])])

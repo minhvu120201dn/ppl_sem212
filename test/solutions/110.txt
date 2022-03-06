@@ -1,1 +1,1 @@
-0XABCDEF123456789,<EOF>
+Program([ClassDecl(Id(N),Id(_),[]),ClassDecl(Id(_),[]),ClassDecl(Id(_64),Id(H),[AttributeDecl(Instance,ConstDecl(Id(__),ArrayType(766,ArrayType(86,ArrayType(17,ArrayType(52,ArrayType(68,ArrayType(58642,FloatType)))))),None)),MethodDecl(Id(_),Instance,[],Block([])),AttributeDecl(Instance,VarDecl(Id(_v9),StringType)),AttributeDecl(Static,VarDecl(Id($_),StringType)),AttributeDecl(Instance,ConstDecl(Id(__),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(N_),BoolType,None)),AttributeDecl(Static,ConstDecl(Id($u4X),BoolType,None))])])

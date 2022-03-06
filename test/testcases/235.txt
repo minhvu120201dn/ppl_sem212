@@ -1,7 +1,1 @@
-Class Program {
-    Var arr: Array[Array[Int,5],5] = Array(Array(1,2,3,4,5),Array(1,2,3,4,5),Array(1,2,3,4,5),Array(1,2,3,4,5),Array(1,2,3,4,5));
-    main() {
-        arr[1][1] = arr[2][2] + arr[3][3];
-        arr[1] = Array(4,5,6,7,8);
-    }
-}
+Class j{Var _:Array [String ,07];$_(_tY_,e:f7;_c__,__,_:_k){ {} }r(_,Z69,_8:Array [Array [Array [Int ,0b10],0b111],0b1_01_10];_,_3_,_:Boolean ){}Constructor (__J_a,_,__,P,_,_M,S0:Float ;___,B:String ){} }

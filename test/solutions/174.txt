@@ -1,1 +1,1 @@
-Val,<EOF>
+Program([ClassDecl(Id(g),[MethodDecl(Id(_),Instance,[param(Id(j),ArrayType(6,StringType)),param(Id(__),FloatType),param(Id(_),ArrayType(83,ArrayType(21,ArrayType(5,ArrayType(83,FloatType))))),param(Id(r),IntType),param(Id(f1JxPM_cL),IntType),param(Id(___3_),IntType)],Block([])),AttributeDecl(Instance,ConstDecl(Id(___9),FloatType,None)),MethodDecl(Id(Constructor),Instance,[param(Id(__4),ClassType(Id(_)))],Block([]))])])

@@ -1,1 +1,1 @@
-0XCAFE1234,<EOF>
+Program([ClassDecl(Id(_p),[]),ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(cI),ArrayType(88,ArrayType(58,ArrayType(48,BoolType)))),param(Id(_),ArrayType(2,ArrayType(2,ArrayType(98,ArrayType(90,ArrayType(1,IntType))))))],Block([])),AttributeDecl(Instance,VarDecl(Id(f),ArrayType(1,ArrayType(2,FloatType))))])])

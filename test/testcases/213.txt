@@ -1,12 +1,1 @@
-Class Program {
-    func() {
-        Val const: String = "a string";
-        {
-            Var temp : Int = 1;
-            Var temp2, a, b : Boolean = True, False, !True;
-            { ## Scope in scope ##
-                Val pi: Float = 3.14;            
-            }
-        }
-    }
-}
+Class p{Constructor (__,x:String ;z9:Array [Array [Array [Float ,07],0B11010],042];_Ay:BN2C;_,_,_556_:i_f;___4:_;_a4_,P__,_w:Array [Array [Array [Array [Float ,0776],0X23],5],042];_i__,_7_:Array [Array [String ,0X23],037_43];_,D_,C,_:Q){}Constructor (){} }Class w:_{}Class _:_{}

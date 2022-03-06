@@ -1,1 +1,1 @@
-12345.234e-10,e78,<EOF>
+Program([ClassDecl(Id(B),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ArrayType(97,ArrayType(59,ArrayType(2358,ArrayType(65,ArrayType(12,ArrayType(1,ArrayType(1035058,StringType)))))))),param(Id(_),BoolType),param(Id(O),BoolType),param(Id(_),BoolType),param(Id(_y),BoolType),param(Id(__),StringType),param(Id(z),StringType),param(Id(_L),StringType),param(Id(u),ClassType(Id(__)))],Block([]))]),ClassDecl(Id(S9),Id(tDu),[])])

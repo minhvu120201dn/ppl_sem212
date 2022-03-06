@@ -1,4 +1,1 @@
-Class Program {
-    Var a, b: Float = (1 + 2) * 3, 1000;
-    main() {}
-}
+Class rI{Constructor (){Continue ;Continue ;}Destructor (){Val H_,Y:Array [Array [Array [Array [Array [Boolean ,9],0x16],50],0b1000001],0B1];}Var _,_0,_,$0_:Array [Int ,014652];}

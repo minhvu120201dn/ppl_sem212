@@ -1,13 +1,1 @@
-## This line does not contain anything##
-Class member {
-    Constructor() {}
-    Var message: String;
-    message() { Return "hello world"; }
-}
-Class Program {
-    Var arr: Array[member,5];
-    main() {
-        Foreach (i In 1 .. 5) { arr[i] = Null; }
-        Foreach (i In 1 .. 5) { arr[i] = New member(); }
-    }
-}
+Class e{_G__(_K,_:_;m,_,_1,ca_,N8:JDHku0_;U,i4,s_,_,_:A;__:Float ;ed:_5;_,Y,b,a:f_;_N_:Boolean ;__:Float ;_,_S_H3,C:Float ;_t:qw6;_t_,_,p:SOP){ {Continue ;Val Dz7J,_2_488_z,_,_n:_9;} }}Class v{}

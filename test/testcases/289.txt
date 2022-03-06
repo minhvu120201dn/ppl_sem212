@@ -1,15 +1,1 @@
-## This line does not contain anything##
-Class member {
-    Constructor() {}
-    Var message: String;
-    message() { Return "hello world"; }
-}
-Class subclass : member {}
-Class Program {
-    Var arr: Array[subclass,5];
-    main() {
-        Foreach (i In 1 .. 5) { arr[i] = Null; }
-        Foreach (i In 1 .. 5) { arr[i] = New subclass(); }
-        Foreach (i In 1 .. 5) { arr[i] = New member(); }
-    }
-}
+Class I1:k{Val D,h:Int ;_1(_:Array [Array [Array [Array [Array [Array [Array [Array [Array [String ,07_6],0B1],05],070],0x9],0B10],15],2],0B1100010];_M_:_){}_(JEp4,_:Int ){} }Class __3O:i9{}

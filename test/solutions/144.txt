@@ -1,1 +1,1 @@
-True,&&,False,==,False,<EOF>
+Program([ClassDecl(Id(_t_),[MethodDecl(Id(Constructor),Instance,[param(Id(s),ArrayType(31,ArrayType(59,FloatType))),param(Id(t2),ArrayType(95,ArrayType(2,BoolType))),param(Id(O),ArrayType(95,ArrayType(2,BoolType))),param(Id(_),IntType),param(Id(Z),IntType),param(Id(P_6__),ClassType(Id(uA__5))),param(Id(_),ClassType(Id(uA__5))),param(Id(__Q_),ArrayType(95,ArrayType(15246,BoolType)))],Block([Return(),Continue])),MethodDecl(Id($v),Static,[param(Id(__Q2),ArrayType(1684,IntType)),param(Id(_),ArrayType(1684,IntType))],Block([]))])])

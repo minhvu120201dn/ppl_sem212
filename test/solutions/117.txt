@@ -1,1 +1,1 @@
-12345.234e-10,<EOF>
+Program([ClassDecl(Id(xJ),[MethodDecl(Id(Constructor),Instance,[param(Id(_),IntType)],Block([])),AttributeDecl(Instance,VarDecl(Id(g7T),ArrayType(9,FloatType))),MethodDecl(Id($Z),Static,[],Block([]))]),ClassDecl(Id(_6i_),[MethodDecl(Id(Constructor),Instance,[param(Id(v8RV),ArrayType(1,ArrayType(6,IntType))),param(Id(_u),ArrayType(1,ArrayType(6,IntType))),param(Id(QX),ArrayType(587,ArrayType(1,FloatType)))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_),[])])

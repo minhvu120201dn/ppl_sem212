@@ -1,13 +1,1 @@
-## This line does not contain anything##
-Class member {
-    Constructor() {}
-    Constructor(i:Int) {}
-}
-Class Program {
-    Var arr: Array[Array[member,5],5] = Array(Array(Null, New member(), Null, New member(0), Null),
-                                              Array(Null, New member(), Null, New member(1), Null),
-                                              Array(Null, New member(), Null, New member(2), Null),
-                                              Array(Null, New member(), Null, New member(3), Null),
-                                              Array(Null, New member(), Null, New member(4), Null));
-    main() {}
-}
+Class __844:_F{Constructor (a,F_,_,x:Float ;aA,ny:Array [Float ,0x60];_89,_,F_q_0:v7L;a,_D:Array [Array [String ,76],76];wv,_70,_M:Int ){}Val $_:Array [Float ,0B11];Var _0,$3X,q:Boolean ;}Class _{}

@@ -1,15 +1,1 @@
-
-               Class Shape{
-                   foo(){
-                       If ( a == -1--1){
-                           Foreach(x In 1 .. 100 By 2){
-                               If ( a == -1--1){
-                                   Foreach(x In 1 .. 100 By 2){
-
-                                   }
-                               }
-                           }
-                       }
-                   }
-               }
-               
+Class _eZ8U_{Var _:d;Constructor (){}Destructor (){ {}Continue ;Return ;}Var t,MCQ:_;Var $4_S:String ;Var $H,$H:String ;}Class z{Val $__,_,$2_,$_x__JU:i_;}Class e2{Val Lu:y;}

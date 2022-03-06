@@ -1,4 +1,1 @@
-Class Program {
-           Val b : Int = ClassABC::$a.a.c.b[1][2][3][(0 + 012 + 0xA2 + 0XA2 +0b101+0B101)];
-           Var c : Int = 0x0 + 0X0 + 0b0 + 0B0 + 00 + 0;
-       }
+Class _Z3_:_g_j{}Class f__:LT{Destructor (){ {} }Var __:Array [Int ,0117];}Class b4:p{$_(_:Array [Array [Array [Float ,0b11_0],0x3C],0x3C];dTp__,_H9:_39;h,p_J:_;XH_,_73__,_:Array [String ,0b101]){}Constructor (i6_,_5_a,_8:z9;_,C:Float ){} }Class U_R_{}

@@ -1,1 +1,1 @@
-successful
+Program([ClassDecl(Id(I1),Id(k),[AttributeDecl(Instance,ConstDecl(Id(D),IntType,None)),AttributeDecl(Instance,ConstDecl(Id(h),IntType,None)),MethodDecl(Id(_1),Instance,[param(Id(_),ArrayType(98,ArrayType(2,ArrayType(15,ArrayType(2,ArrayType(9,ArrayType(56,ArrayType(5,ArrayType(1,ArrayType(62,StringType)))))))))),param(Id(_M_),ClassType(Id(_)))],Block([])),MethodDecl(Id(_),Instance,[param(Id(JEp4),IntType),param(Id(_),IntType)],Block([]))]),ClassDecl(Id(__3O),Id(i9),[])])

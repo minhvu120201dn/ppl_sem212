@@ -24,8 +24,7 @@ program: classDecl* EOF;
 classDecl: CLASS_ ID (COLON ID)? LCB classMem* RCB;
 classMem: attribute | method;
 
-attribute: VAR_ (attrBody | attrNonInit) SEMI
-         | VAL_ attrBody SEMI;
+attribute: (VAR_ | VAL_) (attrBody | attrNonInit) SEMI;
 attrBody: identifier COLON vartype ASNOP expr
         | identifier COMMA attrBody COMMA expr;
 attrNonInit: identifier (COMMA identifier)* COLON vartype;
@@ -39,10 +38,9 @@ idList: identifier (COMMA identifier)* COLON vartype;
 
 // Statements
 scope: LCB stmt* RCB;
-stmt: declStmt | asnStmt | ifStmt | forStmt | retStmt | insMetStmt | staMetStmt | scope;
+stmt: declStmt | asnStmt | ifStmt | forStmt | breakStmt | contStmt | retStmt | insMetStmt | staMetStmt | scope;
 
-declStmt: VAR_ (declBody | declNonInit) SEMI
-        | VAL_ declBody SEMI;
+declStmt: (VAR_ | VAL_) (declBody | declNonInit) SEMI;
 declBody: ID COLON vartype ASNOP expr
         | ID COMMA declBody COMMA expr;
 declNonInit: ID (COMMA ID)* COLON vartype;
@@ -59,12 +57,14 @@ ifStmt: IF_ LB expr RB scope (elifStmt | elseStmt)?;
 elifStmt: ELSEIF_ LB expr RB scope (elifStmt | elseStmt)?;
 elseStmt: ELSE_ scope;
 
-forStmt: FOREACH_ LB ID IN_ expr DOUBLEDOT expr (BY_ expr)? RB scopeLoop;
+forStmt: FOREACH_ LB ID IN_ expr DOUBLEDOT expr (BY_ expr)? RB scope;
+/*
 scopeLoop: LCB stmtLoop* RCB;
 stmtLoop: stmt | ifStmtLoop | breakStmt | contStmt;
 ifStmtLoop: IF_ LB expr RB scopeLoop (elifStmtLoop | elseStmtLoop)?;
 elifStmtLoop: ELSEIF_ LB expr RB scopeLoop (elifStmtLoop | elseStmtLoop)?;
 elseStmtLoop: ELSE_ scopeLoop;
+*/
 breakStmt: BREAK_ SEMI;
 contStmt: CONTINUE_ SEMI;
 

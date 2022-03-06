@@ -1,11 +1,1 @@
-## This line does not contain anything##
-Class _ {
-    $staticFunc() { Return "static function"; }
-}
-Class Program {
-    main() {
-        Val str1: String = _::$staticFunc();
-        Val str2: String = _.$staticFunc();
-        Return;
-    }
-}
+Class _:_2{Var $D5:String ;Constructor (sy9,yV_Nj,H:Array [Float ,033];__Gf9,__:Array [String ,0B1_1_11_0];b,Xv04,v0,_,YJ_6_:H9_;_1:_){}Constructor (){}Constructor (){Continue ;Continue ;} }

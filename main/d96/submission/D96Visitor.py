@@ -129,31 +129,6 @@ class D96Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by D96Parser#scopeLoop.
-    def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#stmtLoop.
-    def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#ifStmtLoop.
-    def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#elifStmtLoop.
-    def visitElifStmtLoop(self, ctx:D96Parser.ElifStmtLoopContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by D96Parser#elseStmtLoop.
-    def visitElseStmtLoop(self, ctx:D96Parser.ElseStmtLoopContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by D96Parser#breakStmt.
     def visitBreakStmt(self, ctx:D96Parser.BreakStmtContext):
         return self.visitChildren(ctx)

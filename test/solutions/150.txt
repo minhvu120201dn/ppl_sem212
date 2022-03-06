@@ -1,1 +1,1 @@
-a,,,b,,,c,<EOF>
+Program([ClassDecl(Id(w86___3),Id(M_6_N),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(t7_d),ArrayType(53,ArrayType(79,ArrayType(4508,ArrayType(6,ArrayType(1,ArrayType(53,ArrayType(74,ArrayType(43,ArrayType(9,ArrayType(35,FloatType))))))))))),param(Id(_j_),ArrayType(53,ArrayType(79,ArrayType(4508,ArrayType(6,ArrayType(1,ArrayType(53,ArrayType(74,ArrayType(43,ArrayType(9,ArrayType(35,FloatType)))))))))))],Block([Break]))])])

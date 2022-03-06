@@ -1,1 +1,22 @@
-Class Y7t_C2_oW:g__{Constructor (_,s,AN4_F,__,g,_s:v;_:VZV2_;k_,_k,_4,P:Float ){_::$aJ.HF_.UZ._();} }Class _:__{}
+
+Class Shape {
+    Var area: Float;
+}
+
+Class Rectangle : Shape {
+    Var height, width: Float;
+    Constructor(h,w:Float) {
+        Self.height = h;
+        Self.width = w;
+        Self.area = h*w;
+    }
+}
+
+Class Circle : Shape {
+    Var radius: Float;
+    Val $pi: Float = 3.141592653589;
+    Constructor(r:Float) {
+        Self.radius = r;
+        Self.area = $pi*r*r;
+    }
+}

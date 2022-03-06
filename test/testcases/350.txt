@@ -1,0 +1,13 @@
+
+Class Shape {
+    Var area: Float;
+}
+
+Class Rectangle : Shape {
+    Var height, width: Float;
+}
+
+Class Circle : Shape {
+    Var radius: Float;
+    Val $pi: Float = 3.141592653589;
+}

@@ -1,1 +1,1 @@
-successful
+Program([ClassDecl(Id(R),[]),ClassDecl(Id(___),Id(q_),[MethodDecl(Id($_),Static,[param(Id(O),IntType),param(Id(y_45_),IntType),param(Id(x),IntType),param(Id(_Wv_),IntType)],Block([])),MethodDecl(Id($4),Static,[param(Id(kc9),IntType),param(Id(_),FloatType),param(Id(_A7W),ArrayType(1,ArrayType(9,ArrayType(9,ArrayType(6,FloatType))))),param(Id(_3_),StringType)],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(f),[]),ClassDecl(Id(_4),[AttributeDecl(Instance,VarDecl(Id(v1W),ClassType(Id(I__)),NullLiteral()))])])

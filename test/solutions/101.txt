@@ -1,1 +1,1 @@
-0,<EOF>
+Program([ClassDecl(Id(_5EBR),Id(Mp),[MethodDecl(Id(Constructor),Instance,[],Block([ConstDecl(Id(_B),ArrayType(79,ArrayType(79,ArrayType(12,ArrayType(69,ArrayType(9705,FloatType))))),None),ConstDecl(Id(_),ArrayType(79,ArrayType(79,ArrayType(12,ArrayType(69,ArrayType(9705,FloatType))))),None)]))]),ClassDecl(Id(p0),[AttributeDecl(Static,VarDecl(Id($_),BoolType)),AttributeDecl(Static,VarDecl(Id($5),BoolType))]),ClassDecl(Id(Rs_4__),Id(_0_qq_n_),[]),ClassDecl(Id(Gr4qv),Id(A),[MethodDecl(Id($_),Static,[param(Id(_),BoolType)],Block([Continue]))])])

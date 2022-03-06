@@ -1,1 +1,1 @@
-1123,__4567,<EOF>
+Program([ClassDecl(Id(u),[MethodDecl(Id(Constructor),Instance,[param(Id(Y_4),ArrayType(39,ArrayType(49,IntType))),param(Id(q),ArrayType(39,ArrayType(49,IntType))),param(Id(_0T),FloatType),param(Id(_),FloatType),param(Id(___f86),FloatType),param(Id(_),FloatType),param(Id(Y_),StringType),param(Id(_),StringType),param(Id(_),StringType)],Block([])),AttributeDecl(Static,ConstDecl(Id($ET8),ArrayType(204,ArrayType(16,ArrayType(61,BoolType))),None)),MethodDecl(Id(Constructor),Instance,[param(Id(_),BoolType)],Block([]))])])

@@ -1,11 +1,1 @@
-Class Program {
-    main() {
-        Var sum: Int = 0;
-        Foreach(i In 1 .. 100) {
-            sum = sum + i;
-            Foreach(j In 1 .. 100 By 1000) { sum = sum + j; }
-            If (sum >= 1000) { Break; }
-            Elseif (sum <= 500) { Continue; }
-        }
-    }
-}
+Class __G{Var _3:Int ;}Class _E4{Var $5j:Float ;Constructor (__:Array [Array [Array [Array [Array [String ,01_1_0_024_6_7_2],0b1011000],0b10_0],0X60E],0B100];_:d;__OY_w2_57:Array [Array [Float ,02],0X49];W,__:_){Continue ;}Destructor (){} }

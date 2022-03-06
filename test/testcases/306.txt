@@ -1,7 +1,18 @@
 
-Class Program {
-    Val a, b: Float = -1.5, 2.0+3e5;
-    Var $a, $b: Float = 1_0.0+2.9e1*3, (1+2)*3;
-    Val c: Float = 1_2_3 + 12.34e-1 * 123  + 1_000.0e0;
-    Var $c: Float = a / b;
+Class Math {
+    $fact(n:Int) {
+        If (n < 0) {
+            Return;
+        }
+        Elseif (n == 0) {
+            Return 1;
+        }
+        Else {
+            Var fact: Int = 1;
+            Foreach (i In 1 .. n) {
+                fact = fact * i;
+            }
+            Return fact;
+        }
+    }
 }

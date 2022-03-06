@@ -1,9 +1,1 @@
-Class Program {
-           main() {
-               (a[1]).func();
-               a[1] = 1;
-               Out.println(a.a[1]);
-               ((((a[1][2]).a[1]).func()[0]).a[1]).func();
-               Return;
-           }
-       }
+Class I1:Z_1UbF{Var __:Boolean ;}Class _{}Class c2:Z{}Class _:__{Val $2_p:Array [Array [Array [Boolean ,07_27],0b1_00],07_5_02_2];}Class _9:_{}Class _e:hH{Destructor (){}Val $_:Array [Float ,0X1A];}

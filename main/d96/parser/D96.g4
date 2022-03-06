@@ -24,8 +24,7 @@ program: classDecl* EOF;
 classDecl: CLASS_ ID (COLON ID)? LCB classMem* RCB;
 classMem: attribute | method;
 
-attribute: VAR_ (attrBody | attrNonInit) SEMI
-         | VAL_ attrBody SEMI;
+attribute: (VAR_ | VAL_) (attrBody | attrNonInit) SEMI;
 attrBody: identifier COLON vartype ASNOP expr
         | identifier COMMA attrBody COMMA expr;
 attrNonInit: identifier (COMMA identifier)* COLON vartype;
@@ -41,19 +40,18 @@ idList: identifier (COMMA identifier)* COLON vartype;
 scope: LCB stmt* RCB;
 stmt: declStmt | asnStmt | ifStmt | forStmt | breakStmt | contStmt | retStmt | insMetStmt | staMetStmt | scope;
 
-declStmt: VAR_ (declBody | declNonInit) SEMI
-        | VAL_ declBody SEMI;
+declStmt: (VAR_ | VAL_) (declBody | declNonInit) SEMI;
 declBody: ID COLON vartype ASNOP expr
         | ID COMMA declBody COMMA expr;
 declNonInit: ID (COMMA ID)* COLON vartype;
 
 identifier: ID | VID;
 
-asnStmt: lhs ASNOP expr SEMI;
-lhs: identifier | SELF_
-   | lhs (LSB expr RSB)+
-   | lhs DOT ID
-   | ID CSMEM VID;
+asnStmt: expr ASNOP expr SEMI;
+// lhs: identifier | SELF_
+//    | lhs (LSB expr RSB)+
+//    | lhs DOT ID
+//    | ID CSMEM VID;
 
 ifStmt: IF_ LB expr RB scope (elifStmt | elseStmt)?;
 elifStmt: ELSEIF_ LB expr RB scope (elifStmt | elseStmt)?;
@@ -111,7 +109,7 @@ fragment HEXLIT: '0'[xX] ([0-9A-F] | [1-9A-F]('_'?[0-9A-F])* );
 fragment BINLIT: '0'[bB] ([01] | '1'('_'?[01])* );
 
 // Float
-FLOATLIT: INT_PART DEC_PART? EXP_PART? {self.text = self.text.replace('_','')};
+FLOATLIT: INT_PART DEC_PART? EXP_PART? | DEC_PART EXP_PART {self.text = self.text.replace('_','')};
 fragment INT_PART: [0-9] | [1-9]('_'?[0-9])*;
 fragment DEC_PART: '.' [0-9]*;
 fragment EXP_PART: [eE] [-+]? INT_PART;

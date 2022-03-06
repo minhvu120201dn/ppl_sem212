@@ -1,7 +1,1 @@
-Class Program {
-    Val wrong_formula, right_formula: Boolean = 1 + 2 >= 3 + 4, "hello " +. "world" ==. "hello world";
-    main() {
-        If (!wrong_formula || !(1 + 2 == 3)) { Return True; }
-        Else { Return "This case can never happen!!!"; }
-    }
-}
+Class Z_:m_{$_T(f,_,q__o:String ;_e:Array [Float ,07]){Break ;}Constructor (J,X:Array [String ,05];s_j053:_Tw7){} }Class s7{}Class vZ85T_1vF9:_{}Class y{Val $_62:String ;}

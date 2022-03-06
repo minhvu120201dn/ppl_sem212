@@ -1,12 +1,12 @@
 
 Class Program {
-    $isOdd(x:Int) {
-        If (x % 2 == 1) {
-            Return True;
-        }
-        Return False;
-    }
     main() {
-        Var result: Boolean = Program::$isOdd(0xCAFE);
+        If(True) {}
+        Elseif(False) {}
+        Elseif(1+1==2) {
+            If(True) {}
+            Else {}
+        }
+        Else {}
     }
 }

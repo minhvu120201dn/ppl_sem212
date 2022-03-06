@@ -1,1 +1,1 @@
-Return,<EOF>
+Program([ClassDecl(Id(I),Id(_),[]),ClassDecl(Id(ig),Id(__),[MethodDecl(Id(Destructor),Instance,[],Block([Call(NewExpr(Id(_),[]),Id(e),[]),Continue,Block([Continue])])),MethodDecl(Id($93),Static,[param(Id(_),ArrayType(927,ArrayType(81,FloatType))),param(Id(J),ArrayType(927,ArrayType(81,FloatType))),param(Id(_),ArrayType(927,ArrayType(81,FloatType))),param(Id(__),ClassType(Id(l1))),param(Id(G),ClassType(Id(l1))),param(Id(_4j__g),IntType),param(Id(_e3vB__),IntType)],Block([]))]),ClassDecl(Id(_),[]),ClassDecl(Id(_),Id(E),[]),ClassDecl(Id(_3Q),[])])

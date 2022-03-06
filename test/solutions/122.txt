@@ -1,1 +1,1 @@
-"He asked me: '"Where is John?'"",<EOF>
+Program([ClassDecl(Id(g),[AttributeDecl(Instance,VarDecl(Id(_ED),ArrayType(34,ArrayType(179,ArrayType(17,ArrayType(67,ArrayType(248,ArrayType(162,ArrayType(6,ArrayType(57,StringType))))))))))]),ClassDecl(Id(_),Id(u3),[AttributeDecl(Static,VarDecl(Id($7y),ArrayType(19,FloatType))),MethodDecl(Id(Constructor),Instance,[param(Id(_07),StringType)],Block([ConstDecl(Id(U),ClassType(Id(N)),None),ConstDecl(Id(jz),ClassType(Id(N)),None)]))]),ClassDecl(Id(k),Id(G),[]),ClassDecl(Id(V),[]),ClassDecl(Id(_C),Id(___5),[])])

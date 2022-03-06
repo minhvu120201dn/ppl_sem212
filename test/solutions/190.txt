@@ -1,1 +1,1 @@
-123456,__789_,<EOF>
+Program([ClassDecl(Id(_4_),Id(h38),[]),ClassDecl(Id(__),Id(W),[MethodDecl(Id(Constructor),Instance,[param(Id(GT),StringType),param(Id(_),IntType),param(Id(H),ArrayType(25,StringType)),param(Id(k4),ArrayType(20,ArrayType(67,IntType))),param(Id(_UI),ClassType(Id(GZ)))],Block([])),AttributeDecl(Instance,ConstDecl(Id(_7_7),ArrayType(23,ArrayType(4,ArrayType(20,FloatType))),None))]),ClassDecl(Id(r_),[]),ClassDecl(Id(__k),[])])

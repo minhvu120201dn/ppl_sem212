@@ -1,14 +1,1 @@
-## This line does not contain anything ##
-Class tempClass {
-    Var immutable: String = "immutable attribute";
-    Var $mutable: String = "mutable attribute";
-
-    Constructor() {}
-    Destructor() {}
-}
-Class Program {
-    Var instance: tempClass = New tempClass();
-    main() {
-        tempClass.$mutable = "unavailable assignment statement";
-    }
-}
+Class _:j{Constructor (){Break ;} }Class E{Constructor (){}Constructor (){} }Class _c7:X{Val w,_:Boolean ;_(_Hz:_;S_,J,_L,K1__:String ;_gP:_;q0:Boolean ;J,p:String ;T,c_,_,_3:_;Uc:Boolean ;_c,h_:Array [String ,37]){} }

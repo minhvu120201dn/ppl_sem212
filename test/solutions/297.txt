@@ -1,1 +1,1 @@
-Error on line 1 col 6: $wrong_id
+Program([ClassDecl(Id(A__z8),Id(_),[MethodDecl(Id(r0),Instance,[param(Id(_),ArrayType(2,BoolType)),param(Id(Bk),ArrayType(2,BoolType)),param(Id(_n),ArrayType(2,BoolType)),param(Id(dK),ArrayType(71,ArrayType(55,FloatType)))],Block([Return(),ConstDecl(Id(_61j54h),StringType,None),ConstDecl(Id(_4),StringType,None),ConstDecl(Id(_N),StringType,None),Return()]))]),ClassDecl(Id(B3),[]),ClassDecl(Id(T_V_3L93b__),Id(L28),[]),ClassDecl(Id(E4__5G),[]),ClassDecl(Id(o5533),[])])

@@ -1,1 +1,1 @@
-Error on line 1 col 43: a
+Program([ClassDecl(Id(y),Id(J),[AttributeDecl(Static,VarDecl(Id($8_),StringType))]),ClassDecl(Id(_2_E),[MethodDecl(Id($___),Static,[param(Id(_3),ArrayType(59,StringType)),param(Id(_MR),ArrayType(59,StringType)),param(Id(_),FloatType)],Block([]))]),ClassDecl(Id(_),Id(_4),[]),ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(_I),Id(qZ),[]),ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Static,ConstDecl(Id($x),ClassType(Id(i_)),None))])])

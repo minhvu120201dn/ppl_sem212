@@ -1,11 +1,1 @@
-Class Program {
-    Val arr: Array[String,5] = Array("1","2","3","4","5");
-    Val temp_str: String = "Temporary string";
-    main() {
-        arr[1] = "element 1 ";
-        arr[2] = "element 2 ";
-        arr[3] = "element 3 ";
-        arr[4] = arr[1] +. arr[2] +. "another string";
-        arr[5] = Self.temp_str;
-    }
-}
+Class _{Constructor (_:w_B;_,m,z,B:Y;_5_,A_y3:_1C;_,__3_3,_:_T;I,__,Ix,_03:String ;m,_:Array [Array [Array [Boolean ,0B1_1],0B11001],0B11001];u_x:XP;_,_:Boolean ;g:_){} }

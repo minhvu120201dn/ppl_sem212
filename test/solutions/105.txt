@@ -1,1 +1,1 @@
-00,<EOF>
+Program([ClassDecl(Id(_60),[MethodDecl(Id(k__),Instance,[param(Id(Fy),ArrayType(47,ArrayType(3,ArrayType(47,ArrayType(68,ArrayType(194389,ArrayType(47,ArrayType(74,ArrayType(10,ArrayType(10,BoolType)))))))))),param(Id(_),ArrayType(3,FloatType)),param(Id(N),IntType),param(Id(J),IntType),param(Id(_B),IntType)],Block([]))])])
