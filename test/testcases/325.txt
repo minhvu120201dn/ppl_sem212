@@ -1,6 +1,1 @@
-
-Class Program {
-    main() {
-        _class::$obj1[1].obj2.obj3[3].obj4[4].obj5 = "an object";
-    }
-}
+Class n6{Val $_,O_:Array [Array [String ,69],0B11];}Class _13{$0_(){Continue ;Continue ;}Constructor (_,p_:Array [Array [Array [Int ,06],04_5],0X22];ASS:Int ;y,_,K:___){ {} }Val pZ,_:I6;}

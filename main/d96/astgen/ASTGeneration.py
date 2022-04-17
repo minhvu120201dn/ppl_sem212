@@ -142,20 +142,20 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAsnStmt(self, ctx:D96Parser.AsnStmtContext):
-        return Assign(ctx.expr(0).accept(self), ctx.expr(1).accept(self))
+        return Assign(ctx.lhs().accept(self), ctx.expr().accept(self))
 
 
-    # def visitLhs(self, ctx:D96Parser.LhsContext):
-    #     if ctx.identifier():
-    #         return ctx.identifier().accept(self)
-    #     elif ctx.SELF_():
-    #         return SelfLiteral()
-    #     elif ctx.LSB() and ctx.RSB():
-    #         return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
-    #     elif ctx.DOT():
-    #         return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
-    #     elif ctx.CSMEM():
-    #         return FieldAccess(Id(ctx.ID().getText()), Id(ctx.VID().getText()))
+    def visitLhs(self, ctx:D96Parser.LhsContext):
+        if ctx.identifier():
+            return ctx.identifier().accept(self)
+        elif ctx.LSB() and ctx.RSB():
+            return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
+        elif ctx.SELF_() and ctx.DOT():
+            return FieldAccess(SelfLiteral(), Id(ctx.ID().getText()))
+        elif ctx.DOT():
+            return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
+        elif ctx.CSMEM():
+            return FieldAccess(Id(ctx.ID().getText()), Id(ctx.VID().getText()))
 
 
     def visitIfStmt(self, ctx:D96Parser.IfStmtContext):

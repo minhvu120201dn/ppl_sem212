@@ -355,8 +355,8 @@ Class Program {
 """
         expect = str(Program([
 ClassDecl(Id('_class'), [
-    AttributeDecl(Instance(), VarDecl(Id('x'), IntType(), IntLiteral(1))),
-    AttributeDecl(Static(), VarDecl(Id('$x'), IntType(), IntLiteral(1)))
+    AttributeDecl(Instance(), VarDecl(Id('x'), IntType(), IntLiteral('1'))),
+    AttributeDecl(Static(), VarDecl(Id('$x'), IntType(), IntLiteral('1')))
 ]),
 ClassDecl(Id('Program'), [
     AttributeDecl(Instance(), ConstDecl(Id('obj'), ClassType(Id('_class')), NullLiteral())),
@@ -364,7 +364,7 @@ ClassDecl(Id('Program'), [
     AttributeDecl(Static(), VarDecl(Id('$x'), IntType(), FieldAccess(Id('_class'),Id('$x'))))
 ])
 ]))
-        self.assertTrue(TestAST.test(input,expect,317))
+        self.assertTrue(TestAST.test(input,expect,-1))
     
 
     def test_complex_attributes4(self):
@@ -1215,7 +1215,7 @@ ClassDecl(Id('Program'), [
         self.assertTrue(TestAST.test(input,expect,349))
     
 
-    def test_complex_program1(self):
+    def test_1(self):
         input = """
 Class Shape {
     Var area: Float;
@@ -1246,7 +1246,7 @@ ClassDecl(Id('Circle'), [
         self.assertTrue(TestAST.test(input,expect,350))
     
 
-    def test_complex_program2(self):
+    def test_2(self):
         input = """
 Class Shape {
     Var area: Float;
@@ -1295,7 +1295,7 @@ ClassDecl(Id('Circle'), [
         self.assertTrue(TestAST.test(input,expect,351))
 
 
-    def test_complex_program3(self):
+    def test_3(self):
         input = """
 Class Math {
     $fact(n:Int) {
@@ -1330,7 +1330,7 @@ ClassDecl(Id('Math'), [
         self.assertTrue(TestAST.test(input,expect,352))
 
 
-    def test_complex_program4(self):
+    def test_4(self):
         input = """
 Class Math {
     $fact(n:Int) {
@@ -1373,233 +1373,309 @@ ClassDecl(Id('Math'), [
         self.assertTrue(TestAST.test(input,expect,306))
 
 
+    def test_5(self):
+        input = """
+Class Math {
+    $fact(n:Int) {
+        If (n < 0) {
+            Return;
+        }
+        Elseif (n == 0) {
+            Return 1;
+        }
+        Else {
+            Var fact: Int = 1;
+            Foreach (i In 1 .. n) {
+                fact = fact * i;
+            }
+            Return fact;
+        }
+    }
+    $P(n,k:Int) {
+        Return Math::$fact(n) / Math::$fact(k);
+    }
+    $C(n,k:Int) {
+        Return Math::$fact(n) / (Math::$fact(k) * Math::$fact(n-k));
+    }
+}
+"""
+        expect = str(Program([
+ClassDecl(Id('Math'), [
+    MethodDecl(Static(), Id('$fact'), [VarDecl(Id('n'),IntType())], Block([
+        If(BinaryOp('<',Id('n'),IntLiteral('0')), Block([
+            Return()
+        ]),
+        If(BinaryOp('==',Id('n'),IntLiteral('0')), Block([
+            Return(IntLiteral('1'))
+        ]),
+        Block([
+            VarDecl(Id('fact'), IntType(), IntLiteral('1')),
+            For(Id('i'), IntLiteral('1'), Id('n'), Block([
+                Assign(Id('fact'), BinaryOp('*',Id('fact'),Id('i')))
+            ])),
+            Return(Id('fact'))
+        ])
+        ))
+    ])),
+    MethodDecl(Static(), Id('$P'), [VarDecl(Id('n'),IntType()),VarDecl(Id('k'),IntType())], Block([
+        Return(BinaryOp('/',CallExpr(Id('Math'),Id('$fact'),[Id('n')]),CallExpr(Id('Math'),Id('$fact'),[Id('k')])))
+    ])),
+    MethodDecl(Static(), Id('$C'), [VarDecl(Id('n'),IntType()),VarDecl(Id('k'),IntType())], Block([
+        Return(BinaryOp('/',CallExpr(Id('Math'),Id('$fact'),[Id('n')]),
+                            BinaryOp('*',CallExpr(Id('Math'),Id('$fact'),[Id('k')]),CallExpr(Id('Math'),Id('$fact'),[BinaryOp('-',Id('n'),Id('k'))]))
+                       ))
+    ]))
+])
+]))
+        self.assertTrue(TestAST.test(input,expect,355))
+    
 
-    def test_complex_program5(self):
-        line = '''Class _:__{Destructor (){} }Class J{Destructor (){}Constructor (Nk,__7_:Array [Array [Array [Boolean ,0b1],047],0B1]){} }Class _{}Class _1{Destructor (){}Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(_),Id(__),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(J),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(Nk),ArrayType(1,ArrayType(39,ArrayType(1,BoolType)))),param(Id(__7_),ArrayType(1,ArrayType(39,ArrayType(1,BoolType))))],Block([]))]),ClassDecl(Id(_),[]),ClassDecl(Id(_1),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 355))
+    def test_6(self):
+        input = """
+Class Math {
+    $max(arr:Array[Int,1000000]; n:Int) {
+        Var m: Int = arr[0];
+        Foreach (i In 1 .. n) {
+            If (arr[i] > m) {
+                m = arr[i];
+            }
+        }
+        Return m;
+    }
+}
+"""
+        expect = str(Program([
+ClassDecl(Id('Math'), [
+    MethodDecl(Static(), Id('$max'), [VarDecl(Id('arr'),ArrayType(1000000,IntType())), VarDecl(Id('n'),IntType())], Block([
+        VarDecl(Id('m'), IntType(), ArrayCell(Id('arr'),[IntLiteral('0')])),
+        For(Id('i'), IntLiteral('1'), Id('n'), Block([
+            If(BinaryOp('>',ArrayCell(Id('arr'),[Id('i')]),Id('m')), Block([
+                Assign(Id('m'), ArrayCell(Id('arr'),[Id('i')]))
+            ]))
+        ])),
+        Return(Id('m'))
+    ]))
+])
+]))
+        self.assertTrue(TestAST.test(input,expect,355))
 
-    def test_complex_program6(self):
-        line = '''Class f{}Class _:_{$_12F5(){} }Class __cl{Var $_B_0b,_t,$h0,$_,_6H_:f;}Class __6:_64{}Class ti8{Var P2c:Array [Array [Array [Boolean ,04_3_2],0x48],36];}Class _5K5{Constructor (){} }Class _A:M___{}'''
-        expect = '''Program([ClassDecl(Id(f),[]),ClassDecl(Id(_),Id(_),[MethodDecl(Id($_12F5),Static,[],Block([]))]),ClassDecl(Id(__cl),[AttributeDecl(Static,VarDecl(Id($_B_0b),ClassType(Id(f)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_t),ClassType(Id(f)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($h0),ClassType(Id(f)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(f)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_6H_),ClassType(Id(f)),NullLiteral()))]),ClassDecl(Id(__6),Id(_64),[]),ClassDecl(Id(ti8),[AttributeDecl(Instance,VarDecl(Id(P2c),ArrayType(36,ArrayType(72,ArrayType(282,BoolType)))))]),ClassDecl(Id(_5K5),[MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(_A),Id(M___),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 356))
 
-    def test_complex_program7(self):
-        line = '''Class _:_{}Class J_:O{Destructor (){}__(_:String ;_x__,_:Float ;_:Array [Array [Array [Float ,0x1],0b1_1_1],0x47];U:Array [Array [Float ,06_6],0B111110];_:_){}$__(V:v;_N_:N){Continue ;} }'''
-        expect = '''Program([ClassDecl(Id(_),Id(_),[]),ClassDecl(Id(J_),Id(O),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(__),Instance,[param(Id(_),StringType),param(Id(_x__),FloatType),param(Id(_),FloatType),param(Id(_),ArrayType(71,ArrayType(7,ArrayType(1,FloatType)))),param(Id(U),ArrayType(62,ArrayType(54,FloatType))),param(Id(_),ClassType(Id(_)))],Block([])),MethodDecl(Id($__),Static,[param(Id(V),ClassType(Id(v))),param(Id(_N_),ClassType(Id(N)))],Block([Continue]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 357))
+    def test_7(self):
+        input = '''Class I{}Class a:_{Constructor (F,f,_,u_0:Array [Int ,050];s:_A;N:_Y;e_24X,__,__,__,z,w:Array [Array [Boolean ,0b1100100],0b1];_,s__2:Array [Array [String ,0B1],0x2D];__,_:Array [Array [Float ,21_1_59],44];_:Array [Int ,0B10101]){} }Class _:f_b_2I{Var $5:Array [Array [String ,0X27],0X27];Val F3:_;}'''
+        expect = '''Program([ClassDecl(Id(I),[]),ClassDecl(Id(a),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(F),ArrayType(40,IntType)),param(Id(f),ArrayType(40,IntType)),param(Id(_),ArrayType(40,IntType)),param(Id(u_0),ArrayType(40,IntType)),param(Id(s),ClassType(Id(_A))),param(Id(N),ClassType(Id(_Y))),param(Id(e_24X),ArrayType(1,ArrayType(100,BoolType))),param(Id(__),ArrayType(1,ArrayType(100,BoolType))),param(Id(__),ArrayType(1,ArrayType(100,BoolType))),param(Id(__),ArrayType(1,ArrayType(100,BoolType))),param(Id(z),ArrayType(1,ArrayType(100,BoolType))),param(Id(w),ArrayType(1,ArrayType(100,BoolType))),param(Id(_),ArrayType(45,ArrayType(1,StringType))),param(Id(s__2),ArrayType(45,ArrayType(1,StringType))),param(Id(__),ArrayType(44,ArrayType(21159,FloatType))),param(Id(_),ArrayType(44,ArrayType(21159,FloatType))),param(Id(_),ArrayType(21,IntType))],Block([]))]),ClassDecl(Id(_),Id(f_b_2I),[AttributeDecl(Static,VarDecl(Id($5),ArrayType(39,ArrayType(39,StringType)))),AttributeDecl(Instance,ConstDecl(Id(F3),ClassType(Id(_)),None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 357))
 
-    def test_complex_program8(self):
-        line = '''Class _51W_:a{$4(l:Int ;_5:String ;__,_:Array [String ,0X48];_,e,_9n,g_:Array [Boolean ,86];_,K:Array [String ,0b101111];B__D4_,Rr4,W:String ;m,n_,_,_:Boolean ;p,i:Array [Boolean ,0xD]){} }'''
-        expect = '''Program([ClassDecl(Id(_51W_),Id(a),[MethodDecl(Id($4),Static,[param(Id(l),IntType),param(Id(_5),StringType),param(Id(__),ArrayType(72,StringType)),param(Id(_),ArrayType(72,StringType)),param(Id(_),ArrayType(86,BoolType)),param(Id(e),ArrayType(86,BoolType)),param(Id(_9n),ArrayType(86,BoolType)),param(Id(g_),ArrayType(86,BoolType)),param(Id(_),ArrayType(47,StringType)),param(Id(K),ArrayType(47,StringType)),param(Id(B__D4_),StringType),param(Id(Rr4),StringType),param(Id(W),StringType),param(Id(m),BoolType),param(Id(n_),BoolType),param(Id(_),BoolType),param(Id(_),BoolType),param(Id(p),ArrayType(13,BoolType)),param(Id(i),ArrayType(13,BoolType))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 358))
+    def test_8(self):
+        input = '''Class __:h_{}Class _4{Constructor (){}$7_(){} }Class t:K_{}Class i{Constructor (d,yY4:_){}Val $o,g_4,_8:_;}Class M4{V(){Break ;}Val $3jqD1,$6:_;}Class _{}Class _{z(){Break ;Return ;} }'''
+        expect = '''Program([ClassDecl(Id(__),Id(h_),[]),ClassDecl(Id(_4),[MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id($7_),Static,[],Block([]))]),ClassDecl(Id(t),Id(K_),[]),ClassDecl(Id(i),[MethodDecl(Id(Constructor),Instance,[param(Id(d),ClassType(Id(_))),param(Id(yY4),ClassType(Id(_)))],Block([])),AttributeDecl(Static,ConstDecl(Id($o),ClassType(Id(_)),None)),AttributeDecl(Instance,ConstDecl(Id(g_4),ClassType(Id(_)),None)),AttributeDecl(Instance,ConstDecl(Id(_8),ClassType(Id(_)),None))]),ClassDecl(Id(M4),[MethodDecl(Id(V),Instance,[],Block([Break])),AttributeDecl(Static,ConstDecl(Id($3jqD1),ClassType(Id(_)),None)),AttributeDecl(Static,ConstDecl(Id($6),ClassType(Id(_)),None))]),ClassDecl(Id(_),[]),ClassDecl(Id(_),[MethodDecl(Id(z),Instance,[],Block([Break,Return()]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 358))
 
-    def test_complex_program9(self):
-        line = '''Class k7:_1{}Class X{Val $__E3,NH,L,_,$o_5,e242:Array [Array [Array [Array [Boolean ,03],0xA],0X4B_49],1];}Class R517673__o__:_{}Class T:_TE_{}Class jra{}Class _:d{}'''
-        expect = '''Program([ClassDecl(Id(k7),Id(_1),[]),ClassDecl(Id(X),[AttributeDecl(Static,ConstDecl(Id($__E3),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(NH),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(L),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None)),AttributeDecl(Static,ConstDecl(Id($o_5),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(e242),ArrayType(1,ArrayType(19273,ArrayType(10,ArrayType(3,BoolType)))),None))]),ClassDecl(Id(R517673__o__),Id(_),[]),ClassDecl(Id(T),Id(_TE_),[]),ClassDecl(Id(jra),[]),ClassDecl(Id(_),Id(d),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 359))
+    def test_9(self):
+        input = '''Class _3:__6{Var $_:_s;}Class _:_{Constructor (_,Y,D:Float ;_,_:Array [Array [Array [Array [String ,0b1],0B1_1],0X6],0B11];N6l_,A:_;J:_K2){}Val F:Boolean ;Var $SS:Boolean ;}'''
+        expect = '''Program([ClassDecl(Id(_3),Id(__6),[AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(_s)),NullLiteral()))]),ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),FloatType),param(Id(Y),FloatType),param(Id(D),FloatType),param(Id(_),ArrayType(3,ArrayType(6,ArrayType(3,ArrayType(1,StringType))))),param(Id(_),ArrayType(3,ArrayType(6,ArrayType(3,ArrayType(1,StringType))))),param(Id(N6l_),ClassType(Id(_))),param(Id(A),ClassType(Id(_))),param(Id(J),ClassType(Id(_K2)))],Block([])),AttributeDecl(Instance,ConstDecl(Id(F),BoolType,None)),AttributeDecl(Static,VarDecl(Id($SS),BoolType))])])'''
+        self.assertTrue(TestAST.test(input, expect, 359))
 
-    def test_complex_program10(self):
-        line = '''Class _L{}Class _:__7{G(E77,_46,J:J;j,b,g,_:H7G){Break ;} }Class _:_8{o11A(fc,a_:Array [Array [Float ,92],92];_0_:W;_:Array [Boolean ,042];_4_:Array [Array [Boolean ,0B10101],0X26]){} }'''
-        expect = '''Program([ClassDecl(Id(_L),[]),ClassDecl(Id(_),Id(__7),[MethodDecl(Id(G),Instance,[param(Id(E77),ClassType(Id(J))),param(Id(_46),ClassType(Id(J))),param(Id(J),ClassType(Id(J))),param(Id(j),ClassType(Id(H7G))),param(Id(b),ClassType(Id(H7G))),param(Id(g),ClassType(Id(H7G))),param(Id(_),ClassType(Id(H7G)))],Block([Break]))]),ClassDecl(Id(_),Id(_8),[MethodDecl(Id(o11A),Instance,[param(Id(fc),ArrayType(92,ArrayType(92,FloatType))),param(Id(a_),ArrayType(92,ArrayType(92,FloatType))),param(Id(_0_),ClassType(Id(W))),param(Id(_),ArrayType(34,BoolType)),param(Id(_4_),ArrayType(38,ArrayType(21,BoolType)))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 360))
+    def test_10(self):
+        input = '''Class M{}Class _0:_M5{}Class _:B5{Var $___:_;Constructor (_:Int ){}$P___(q,_,bL5__RD,pO36_:_8;M_5,c,AsF:Array [Array [Array [Array [Array [Array [Boolean ,0b1],0113],0b11],0B1_101_1_0],0X5B],55];_:X;_:Float ){} }Class oZ{Destructor (){} }'''
+        expect = '''Program([ClassDecl(Id(M),[]),ClassDecl(Id(_0),Id(_M5),[]),ClassDecl(Id(_),Id(B5),[AttributeDecl(Static,VarDecl(Id($___),ClassType(Id(_)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(_),IntType)],Block([])),MethodDecl(Id($P___),Static,[param(Id(q),ClassType(Id(_8))),param(Id(_),ClassType(Id(_8))),param(Id(bL5__RD),ClassType(Id(_8))),param(Id(pO36_),ClassType(Id(_8))),param(Id(M_5),ArrayType(55,ArrayType(91,ArrayType(54,ArrayType(3,ArrayType(75,ArrayType(1,BoolType))))))),param(Id(c),ArrayType(55,ArrayType(91,ArrayType(54,ArrayType(3,ArrayType(75,ArrayType(1,BoolType))))))),param(Id(AsF),ArrayType(55,ArrayType(91,ArrayType(54,ArrayType(3,ArrayType(75,ArrayType(1,BoolType))))))),param(Id(_),ClassType(Id(X))),param(Id(_),FloatType)],Block([]))]),ClassDecl(Id(oZ),[MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 360))
 
-    def test_complex_program11(self):
-        line = '''Class W{}Class J58:S3{Constructor (_:___;__,_1,V,G,QO,F__7__i:Array [Boolean ,0X34];_s,_5_c_:Array [Array [Array [Array [Array [Boolean ,0x18],0X34],0b1],0x18],3]){} }'''
-        expect = '''Program([ClassDecl(Id(W),[]),ClassDecl(Id(J58),Id(S3),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(___))),param(Id(__),ArrayType(52,BoolType)),param(Id(_1),ArrayType(52,BoolType)),param(Id(V),ArrayType(52,BoolType)),param(Id(G),ArrayType(52,BoolType)),param(Id(QO),ArrayType(52,BoolType)),param(Id(F__7__i),ArrayType(52,BoolType)),param(Id(_s),ArrayType(3,ArrayType(24,ArrayType(1,ArrayType(52,ArrayType(24,BoolType)))))),param(Id(_5_c_),ArrayType(3,ArrayType(24,ArrayType(1,ArrayType(52,ArrayType(24,BoolType))))))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 361))
+    def test_11(self):
+        input = '''Class __{z(){}Constructor (_,g5WWs76_:Boolean ;_,_,m7566_n:Boolean ;_:Float ;_:Array [Array [Float ,0b1000111],0B1011011];_,X:Array [Array [Array [Boolean ,0404_64_0_5_6_5],0X51],0b1]){} }'''
+        expect = '''Program([ClassDecl(Id(__),[MethodDecl(Id(z),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(_),BoolType),param(Id(g5WWs76_),BoolType),param(Id(_),BoolType),param(Id(_),BoolType),param(Id(m7566_n),BoolType),param(Id(_),FloatType),param(Id(_),ArrayType(91,ArrayType(71,FloatType))),param(Id(_),ArrayType(1,ArrayType(81,ArrayType(68370805,BoolType)))),param(Id(X),ArrayType(1,ArrayType(81,ArrayType(68370805,BoolType))))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 361))
 
-    def test_complex_program12(self):
-        line = '''Class T0{$72DF(_,_y:qP;_3_:Int ;F4:Float ;J:Float ;l:Array [String ,0x4];_,YZg,P:Array [String ,0103]){}Var $38,_,__A,_p,B:Array [Array [Boolean ,80],0b1000000];Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(T0),[MethodDecl(Id($72DF),Static,[param(Id(_),ClassType(Id(qP))),param(Id(_y),ClassType(Id(qP))),param(Id(_3_),IntType),param(Id(F4),FloatType),param(Id(J),FloatType),param(Id(l),ArrayType(4,StringType)),param(Id(_),ArrayType(67,StringType)),param(Id(YZg),ArrayType(67,StringType)),param(Id(P),ArrayType(67,StringType))],Block([])),AttributeDecl(Static,VarDecl(Id($38),ArrayType(64,ArrayType(80,BoolType)))),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(64,ArrayType(80,BoolType)))),AttributeDecl(Instance,VarDecl(Id(__A),ArrayType(64,ArrayType(80,BoolType)))),AttributeDecl(Instance,VarDecl(Id(_p),ArrayType(64,ArrayType(80,BoolType)))),AttributeDecl(Instance,VarDecl(Id(B),ArrayType(64,ArrayType(80,BoolType)))),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 362))
+    def test_12(self):
+        input = '''Class uE:V{Constructor (_7:Int ;F97:Array [Array [Int ,0B110],0X53];M:Array [Array [Array [Array [Array [Float ,0B1010000],0103],10],7_0],94]){} }Class _{}Class _9:_{}Class qX:b{Val J:Int ;}'''
+        expect = '''Program([ClassDecl(Id(uE),Id(V),[MethodDecl(Id(Constructor),Instance,[param(Id(_7),IntType),param(Id(F97),ArrayType(83,ArrayType(6,IntType))),param(Id(M),ArrayType(94,ArrayType(70,ArrayType(10,ArrayType(67,ArrayType(80,FloatType))))))],Block([]))]),ClassDecl(Id(_),[]),ClassDecl(Id(_9),Id(_),[]),ClassDecl(Id(qX),Id(b),[AttributeDecl(Instance,ConstDecl(Id(J),IntType,None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 362))
 
-    def test_complex_program13(self):
-        line = '''Class A:B4_28{Constructor (o_:Array [Array [Float ,61],0B1];L__:_v;l:Array [String ,0x3A];C:Array [Array [Array [Array [Int ,06_10],0b10110],556],05_214_5]){} }Class B__:V{Constructor (){Break ;} }Class d:_3__{}Class y{Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(A),Id(B4_28),[MethodDecl(Id(Constructor),Instance,[param(Id(o_),ArrayType(1,ArrayType(61,FloatType))),param(Id(L__),ClassType(Id(_v))),param(Id(l),ArrayType(58,StringType)),param(Id(C),ArrayType(21605,ArrayType(556,ArrayType(22,ArrayType(392,IntType)))))],Block([]))]),ClassDecl(Id(B__),Id(V),[MethodDecl(Id(Constructor),Instance,[],Block([Break]))]),ClassDecl(Id(d),Id(_3__),[]),ClassDecl(Id(y),[MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 363))
+    def test_13(self):
+        input = '''Class __79:Q_{Constructor (_,__:Int ;x,l1,_:Float ;a,V:Array [Array [Array [Array [Array [Array [Array [Array [Array [Array [Float ,044],0B1],0b100],0X3_2],0b11],0XBD3],38],044],38],0B1011101]){} }'''
+        expect = '''Program([ClassDecl(Id(__79),Id(Q_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),IntType),param(Id(__),IntType),param(Id(x),FloatType),param(Id(l1),FloatType),param(Id(_),FloatType),param(Id(a),ArrayType(93,ArrayType(38,ArrayType(36,ArrayType(38,ArrayType(3027,ArrayType(3,ArrayType(50,ArrayType(4,ArrayType(1,ArrayType(36,FloatType))))))))))),param(Id(V),ArrayType(93,ArrayType(38,ArrayType(36,ArrayType(38,ArrayType(3027,ArrayType(3,ArrayType(50,ArrayType(4,ArrayType(1,ArrayType(36,FloatType)))))))))))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 363))
 
-    def test_complex_program14(self):
-        line = '''Class p_:_71{_(){} }Class _{Constructor (_:A2y_;f,s:__){Z__o::$z_._.Y_.C_()._._4().O_.Y();}Constructor (){} }Class __{$_(){}Constructor (__16:Array [Array [Array [String ,0130],04],0130]){} }Class u_x{}'''
-        expect = '''Program([ClassDecl(Id(p_),Id(_71),[MethodDecl(Id(_),Instance,[],Block([]))]),ClassDecl(Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(A2y_))),param(Id(f),ClassType(Id(__))),param(Id(s),ClassType(Id(__)))],Block([Call(FieldAccess(CallExpr(FieldAccess(CallExpr(FieldAccess(FieldAccess(FieldAccess(Id(Z__o),Id($z_)),Id(_)),Id(Y_)),Id(C_),[]),Id(_)),Id(_4),[]),Id(O_)),Id(Y),[])])),MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(__),[MethodDecl(Id($_),Static,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(__16),ArrayType(88,ArrayType(4,ArrayType(88,StringType))))],Block([]))]),ClassDecl(Id(u_x),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 364))
+    def test_14(self):
+        input = '''Class _eZ8U_{Var _:d;Constructor (){}Destructor (){ {}Continue ;Return ;}Var t,MCQ:_;Var $4_S:String ;Var $H,$H:String ;}Class z{Val $__,_,$2_,$_x__JU:i_;}Class e2{Val Lu:y;}'''
+        expect = '''Program([ClassDecl(Id(_eZ8U_),[AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(d)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([Block([]),Continue,Return()])),AttributeDecl(Instance,VarDecl(Id(t),ClassType(Id(_)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(MCQ),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($4_S),StringType)),AttributeDecl(Static,VarDecl(Id($H),StringType)),AttributeDecl(Static,VarDecl(Id($H),StringType))]),ClassDecl(Id(z),[AttributeDecl(Static,ConstDecl(Id($__),ClassType(Id(i_)),None)),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(i_)),None)),AttributeDecl(Static,ConstDecl(Id($2_),ClassType(Id(i_)),None)),AttributeDecl(Static,ConstDecl(Id($_x__JU),ClassType(Id(i_)),None))]),ClassDecl(Id(e2),[AttributeDecl(Instance,ConstDecl(Id(Lu),ClassType(Id(y)),None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 364))
 
-    def test_complex_program15(self):
-        line = '''Class _Z4{}Class oR_{$fW(){}Destructor (){Var Z,c:Array [Array [Array [Array [Array [Array [Array [String ,074_64],02],49],0X46],0XE],0133],03];Continue ;}$3(X0_8:String ;_u2_,y6_,_,N46PH:String ){}Constructor (){} }'''
-        expect = '''Program([ClassDecl(Id(_Z4),[]),ClassDecl(Id(oR_),[MethodDecl(Id($fW),Static,[],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([VarDecl(Id(Z),ArrayType(3,ArrayType(91,ArrayType(14,ArrayType(70,ArrayType(49,ArrayType(2,ArrayType(3892,StringType)))))))),VarDecl(Id(c),ArrayType(3,ArrayType(91,ArrayType(14,ArrayType(70,ArrayType(49,ArrayType(2,ArrayType(3892,StringType)))))))),Continue])),MethodDecl(Id($3),Static,[param(Id(X0_8),StringType),param(Id(_u2_),StringType),param(Id(y6_),StringType),param(Id(_),StringType),param(Id(N46PH),StringType)],Block([])),MethodDecl(Id(Constructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 365))
+    def test_15(self):
+        input = '''Class L:u{Var e,$H:Array [Array [Array [Array [Array [Float ,0B1],0B1001110],77],0B1001110],9_1];}Class _{}Class i4c{}Class E_{Var $_6:Array [Array [Array [Int ,026_00],0X42],0110];}Class e{}'''
+        expect = '''Program([ClassDecl(Id(L),Id(u),[AttributeDecl(Instance,VarDecl(Id(e),ArrayType(91,ArrayType(78,ArrayType(77,ArrayType(78,ArrayType(1,FloatType))))))),AttributeDecl(Static,VarDecl(Id($H),ArrayType(91,ArrayType(78,ArrayType(77,ArrayType(78,ArrayType(1,FloatType)))))))]),ClassDecl(Id(_),[]),ClassDecl(Id(i4c),[]),ClassDecl(Id(E_),[AttributeDecl(Static,VarDecl(Id($_6),ArrayType(72,ArrayType(66,ArrayType(1408,IntType)))))]),ClassDecl(Id(e),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 365))
 
-    def test_complex_program16(self):
-        line = '''Class _p_:_m{}Class Y{Constructor (o,K:Array [Array [Array [Array [Array [Boolean ,7_3],38_8_21],3_8_5_1_645_1],8],9];_:r;z,_71,_,_:Array [Array [Float ,19],0b101001];b_3f5,m,BS74:Array [Array [Array [Boolean ,046],0X30],046];_ZF8,_2:D1;o:Float ){} }Class Hv{}Class e__:Lz88{}'''
-        expect = '''Program([ClassDecl(Id(_p_),Id(_m),[]),ClassDecl(Id(Y),[MethodDecl(Id(Constructor),Instance,[param(Id(o),ArrayType(9,ArrayType(8,ArrayType(38516451,ArrayType(38821,ArrayType(73,BoolType)))))),param(Id(K),ArrayType(9,ArrayType(8,ArrayType(38516451,ArrayType(38821,ArrayType(73,BoolType)))))),param(Id(_),ClassType(Id(r))),param(Id(z),ArrayType(41,ArrayType(19,FloatType))),param(Id(_71),ArrayType(41,ArrayType(19,FloatType))),param(Id(_),ArrayType(41,ArrayType(19,FloatType))),param(Id(_),ArrayType(41,ArrayType(19,FloatType))),param(Id(b_3f5),ArrayType(38,ArrayType(48,ArrayType(38,BoolType)))),param(Id(m),ArrayType(38,ArrayType(48,ArrayType(38,BoolType)))),param(Id(BS74),ArrayType(38,ArrayType(48,ArrayType(38,BoolType)))),param(Id(_ZF8),ClassType(Id(D1))),param(Id(_2),ClassType(Id(D1))),param(Id(o),FloatType)],Block([]))]),ClassDecl(Id(Hv),[]),ClassDecl(Id(e__),Id(Lz88),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 366))
+    def test_16(self):
+        input = '''Class _Z3_:_g_j{}Class f__:LT{Destructor (){ {} }Var __:Array [Int ,0117];}Class b4:p{$_(_:Array [Array [Array [Float ,0b11_0],0x3C],0x3C];dTp__,_H9:_39;h,p_J:_;XH_,_73__,_:Array [String ,0b101]){}Constructor (i6_,_5_a,_8:z9;_,C:Float ){} }Class U_R_{}'''
+        expect = '''Program([ClassDecl(Id(_Z3_),Id(_g_j),[]),ClassDecl(Id(f__),Id(LT),[MethodDecl(Id(Destructor),Instance,[],Block([Block([])])),AttributeDecl(Instance,VarDecl(Id(__),ArrayType(79,IntType)))]),ClassDecl(Id(b4),Id(p),[MethodDecl(Id($_),Static,[param(Id(_),ArrayType(60,ArrayType(60,ArrayType(6,FloatType)))),param(Id(dTp__),ClassType(Id(_39))),param(Id(_H9),ClassType(Id(_39))),param(Id(h),ClassType(Id(_))),param(Id(p_J),ClassType(Id(_))),param(Id(XH_),ArrayType(5,StringType)),param(Id(_73__),ArrayType(5,StringType)),param(Id(_),ArrayType(5,StringType))],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(i6_),ClassType(Id(z9))),param(Id(_5_a),ClassType(Id(z9))),param(Id(_8),ClassType(Id(z9))),param(Id(_),FloatType),param(Id(C),FloatType)],Block([]))]),ClassDecl(Id(U_R_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 366))
 
-    def test_complex_program17(self):
-        line = '''Class rB_:_6{$2a(_6:Array [Array [Array [Array [Array [String ,06],0x5_1],057],0B1001011],69_12_9];F44_5,_,A,Ia:Array [Array [Array [Array [String ,32],0X30],0X1_2],0x7_7_6]){} }Class c_i:__{}'''
-        expect = '''Program([ClassDecl(Id(rB_),Id(_6),[MethodDecl(Id($2a),Static,[param(Id(_6),ArrayType(69129,ArrayType(75,ArrayType(47,ArrayType(81,ArrayType(6,StringType)))))),param(Id(F44_5),ArrayType(1910,ArrayType(18,ArrayType(48,ArrayType(32,StringType))))),param(Id(_),ArrayType(1910,ArrayType(18,ArrayType(48,ArrayType(32,StringType))))),param(Id(A),ArrayType(1910,ArrayType(18,ArrayType(48,ArrayType(32,StringType))))),param(Id(Ia),ArrayType(1910,ArrayType(18,ArrayType(48,ArrayType(32,StringType)))))],Block([]))]),ClassDecl(Id(c_i),Id(__),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 367))
+    def test_17(self):
+        input = '''Class _{Destructor (){} }Class __{Var $fcU8,$_,$_,_,$T,_:String ;Var _:Array [Array [Array [String ,0B100010],34_429],014];}Class _H{Ky(_3:Array [Array [Array [Array [Float ,0b1011111],36],36],36];ue6,XV5,saG0:Array [Array [Array [Int ,9],04],0x5];p_t:Boolean ){}Destructor (){}Val D9_F_:Array [Array [String ,0X5],050];Destructor (){Continue ;{} }}'''
+        expect = '''Program([ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(__),[AttributeDecl(Static,VarDecl(Id($fcU8),StringType)),AttributeDecl(Static,VarDecl(Id($_),StringType)),AttributeDecl(Static,VarDecl(Id($_),StringType)),AttributeDecl(Instance,VarDecl(Id(_),StringType)),AttributeDecl(Static,VarDecl(Id($T),StringType)),AttributeDecl(Instance,VarDecl(Id(_),StringType)),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(12,ArrayType(34429,ArrayType(34,StringType)))))]),ClassDecl(Id(_H),[MethodDecl(Id(Ky),Instance,[param(Id(_3),ArrayType(36,ArrayType(36,ArrayType(36,ArrayType(95,FloatType))))),param(Id(ue6),ArrayType(5,ArrayType(4,ArrayType(9,IntType)))),param(Id(XV5),ArrayType(5,ArrayType(4,ArrayType(9,IntType)))),param(Id(saG0),ArrayType(5,ArrayType(4,ArrayType(9,IntType)))),param(Id(p_t),BoolType)],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(D9_F_),ArrayType(40,ArrayType(5,StringType)),None)),MethodDecl(Id(Destructor),Instance,[],Block([Continue,Block([])]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 367))
 
-    def test_complex_program18(self):
-        line = '''Class _{Val _,$30,_,y:Array [Array [Array [Float ,0753_7],0X42],109];$_d3__S(_0,_,N_,k:Array [Int ,0B1000101]){}Destructor (){}Val $R7_,_:Boolean ;Var W1:_;Val $_93,$_4,_,$_3,$6_:_;}'''
-        expect = '''Program([ClassDecl(Id(_),[AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(109,ArrayType(66,ArrayType(3935,FloatType))),None)),AttributeDecl(Static,ConstDecl(Id($30),ArrayType(109,ArrayType(66,ArrayType(3935,FloatType))),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(109,ArrayType(66,ArrayType(3935,FloatType))),None)),AttributeDecl(Instance,ConstDecl(Id(y),ArrayType(109,ArrayType(66,ArrayType(3935,FloatType))),None)),MethodDecl(Id($_d3__S),Static,[param(Id(_0),ArrayType(69,IntType)),param(Id(_),ArrayType(69,IntType)),param(Id(N_),ArrayType(69,IntType)),param(Id(k),ArrayType(69,IntType))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Static,ConstDecl(Id($R7_),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(_),BoolType,None)),AttributeDecl(Instance,VarDecl(Id(W1),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($_93),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($_4),ClassType(Id(_)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($_3),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($6_),ClassType(Id(_)),NullLiteral()))])])'''
-        self.assertTrue(TestAST.test(line, expect, 368))
+    def test_18(self):
+        input = '''Class I1:Z_1UbF{Var __:Boolean ;}Class _{}Class c2:Z{}Class _:__{Val $2_p:Array [Array [Array [Boolean ,07_27],0b1_00],07_5_02_2];}Class _9:_{}Class _e:hH{Destructor (){}Val $_:Array [Float ,0X1A];}'''
+        expect = '''Program([ClassDecl(Id(I1),Id(Z_1UbF),[AttributeDecl(Instance,VarDecl(Id(__),BoolType))]),ClassDecl(Id(_),[]),ClassDecl(Id(c2),Id(Z),[]),ClassDecl(Id(_),Id(__),[AttributeDecl(Static,ConstDecl(Id($2_p),ArrayType(31250,ArrayType(4,ArrayType(471,BoolType))),None))]),ClassDecl(Id(_9),Id(_),[]),ClassDecl(Id(_e),Id(hH),[MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Static,ConstDecl(Id($_),ArrayType(26,FloatType),None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 368))
 
-    def test_complex_program19(self):
-        line = '''Class __n{}Class _23{Constructor (s1J,_86,H__5:Array [Array [Array [Boolean ,9],05],50];r___,_I:_;_HQ_b,G7,oA8:Boolean ;d71_:String ;_:String ;Tr,x,X:Array [Array [Float ,2_200],052];X,_:Array [Array [Array [Array [Array [Array [Boolean ,0b110001],0101],0X56],50],0x61],04];Y:g){ {} }Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(__n),[]),ClassDecl(Id(_23),[MethodDecl(Id(Constructor),Instance,[param(Id(s1J),ArrayType(50,ArrayType(5,ArrayType(9,BoolType)))),param(Id(_86),ArrayType(50,ArrayType(5,ArrayType(9,BoolType)))),param(Id(H__5),ArrayType(50,ArrayType(5,ArrayType(9,BoolType)))),param(Id(r___),ClassType(Id(_))),param(Id(_I),ClassType(Id(_))),param(Id(_HQ_b),BoolType),param(Id(G7),BoolType),param(Id(oA8),BoolType),param(Id(d71_),StringType),param(Id(_),StringType),param(Id(Tr),ArrayType(42,ArrayType(2200,FloatType))),param(Id(x),ArrayType(42,ArrayType(2200,FloatType))),param(Id(X),ArrayType(42,ArrayType(2200,FloatType))),param(Id(X),ArrayType(4,ArrayType(97,ArrayType(50,ArrayType(86,ArrayType(65,ArrayType(49,BoolType))))))),param(Id(_),ArrayType(4,ArrayType(97,ArrayType(50,ArrayType(86,ArrayType(65,ArrayType(49,BoolType))))))),param(Id(Y),ClassType(Id(g)))],Block([Block([])])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 369))
+    def test_19(self):
+        input = '''Class __C7q0_j{Constructor (){}H(_0:Array [Int ,66];qL:Array [Float ,07];_n:Array [Int ,66];X_,S:Float ;C:String ;MY:Array [Boolean ,02];_,_y7__,_,_:y;w:Boolean ;_:_;u8,m_5:Array [Array [Int ,66],0b110010]){} }'''
+        expect = '''Program([ClassDecl(Id(__C7q0_j),[MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(H),Instance,[param(Id(_0),ArrayType(66,IntType)),param(Id(qL),ArrayType(7,FloatType)),param(Id(_n),ArrayType(66,IntType)),param(Id(X_),FloatType),param(Id(S),FloatType),param(Id(C),StringType),param(Id(MY),ArrayType(2,BoolType)),param(Id(_),ClassType(Id(y))),param(Id(_y7__),ClassType(Id(y))),param(Id(_),ClassType(Id(y))),param(Id(_),ClassType(Id(y))),param(Id(w),BoolType),param(Id(_),ClassType(Id(_))),param(Id(u8),ArrayType(50,ArrayType(66,IntType))),param(Id(m_5),ArrayType(50,ArrayType(66,IntType)))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 369))
 
-    def test_complex_program20(self):
-        line = '''Class __{Var _:Array [Float ,0B101010];}Class _:_{Var $3_,__9O,$_8:mE_5D;}Class h:w51{}Class _6Fd{$s57(_4:_;_,_E,__2P_m2,_,uf_,W:Boolean ){}Val _,$2S,$L:Array [String ,0X21];}'''
-        expect = '''Program([ClassDecl(Id(__),[AttributeDecl(Instance,VarDecl(Id(_),ArrayType(42,FloatType)))]),ClassDecl(Id(_),Id(_),[AttributeDecl(Static,VarDecl(Id($3_),ClassType(Id(mE_5D)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(__9O),ClassType(Id(mE_5D)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_8),ClassType(Id(mE_5D)),NullLiteral()))]),ClassDecl(Id(h),Id(w51),[]),ClassDecl(Id(_6Fd),[MethodDecl(Id($s57),Static,[param(Id(_4),ClassType(Id(_))),param(Id(_),BoolType),param(Id(_E),BoolType),param(Id(__2P_m2),BoolType),param(Id(_),BoolType),param(Id(uf_),BoolType),param(Id(W),BoolType)],Block([])),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(33,StringType),None)),AttributeDecl(Static,ConstDecl(Id($2S),ArrayType(33,StringType),None)),AttributeDecl(Static,ConstDecl(Id($L),ArrayType(33,StringType),None))])])'''
-        self.assertTrue(TestAST.test(line, expect, 370))
+    def test_20(self):
+        input = '''Class _:E_G__{}Class SO:k{Val $P:Boolean ;}Class _{Val j1,_oOU__,F_:S;}Class _q{Val X,$h__5YeVB:Array [Array [Float ,0xE_3_0],41];_(l:Int ;_,W,D,w,Heo__1_:__;ZLL1R:Float ;v:Array [Int ,41];_L,z_:String ;n__c,_,i98,_,w:Array [Array [Array [String ,0b10100],0b1],0xCC]){} }Class _4X{Destructor (){} }'''
+        expect = '''Program([ClassDecl(Id(_),Id(E_G__),[]),ClassDecl(Id(SO),Id(k),[AttributeDecl(Static,ConstDecl(Id($P),BoolType,None))]),ClassDecl(Id(_),[AttributeDecl(Instance,ConstDecl(Id(j1),ClassType(Id(S)),None)),AttributeDecl(Instance,ConstDecl(Id(_oOU__),ClassType(Id(S)),None)),AttributeDecl(Instance,ConstDecl(Id(F_),ClassType(Id(S)),None))]),ClassDecl(Id(_q),[AttributeDecl(Instance,ConstDecl(Id(X),ArrayType(41,ArrayType(3632,FloatType)),None)),AttributeDecl(Static,ConstDecl(Id($h__5YeVB),ArrayType(41,ArrayType(3632,FloatType)),None)),MethodDecl(Id(_),Instance,[param(Id(l),IntType),param(Id(_),ClassType(Id(__))),param(Id(W),ClassType(Id(__))),param(Id(D),ClassType(Id(__))),param(Id(w),ClassType(Id(__))),param(Id(Heo__1_),ClassType(Id(__))),param(Id(ZLL1R),FloatType),param(Id(v),ArrayType(41,IntType)),param(Id(_L),StringType),param(Id(z_),StringType),param(Id(n__c),ArrayType(204,ArrayType(1,ArrayType(20,StringType)))),param(Id(_),ArrayType(204,ArrayType(1,ArrayType(20,StringType)))),param(Id(i98),ArrayType(204,ArrayType(1,ArrayType(20,StringType)))),param(Id(_),ArrayType(204,ArrayType(1,ArrayType(20,StringType)))),param(Id(w),ArrayType(204,ArrayType(1,ArrayType(20,StringType))))],Block([]))]),ClassDecl(Id(_4X),[MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 370))
 
-    def test_complex_program21(self):
-        line = '''Class _{Var $O,_G,$_,$0,$__:Array [Array [Array [Int ,5],0XE],01];Var W7:Array [Boolean ,0B1_0_1_1];Constructor (Ez9:Array [Array [Array [Boolean ,5],0b11110],0b11110];_:Int ;c,K,w____X:Array [Array [Array [Float ,2],021],021];_xvO:String ){}Constructor (){} }'''
-        expect = '''Program([ClassDecl(Id(_),[AttributeDecl(Static,VarDecl(Id($O),ArrayType(1,ArrayType(14,ArrayType(5,IntType))))),AttributeDecl(Instance,VarDecl(Id(_G),ArrayType(1,ArrayType(14,ArrayType(5,IntType))))),AttributeDecl(Static,VarDecl(Id($_),ArrayType(1,ArrayType(14,ArrayType(5,IntType))))),AttributeDecl(Static,VarDecl(Id($0),ArrayType(1,ArrayType(14,ArrayType(5,IntType))))),AttributeDecl(Static,VarDecl(Id($__),ArrayType(1,ArrayType(14,ArrayType(5,IntType))))),AttributeDecl(Instance,VarDecl(Id(W7),ArrayType(11,BoolType))),MethodDecl(Id(Constructor),Instance,[param(Id(Ez9),ArrayType(30,ArrayType(30,ArrayType(5,BoolType)))),param(Id(_),IntType),param(Id(c),ArrayType(17,ArrayType(17,ArrayType(2,FloatType)))),param(Id(K),ArrayType(17,ArrayType(17,ArrayType(2,FloatType)))),param(Id(w____X),ArrayType(17,ArrayType(17,ArrayType(2,FloatType)))),param(Id(_xvO),StringType)],Block([])),MethodDecl(Id(Constructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 371))
+    def test_21(self):
+        input = '''Class _R94_c_9:_{}Class XF_{Var $1,$3k_,D,_:Int ;$0(){Return ;}Constructor (s,B_27_id:_;d3z_Y__C67_i,P:String ){}w(_:Array [Float ,0X41];r,_,_b:Array [Array [Array [Array [Array [String ,399],0123],0B110011],6],0X41];_,_z9:Array [Array [Array [Int ,84],84],9_4];O,F,U:String ;__,h,_:Array [Boolean ,5]){} }'''
+        expect = '''Program([ClassDecl(Id(_R94_c_9),Id(_),[]),ClassDecl(Id(XF_),[AttributeDecl(Static,VarDecl(Id($1),IntType)),AttributeDecl(Static,VarDecl(Id($3k_),IntType)),AttributeDecl(Instance,VarDecl(Id(D),IntType)),AttributeDecl(Instance,VarDecl(Id(_),IntType)),MethodDecl(Id($0),Static,[],Block([Return()])),MethodDecl(Id(Constructor),Instance,[param(Id(s),ClassType(Id(_))),param(Id(B_27_id),ClassType(Id(_))),param(Id(d3z_Y__C67_i),StringType),param(Id(P),StringType)],Block([])),MethodDecl(Id(w),Instance,[param(Id(_),ArrayType(65,FloatType)),param(Id(r),ArrayType(65,ArrayType(6,ArrayType(51,ArrayType(83,ArrayType(399,StringType)))))),param(Id(_),ArrayType(65,ArrayType(6,ArrayType(51,ArrayType(83,ArrayType(399,StringType)))))),param(Id(_b),ArrayType(65,ArrayType(6,ArrayType(51,ArrayType(83,ArrayType(399,StringType)))))),param(Id(_),ArrayType(94,ArrayType(84,ArrayType(84,IntType)))),param(Id(_z9),ArrayType(94,ArrayType(84,ArrayType(84,IntType)))),param(Id(O),StringType),param(Id(F),StringType),param(Id(U),StringType),param(Id(__),ArrayType(5,BoolType)),param(Id(h),ArrayType(5,BoolType)),param(Id(_),ArrayType(5,BoolType))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 371))
 
-    def test_complex_program22(self):
-        line = '''Class N_{$_(W2,i_:Array [Float ,0x20];Y:_0;_04,Z50Ho7__61,_,_:Array [Array [Int ,073],0x20];_:_){}Var $_,$S:V0_;}Class ___2W_4_57:P{}Class Os{}Class _{Val $4,$_5:Float ;Var $5,$A5:_2_t;Var _40:Array [String ,06_37];Destructor (){Break ;} }'''
-        expect = '''Program([ClassDecl(Id(N_),[MethodDecl(Id($_),Static,[param(Id(W2),ArrayType(32,FloatType)),param(Id(i_),ArrayType(32,FloatType)),param(Id(Y),ClassType(Id(_0))),param(Id(_04),ArrayType(32,ArrayType(59,IntType))),param(Id(Z50Ho7__61),ArrayType(32,ArrayType(59,IntType))),param(Id(_),ArrayType(32,ArrayType(59,IntType))),param(Id(_),ArrayType(32,ArrayType(59,IntType))),param(Id(_),ClassType(Id(_)))],Block([])),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(V0_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($S),ClassType(Id(V0_)),NullLiteral()))]),ClassDecl(Id(___2W_4_57),Id(P),[]),ClassDecl(Id(Os),[]),ClassDecl(Id(_),[AttributeDecl(Static,ConstDecl(Id($4),FloatType,None)),AttributeDecl(Static,ConstDecl(Id($_5),FloatType,None)),AttributeDecl(Static,VarDecl(Id($5),ClassType(Id(_2_t)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($A5),ClassType(Id(_2_t)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_40),ArrayType(415,StringType))),MethodDecl(Id(Destructor),Instance,[],Block([Break]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 372))
+    def test_22(self):
+        input = '''Class n:s_{}Class __:S_{}Class K1:KQ{}Class _1:__{Val $_,$Gf_7,$31,_:Array [Boolean ,39];Var $u,_:S___;Val $__:Array [Array [Array [Boolean ,0x43],66_3],0b1011101];Var $04llb_4,$o,dR:Int ;Destructor (){Break ;} }Class H_:i54{C(){} }Class W{}'''
+        expect = '''Program([ClassDecl(Id(n),Id(s_),[]),ClassDecl(Id(__),Id(S_),[]),ClassDecl(Id(K1),Id(KQ),[]),ClassDecl(Id(_1),Id(__),[AttributeDecl(Static,ConstDecl(Id($_),ArrayType(39,BoolType),None)),AttributeDecl(Static,ConstDecl(Id($Gf_7),ArrayType(39,BoolType),None)),AttributeDecl(Static,ConstDecl(Id($31),ArrayType(39,BoolType),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(39,BoolType),None)),AttributeDecl(Static,VarDecl(Id($u),ClassType(Id(S___)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(S___)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($__),ArrayType(93,ArrayType(663,ArrayType(67,BoolType))),None)),AttributeDecl(Static,VarDecl(Id($04llb_4),IntType)),AttributeDecl(Static,VarDecl(Id($o),IntType)),AttributeDecl(Instance,VarDecl(Id(dR),IntType)),MethodDecl(Id(Destructor),Instance,[],Block([Break]))]),ClassDecl(Id(H_),Id(i54),[MethodDecl(Id(C),Instance,[],Block([]))]),ClassDecl(Id(W),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 372))
 
-    def test_complex_program23(self):
-        line = '''Class Zbp:B{_4_(){}Constructor (x,j,q0a1:Array [Array [Array [Float ,95],06654],95];z7N,Y,n:String ){}Var $6:Array [Array [Array [Boolean ,353_6_4],011_1],0B10];}Class h85:Iy_{Var _,$_b3,__8:Array [Float ,0b1011111];}'''
-        expect = '''Program([ClassDecl(Id(Zbp),Id(B),[MethodDecl(Id(_4_),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(x),ArrayType(95,ArrayType(3500,ArrayType(95,FloatType)))),param(Id(j),ArrayType(95,ArrayType(3500,ArrayType(95,FloatType)))),param(Id(q0a1),ArrayType(95,ArrayType(3500,ArrayType(95,FloatType)))),param(Id(z7N),StringType),param(Id(Y),StringType),param(Id(n),StringType)],Block([])),AttributeDecl(Static,VarDecl(Id($6),ArrayType(2,ArrayType(73,ArrayType(35364,BoolType)))))]),ClassDecl(Id(h85),Id(Iy_),[AttributeDecl(Instance,VarDecl(Id(_),ArrayType(95,FloatType))),AttributeDecl(Static,VarDecl(Id($_b3),ArrayType(95,FloatType))),AttributeDecl(Instance,VarDecl(Id(__8),ArrayType(95,FloatType)))])])'''
-        self.assertTrue(TestAST.test(line, expect, 373))
+    def test_23(self):
+        input = '''Class K{}Class Q:_V{}Class _63{}Class _:_t2q{_7z(_,D,a_:Boolean ;_,_7q9,I_:Array [Array [Array [Array [Int ,0b101101],0B1_0],60],0b1]){}Destructor (){_::$D()._.T.n().kd().y()._();Continue ;}Var $__m___,$_,_:B6;}Class _{}'''
+        expect = '''Program([ClassDecl(Id(K),[]),ClassDecl(Id(Q),Id(_V),[]),ClassDecl(Id(_63),[]),ClassDecl(Id(_),Id(_t2q),[MethodDecl(Id(_7z),Instance,[param(Id(_),BoolType),param(Id(D),BoolType),param(Id(a_),BoolType),param(Id(_),ArrayType(1,ArrayType(60,ArrayType(2,ArrayType(45,IntType))))),param(Id(_7q9),ArrayType(1,ArrayType(60,ArrayType(2,ArrayType(45,IntType))))),param(Id(I_),ArrayType(1,ArrayType(60,ArrayType(2,ArrayType(45,IntType)))))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([Call(CallExpr(CallExpr(CallExpr(FieldAccess(FieldAccess(CallExpr(Id(_),Id($D),[]),Id(_)),Id(T)),Id(n),[]),Id(kd),[]),Id(y),[]),Id(_),[]),Continue])),AttributeDecl(Static,VarDecl(Id($__m___),ClassType(Id(B6)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(B6)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(B6)),NullLiteral()))]),ClassDecl(Id(_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 373))
 
-    def test_complex_program24(self):
-        line = '''Class jF_:_NS{Constructor (_N,_:Array [Int ,063];_,V,Nt_1:Array [Array [Array [Array [String ,0x5F],063],063],0b1_1];z_:String ){}Constructor (__:_){Val _,_,ZS:String ;}Var $__,_,$A_V_:Int ;}Class _:_7{Constructor (v:a;_6q_l:Array [Boolean ,0x96]){} }Class _B:Hc_{}'''
-        expect = '''Program([ClassDecl(Id(jF_),Id(_NS),[MethodDecl(Id(Constructor),Instance,[param(Id(_N),ArrayType(51,IntType)),param(Id(_),ArrayType(51,IntType)),param(Id(_),ArrayType(3,ArrayType(51,ArrayType(51,ArrayType(95,StringType))))),param(Id(V),ArrayType(3,ArrayType(51,ArrayType(51,ArrayType(95,StringType))))),param(Id(Nt_1),ArrayType(3,ArrayType(51,ArrayType(51,ArrayType(95,StringType))))),param(Id(z_),StringType)],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(__),ClassType(Id(_)))],Block([ConstDecl(Id(_),StringType,None),ConstDecl(Id(_),StringType,None),ConstDecl(Id(ZS),StringType,None)])),AttributeDecl(Static,VarDecl(Id($__),IntType)),AttributeDecl(Instance,VarDecl(Id(_),IntType)),AttributeDecl(Static,VarDecl(Id($A_V_),IntType))]),ClassDecl(Id(_),Id(_7),[MethodDecl(Id(Constructor),Instance,[param(Id(v),ClassType(Id(a))),param(Id(_6q_l),ArrayType(150,BoolType))],Block([]))]),ClassDecl(Id(_B),Id(Hc_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 374))
+    def test_24(self):
+        input = '''Class o_:_{}Class __:_{Var $G:_;Var $_:__;Constructor (Y3H,_,_B,U,H,_m:_;W_,k6:Array [String ,0B110101];_:Float ;_8E,V,b,s,_,_,_:Boolean ){}Destructor (){} }Class _{Constructor (c5:String ;_:Array [Array [Boolean ,0430_0_1],0X1B];_,_kpR:Array [Array [Array [Array [Float ,0X9_8],01],0b111011],0X1B]){} }Class _{Constructor (_,Nb:Boolean ;_,_,_,d:Array [Int ,0b111011];_:Float ;rj,o:k){ {} }Destructor (){} }'''
+        expect = '''Program([ClassDecl(Id(o_),Id(_),[]),ClassDecl(Id(__),Id(_),[AttributeDecl(Static,VarDecl(Id($G),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(__)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(Y3H),ClassType(Id(_))),param(Id(_),ClassType(Id(_))),param(Id(_B),ClassType(Id(_))),param(Id(U),ClassType(Id(_))),param(Id(H),ClassType(Id(_))),param(Id(_m),ClassType(Id(_))),param(Id(W_),ArrayType(53,StringType)),param(Id(k6),ArrayType(53,StringType)),param(Id(_),FloatType),param(Id(_8E),BoolType),param(Id(V),BoolType),param(Id(b),BoolType),param(Id(s),BoolType),param(Id(_),BoolType),param(Id(_),BoolType),param(Id(_),BoolType)],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(c5),StringType),param(Id(_),ArrayType(27,ArrayType(17921,BoolType))),param(Id(_),ArrayType(27,ArrayType(59,ArrayType(1,ArrayType(152,FloatType))))),param(Id(_kpR),ArrayType(27,ArrayType(59,ArrayType(1,ArrayType(152,FloatType)))))],Block([]))]),ClassDecl(Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),BoolType),param(Id(Nb),BoolType),param(Id(_),ArrayType(59,IntType)),param(Id(_),ArrayType(59,IntType)),param(Id(_),ArrayType(59,IntType)),param(Id(d),ArrayType(59,IntType)),param(Id(_),FloatType),param(Id(rj),ClassType(Id(k))),param(Id(o),ClassType(Id(k)))],Block([Block([])])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 374))
 
-    def test_complex_program25(self):
-        line = '''Class XkGu{}Class _{}Class W{}Class e:N{f(_:Float ){} }Class pyq{Var P_:_09;Constructor (_:C;_,_56,A:Int ;___,_w:Float ;_r1w_,_,_:__;N,wl,_8,y7G:_;m4_:Boolean ){Return ;{} }}Class _:_{}'''
-        expect = '''Program([ClassDecl(Id(XkGu),[]),ClassDecl(Id(_),[]),ClassDecl(Id(W),[]),ClassDecl(Id(e),Id(N),[MethodDecl(Id(f),Instance,[param(Id(_),FloatType)],Block([]))]),ClassDecl(Id(pyq),[AttributeDecl(Instance,VarDecl(Id(P_),ClassType(Id(_09)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(C))),param(Id(_),IntType),param(Id(_56),IntType),param(Id(A),IntType),param(Id(___),FloatType),param(Id(_w),FloatType),param(Id(_r1w_),ClassType(Id(__))),param(Id(_),ClassType(Id(__))),param(Id(_),ClassType(Id(__))),param(Id(N),ClassType(Id(_))),param(Id(wl),ClassType(Id(_))),param(Id(_8),ClassType(Id(_))),param(Id(y7G),ClassType(Id(_))),param(Id(m4_),BoolType)],Block([Return(),Block([])]))]),ClassDecl(Id(_),Id(_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 375))
+    def test_25(self):
+        input = '''Class i{Destructor (){Break ;}Var $q,$v,_8:__0;Constructor (k,_8_o0U,H_,______:u;e6,_:Array [String ,02];n1:___;M5,_O_:Array [Int ,0x1]){} }Class j:q_5{}Class _{Var d_,V4:Float ;Val F,$c6,_:Array [Int ,13];Destructor (){} }'''
+        expect = '''Program([ClassDecl(Id(i),[MethodDecl(Id(Destructor),Instance,[],Block([Break])),AttributeDecl(Static,VarDecl(Id($q),ClassType(Id(__0)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($v),ClassType(Id(__0)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_8),ClassType(Id(__0)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(k),ClassType(Id(u))),param(Id(_8_o0U),ClassType(Id(u))),param(Id(H_),ClassType(Id(u))),param(Id(______),ClassType(Id(u))),param(Id(e6),ArrayType(2,StringType)),param(Id(_),ArrayType(2,StringType)),param(Id(n1),ClassType(Id(___))),param(Id(M5),ArrayType(1,IntType)),param(Id(_O_),ArrayType(1,IntType))],Block([]))]),ClassDecl(Id(j),Id(q_5),[]),ClassDecl(Id(_),[AttributeDecl(Instance,VarDecl(Id(d_),FloatType)),AttributeDecl(Instance,VarDecl(Id(V4),FloatType)),AttributeDecl(Instance,ConstDecl(Id(F),ArrayType(13,IntType),None)),AttributeDecl(Static,ConstDecl(Id($c6),ArrayType(13,IntType),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(13,IntType),None)),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 375))
 
-    def test_complex_program26(self):
-        line = '''Class EKM:__7{Constructor (z1,x:Jg0_;_51_:Array [Array [Array [String ,0b1_0],0B10100_1_1],0X7C_0_77];T_:Array [Array [Array [Array [Boolean ,0b111100],0xE],0B1010011],12_9]){} }'''
-        expect = '''Program([ClassDecl(Id(EKM),Id(__7),[MethodDecl(Id(Constructor),Instance,[param(Id(z1),ClassType(Id(Jg0_))),param(Id(x),ClassType(Id(Jg0_))),param(Id(_51_),ArrayType(508023,ArrayType(83,ArrayType(2,StringType)))),param(Id(T_),ArrayType(129,ArrayType(83,ArrayType(14,ArrayType(60,BoolType)))))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 376))
+    def test_26(self):
+        input = '''Class _{}Class C_{}Class I_{_q(_6t_j_v,_8,T:Array [Float ,5];V:Boolean ;dP:Boolean ;C_2,_O:Array [Array [Array [Int ,0X5],0B1],0x3E];E:Float ){} }Class r___:c{Constructor (hI:eW;F__,s:Boolean ;_,c_,_3,_0,Q0B,j723_:_WwL;PG6_D:Array [Int ,0107];L:__;l,e_:Float ;x:Float ;_,M:_;n:_){} }'''
+        expect = '''Program([ClassDecl(Id(_),[]),ClassDecl(Id(C_),[]),ClassDecl(Id(I_),[MethodDecl(Id(_q),Instance,[param(Id(_6t_j_v),ArrayType(5,FloatType)),param(Id(_8),ArrayType(5,FloatType)),param(Id(T),ArrayType(5,FloatType)),param(Id(V),BoolType),param(Id(dP),BoolType),param(Id(C_2),ArrayType(62,ArrayType(1,ArrayType(5,IntType)))),param(Id(_O),ArrayType(62,ArrayType(1,ArrayType(5,IntType)))),param(Id(E),FloatType)],Block([]))]),ClassDecl(Id(r___),Id(c),[MethodDecl(Id(Constructor),Instance,[param(Id(hI),ClassType(Id(eW))),param(Id(F__),BoolType),param(Id(s),BoolType),param(Id(_),ClassType(Id(_WwL))),param(Id(c_),ClassType(Id(_WwL))),param(Id(_3),ClassType(Id(_WwL))),param(Id(_0),ClassType(Id(_WwL))),param(Id(Q0B),ClassType(Id(_WwL))),param(Id(j723_),ClassType(Id(_WwL))),param(Id(PG6_D),ArrayType(71,IntType)),param(Id(L),ClassType(Id(__))),param(Id(l),FloatType),param(Id(e_),FloatType),param(Id(x),FloatType),param(Id(_),ClassType(Id(_))),param(Id(M),ClassType(Id(_))),param(Id(n),ClassType(Id(_)))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 376))
 
-    def test_complex_program27(self):
-        line = '''Class d{}Class B{$2(c_:__;_:Array [Array [String ,0xD],053_4_5_4]){} }Class z2lC:B3L{Var _l,$7a:S_;Constructor (y,_1_40_2_,__P:K_78){}Var $4:J;Val _,$q3_:Array [Array [Array [Array [Boolean ,046],0x8],046],5_2];}Class _7:_{Var v:G_J;}'''
-        expect = '''Program([ClassDecl(Id(d),[]),ClassDecl(Id(B),[MethodDecl(Id($2),Static,[param(Id(c_),ClassType(Id(__))),param(Id(_),ArrayType(22316,ArrayType(13,StringType)))],Block([]))]),ClassDecl(Id(z2lC),Id(B3L),[AttributeDecl(Instance,VarDecl(Id(_l),ClassType(Id(S_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($7a),ClassType(Id(S_)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(y),ClassType(Id(K_78))),param(Id(_1_40_2_),ClassType(Id(K_78))),param(Id(__P),ClassType(Id(K_78)))],Block([])),AttributeDecl(Static,VarDecl(Id($4),ClassType(Id(J)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(52,ArrayType(38,ArrayType(8,ArrayType(38,BoolType)))),None)),AttributeDecl(Static,ConstDecl(Id($q3_),ArrayType(52,ArrayType(38,ArrayType(8,ArrayType(38,BoolType)))),None))]),ClassDecl(Id(_7),Id(_),[AttributeDecl(Instance,VarDecl(Id(v),ClassType(Id(G_J)),NullLiteral()))])])'''
-        self.assertTrue(TestAST.test(line, expect, 377))
+    def test_27(self):
+        input = '''Class b:A{Var $B5_,$5,$A:Array [Array [Array [Array [Boolean ,0X14],025],025],51];$5r9(e,_c,_66:Array [Array [Array [Array [Array [Array [Array [Boolean ,0B1_011],0xC_6],0b110101],0B1_0],0X14],0b110101],0X14]){} }Class V_{Var _:Int ;}'''
+        expect = '''Program([ClassDecl(Id(b),Id(A),[AttributeDecl(Static,VarDecl(Id($B5_),ArrayType(51,ArrayType(21,ArrayType(21,ArrayType(20,BoolType)))))),AttributeDecl(Static,VarDecl(Id($5),ArrayType(51,ArrayType(21,ArrayType(21,ArrayType(20,BoolType)))))),AttributeDecl(Static,VarDecl(Id($A),ArrayType(51,ArrayType(21,ArrayType(21,ArrayType(20,BoolType)))))),MethodDecl(Id($5r9),Static,[param(Id(e),ArrayType(20,ArrayType(53,ArrayType(20,ArrayType(2,ArrayType(53,ArrayType(198,ArrayType(11,BoolType)))))))),param(Id(_c),ArrayType(20,ArrayType(53,ArrayType(20,ArrayType(2,ArrayType(53,ArrayType(198,ArrayType(11,BoolType)))))))),param(Id(_66),ArrayType(20,ArrayType(53,ArrayType(20,ArrayType(2,ArrayType(53,ArrayType(198,ArrayType(11,BoolType))))))))],Block([]))]),ClassDecl(Id(V_),[AttributeDecl(Instance,VarDecl(Id(_),IntType))])])'''
+        self.assertTrue(TestAST.test(input, expect, 377))
 
-    def test_complex_program28(self):
-        line = '''Class _e7{_3(){} }Class g:kIn {Constructor (_,_L9_ka,T,f0,y,_3:_){Var m1,v,H:Array [Array [Array [String ,073],073],0B1];} }Class d:J{Val $8_21,$__,p8u_:_;Var Th_9X339I,_e,_:String ;}Class _{}'''
-        expect = '''Program([ClassDecl(Id(_e7),[MethodDecl(Id(_3),Instance,[],Block([]))]),ClassDecl(Id(g),Id(kIn),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(_))),param(Id(_L9_ka),ClassType(Id(_))),param(Id(T),ClassType(Id(_))),param(Id(f0),ClassType(Id(_))),param(Id(y),ClassType(Id(_))),param(Id(_3),ClassType(Id(_)))],Block([VarDecl(Id(m1),ArrayType(1,ArrayType(59,ArrayType(59,StringType)))),VarDecl(Id(v),ArrayType(1,ArrayType(59,ArrayType(59,StringType)))),VarDecl(Id(H),ArrayType(1,ArrayType(59,ArrayType(59,StringType))))]))]),ClassDecl(Id(d),Id(J),[AttributeDecl(Static,ConstDecl(Id($8_21),ClassType(Id(_)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($__),ClassType(Id(_)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(p8u_),ClassType(Id(_)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(Th_9X339I),StringType)),AttributeDecl(Instance,VarDecl(Id(_e),StringType)),AttributeDecl(Instance,VarDecl(Id(_),StringType))]),ClassDecl(Id(_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 378))
+    def test_28(self):
+        input = '''Class h_:_1j7{Constructor (g,_p47o:Array [Array [Array [Array [Array [Array [Boolean ,0101],0X25],0B1100011],0b1010101],100],89];__Q2,_:_){Continue ;}Val $_:Array [Array [Array [Array [Array [Int ,100],06_1],0101],100],0b1010101];}'''
+        expect = '''Program([ClassDecl(Id(h_),Id(_1j7),[MethodDecl(Id(Constructor),Instance,[param(Id(g),ArrayType(89,ArrayType(100,ArrayType(85,ArrayType(99,ArrayType(37,ArrayType(65,BoolType))))))),param(Id(_p47o),ArrayType(89,ArrayType(100,ArrayType(85,ArrayType(99,ArrayType(37,ArrayType(65,BoolType))))))),param(Id(__Q2),ClassType(Id(_))),param(Id(_),ClassType(Id(_)))],Block([Continue])),AttributeDecl(Static,ConstDecl(Id($_),ArrayType(85,ArrayType(100,ArrayType(65,ArrayType(49,ArrayType(100,IntType))))),None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 378))
 
-    def test_complex_program29(self):
-        line = '''Class W{}Class _9:J2{Destructor (){}Constructor (L:Array [Int ,28];G,__:J;TD:_3;C52__:_my__;_9v,_764,z_7,_:Array [Array [Array [Array [Array [Array [String ,0b1001100],07_4_765],7],015],047],047];__h_j:Array [Array [Array [Float ,0X5E],0X37_2],9]){} }Class _{}Class i4:_{_5(){Break ;} }'''
-        expect = '''Program([ClassDecl(Id(W),[]),ClassDecl(Id(_9),Id(J2),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(L),ArrayType(28,IntType)),param(Id(G),ClassType(Id(J))),param(Id(__),ClassType(Id(J))),param(Id(TD),ClassType(Id(_3))),param(Id(C52__),ClassType(Id(_my__))),param(Id(_9v),ArrayType(39,ArrayType(39,ArrayType(13,ArrayType(7,ArrayType(31221,ArrayType(76,StringType))))))),param(Id(_764),ArrayType(39,ArrayType(39,ArrayType(13,ArrayType(7,ArrayType(31221,ArrayType(76,StringType))))))),param(Id(z_7),ArrayType(39,ArrayType(39,ArrayType(13,ArrayType(7,ArrayType(31221,ArrayType(76,StringType))))))),param(Id(_),ArrayType(39,ArrayType(39,ArrayType(13,ArrayType(7,ArrayType(31221,ArrayType(76,StringType))))))),param(Id(__h_j),ArrayType(9,ArrayType(882,ArrayType(94,FloatType))))],Block([]))]),ClassDecl(Id(_),[]),ClassDecl(Id(i4),Id(_),[MethodDecl(Id(_5),Instance,[],Block([Break]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 379))
+    def test_29(self):
+        input = '''Class m{}Class R:_j{Destructor (){} }Class _m:Ta_{Var $27:Float ;Val _k5,_:Array [Array [Array [Float ,025],0b1011110],0x44];$81(){}Val _9X:Boolean ;}Class s:_jV{e2230(_w:Float ;_,__,h,U__:_){}Val _91594,$_353_Fv:Int ;}'''
+        expect = '''Program([ClassDecl(Id(m),[]),ClassDecl(Id(R),Id(_j),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_m),Id(Ta_),[AttributeDecl(Static,VarDecl(Id($27),FloatType)),AttributeDecl(Instance,ConstDecl(Id(_k5),ArrayType(68,ArrayType(94,ArrayType(21,FloatType))),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(68,ArrayType(94,ArrayType(21,FloatType))),None)),MethodDecl(Id($81),Static,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(_9X),BoolType,None))]),ClassDecl(Id(s),Id(_jV),[MethodDecl(Id(e2230),Instance,[param(Id(_w),FloatType),param(Id(_),ClassType(Id(_))),param(Id(__),ClassType(Id(_))),param(Id(h),ClassType(Id(_))),param(Id(U__),ClassType(Id(_)))],Block([])),AttributeDecl(Instance,ConstDecl(Id(_91594),IntType,None)),AttributeDecl(Static,ConstDecl(Id($_353_Fv),IntType,None))])])'''
+        self.assertTrue(TestAST.test(input, expect, 379))
 
-    def test_complex_program30(self):
-        line = '''Class _:_{}Class _S_F39W9{}Class r{Constructor (){} }Class c0A:_{Val $5_,m6,$ld_:Boolean ;Destructor (){Break ;{} }$e(K__:Array [Array [String ,53],0123];_F36_:h){Val _1,_6,Iy:Array [Boolean ,0XB_A];} }Class _{}'''
-        expect = '''Program([ClassDecl(Id(_),Id(_),[]),ClassDecl(Id(_S_F39W9),[]),ClassDecl(Id(r),[MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(c0A),Id(_),[AttributeDecl(Static,ConstDecl(Id($5_),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(m6),BoolType,None)),AttributeDecl(Static,ConstDecl(Id($ld_),BoolType,None)),MethodDecl(Id(Destructor),Instance,[],Block([Break,Block([])])),MethodDecl(Id($e),Static,[param(Id(K__),ArrayType(83,ArrayType(53,StringType))),param(Id(_F36_),ClassType(Id(h)))],Block([ConstDecl(Id(_1),ArrayType(186,BoolType),None),ConstDecl(Id(_6),ArrayType(186,BoolType),None),ConstDecl(Id(Iy),ArrayType(186,BoolType),None)]))]),ClassDecl(Id(_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 380))
+    def test_30(self):
+        input = '''Class G5Vk{Destructor (){Continue ;} }Class _8{}Class __{Val _:Array [Int ,0B1011001];}Class o___n{Var _42,$_5,e8w69,_P,_:Array [Array [Array [Float ,0b1],0X8],7];}Class l_{}'''
+        expect = '''Program([ClassDecl(Id(G5Vk),[MethodDecl(Id(Destructor),Instance,[],Block([Continue]))]),ClassDecl(Id(_8),[]),ClassDecl(Id(__),[AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(89,IntType),None))]),ClassDecl(Id(o___n),[AttributeDecl(Instance,VarDecl(Id(_42),ArrayType(7,ArrayType(8,ArrayType(1,FloatType))))),AttributeDecl(Static,VarDecl(Id($_5),ArrayType(7,ArrayType(8,ArrayType(1,FloatType))))),AttributeDecl(Instance,VarDecl(Id(e8w69),ArrayType(7,ArrayType(8,ArrayType(1,FloatType))))),AttributeDecl(Instance,VarDecl(Id(_P),ArrayType(7,ArrayType(8,ArrayType(1,FloatType))))),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(7,ArrayType(8,ArrayType(1,FloatType)))))]),ClassDecl(Id(l_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 380))
 
-    def test_complex_program31(self):
-        line = '''Class g_0:_{Var SQYe0f44,$69v3:Array [Array [Array [Array [Array [Int ,15],15],6],3],0b1_10];Var $_,$__1,__7_,_:Array [Array [Array [Array [Array [Int ,56_9_0],07],0xA8],0b1],01];$_8(){} }'''
-        expect = '''Program([ClassDecl(Id(g_0),Id(_),[AttributeDecl(Instance,VarDecl(Id(SQYe0f44),ArrayType(6,ArrayType(3,ArrayType(6,ArrayType(15,ArrayType(15,IntType))))))),AttributeDecl(Static,VarDecl(Id($69v3),ArrayType(6,ArrayType(3,ArrayType(6,ArrayType(15,ArrayType(15,IntType))))))),AttributeDecl(Static,VarDecl(Id($_),ArrayType(1,ArrayType(1,ArrayType(168,ArrayType(7,ArrayType(5690,IntType))))))),AttributeDecl(Static,VarDecl(Id($__1),ArrayType(1,ArrayType(1,ArrayType(168,ArrayType(7,ArrayType(5690,IntType))))))),AttributeDecl(Instance,VarDecl(Id(__7_),ArrayType(1,ArrayType(1,ArrayType(168,ArrayType(7,ArrayType(5690,IntType))))))),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(1,ArrayType(1,ArrayType(168,ArrayType(7,ArrayType(5690,IntType))))))),MethodDecl(Id($_8),Static,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 381))
+    def test_31(self):
+        input = '''Class _3_6TW7m2__{Constructor (_X_,_:Array [Array [Int ,037],0x3];e987,b,__W,_:_9_){Break ;}Destructor (){ {} }Constructor (o:Array [Int ,73]){Break ;Var _Zk43,_00,_:Array [Float ,4_9];} }'''
+        expect = '''Program([ClassDecl(Id(_3_6TW7m2__),[MethodDecl(Id(Constructor),Instance,[param(Id(_X_),ArrayType(3,ArrayType(31,IntType))),param(Id(_),ArrayType(3,ArrayType(31,IntType))),param(Id(e987),ClassType(Id(_9_))),param(Id(b),ClassType(Id(_9_))),param(Id(__W),ClassType(Id(_9_))),param(Id(_),ClassType(Id(_9_)))],Block([Break])),MethodDecl(Id(Destructor),Instance,[],Block([Block([])])),MethodDecl(Id(Constructor),Instance,[param(Id(o),ArrayType(73,IntType))],Block([Break,VarDecl(Id(_Zk43),ArrayType(49,FloatType)),VarDecl(Id(_00),ArrayType(49,FloatType)),VarDecl(Id(_),ArrayType(49,FloatType))]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 381))
 
-    def test_complex_program32(self):
-        line = '''Class _:Ef{Constructor (__9_,I:Array [Int ,0b1];w,_:Array [Array [Float ,0B1],0X34]){} }Class d8{Constructor (_,d_,S,tbS5s_:_1_){} }Class jR{}Class P8{}Class t:_{Constructor (_,_S:P;_,_,i1:String ;e_,Z_,w:V;_:Array [Float ,17];z:Array [Boolean ,0X9]){} }'''
-        expect = '''Program([ClassDecl(Id(_),Id(Ef),[MethodDecl(Id(Constructor),Instance,[param(Id(__9_),ArrayType(1,IntType)),param(Id(I),ArrayType(1,IntType)),param(Id(w),ArrayType(52,ArrayType(1,FloatType))),param(Id(_),ArrayType(52,ArrayType(1,FloatType)))],Block([]))]),ClassDecl(Id(d8),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(_1_))),param(Id(d_),ClassType(Id(_1_))),param(Id(S),ClassType(Id(_1_))),param(Id(tbS5s_),ClassType(Id(_1_)))],Block([]))]),ClassDecl(Id(jR),[]),ClassDecl(Id(P8),[]),ClassDecl(Id(t),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(P))),param(Id(_S),ClassType(Id(P))),param(Id(_),StringType),param(Id(_),StringType),param(Id(i1),StringType),param(Id(e_),ClassType(Id(V))),param(Id(Z_),ClassType(Id(V))),param(Id(w),ClassType(Id(V))),param(Id(_),ArrayType(17,FloatType)),param(Id(z),ArrayType(9,BoolType))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 382))
+    def test_32(self):
+        input = '''Class c:_4{Val _,$_,$8_5_2t:Array [Int ,043_7];Val $_,_:Float ;Constructor (_:String ;_:Float ){} }Class I{Var _:Array [Array [Array [String ,2_6],8_4],0b1011001];__(){Var y__:String ;} }Class QZ_{$T(){} }'''
+        expect = '''Program([ClassDecl(Id(c),Id(_4),[AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(287,IntType),None)),AttributeDecl(Static,ConstDecl(Id($_),ArrayType(287,IntType),None)),AttributeDecl(Static,ConstDecl(Id($8_5_2t),ArrayType(287,IntType),None)),AttributeDecl(Static,ConstDecl(Id($_),FloatType,None)),AttributeDecl(Instance,ConstDecl(Id(_),FloatType,None)),MethodDecl(Id(Constructor),Instance,[param(Id(_),StringType),param(Id(_),FloatType)],Block([]))]),ClassDecl(Id(I),[AttributeDecl(Instance,VarDecl(Id(_),ArrayType(89,ArrayType(84,ArrayType(26,StringType))))),MethodDecl(Id(__),Instance,[],Block([VarDecl(Id(y__),StringType)]))]),ClassDecl(Id(QZ_),[MethodDecl(Id($T),Static,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 382))
 
-    def test_complex_program33(self):
-        line = '''Class y:_{Constructor (gN4,_,_:Array [String ,010];f:Array [Array [String ,0XD],33];J_0,TF,_:Float ;v:String ;_L_0:Array [Float ,063];W,_:Array [Array [Array [String ,0b1000000],0x5],0b1_1];V:_;Ad,_:s__;_1O7:Boolean ){Var A,_,_0__,_,g,_:Int ;} }'''
-        expect = '''Program([ClassDecl(Id(y),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(gN4),ArrayType(8,StringType)),param(Id(_),ArrayType(8,StringType)),param(Id(_),ArrayType(8,StringType)),param(Id(f),ArrayType(33,ArrayType(13,StringType))),param(Id(J_0),FloatType),param(Id(TF),FloatType),param(Id(_),FloatType),param(Id(v),StringType),param(Id(_L_0),ArrayType(51,FloatType)),param(Id(W),ArrayType(3,ArrayType(5,ArrayType(64,StringType)))),param(Id(_),ArrayType(3,ArrayType(5,ArrayType(64,StringType)))),param(Id(V),ClassType(Id(_))),param(Id(Ad),ClassType(Id(s__))),param(Id(_),ClassType(Id(s__))),param(Id(_1O7),BoolType)],Block([VarDecl(Id(A),IntType),VarDecl(Id(_),IntType),VarDecl(Id(_0__),IntType),VarDecl(Id(_),IntType),VarDecl(Id(g),IntType),VarDecl(Id(_),IntType)]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 383))
+    def test_33(self):
+        input = '''Class R_0Z_:J{Constructor (_8oSz9_,Iv,x,__,O:Array [Boolean ,020]){} }Class G:G_l3{Var $_6_v:Array [String ,05_7_6];w48_(p,f_1,_,_,_:Float ;_,S,_,_:Boolean ){Return ;} }'''
+        expect = '''Program([ClassDecl(Id(R_0Z_),Id(J),[MethodDecl(Id(Constructor),Instance,[param(Id(_8oSz9_),ArrayType(16,BoolType)),param(Id(Iv),ArrayType(16,BoolType)),param(Id(x),ArrayType(16,BoolType)),param(Id(__),ArrayType(16,BoolType)),param(Id(O),ArrayType(16,BoolType))],Block([]))]),ClassDecl(Id(G),Id(G_l3),[AttributeDecl(Static,VarDecl(Id($_6_v),ArrayType(382,StringType))),MethodDecl(Id(w48_),Instance,[param(Id(p),FloatType),param(Id(f_1),FloatType),param(Id(_),FloatType),param(Id(_),FloatType),param(Id(_),FloatType),param(Id(_),BoolType),param(Id(S),BoolType),param(Id(_),BoolType),param(Id(_),BoolType)],Block([Return()]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 383))
 
-    def test_complex_program34(self):
-        line = '''Class X{}Class _02_{}Class fT_8:_Kx{Val ___9M,$__:Array [Array [Array [Array [Array [Array [String ,075],5_4_7],0b1_0],0B1],0b1],0b1110];}Class _{Var $0,$_,_U7:Array [String ,54];}'''
-        expect = '''Program([ClassDecl(Id(X),[]),ClassDecl(Id(_02_),[]),ClassDecl(Id(fT_8),Id(_Kx),[AttributeDecl(Instance,ConstDecl(Id(___9M),ArrayType(14,ArrayType(1,ArrayType(1,ArrayType(2,ArrayType(547,ArrayType(61,StringType)))))),None)),AttributeDecl(Static,ConstDecl(Id($__),ArrayType(14,ArrayType(1,ArrayType(1,ArrayType(2,ArrayType(547,ArrayType(61,StringType)))))),None))]),ClassDecl(Id(_),[AttributeDecl(Static,VarDecl(Id($0),ArrayType(54,StringType))),AttributeDecl(Static,VarDecl(Id($_),ArrayType(54,StringType))),AttributeDecl(Instance,VarDecl(Id(_U7),ArrayType(54,StringType)))])])'''
-        self.assertTrue(TestAST.test(line, expect, 384))
+    def test_34(self):
+        input = '''Class _:f_Bia{_Z11(_:__;_,_,_D,_3T7__wo:Array [Float ,0124];f:Array [Array [Array [Float ,07],04],0124]){}Val _:Boolean ;}Class K{Constructor (cC:String ){}$_(){} }Class v{}'''
+        expect = '''Program([ClassDecl(Id(_),Id(f_Bia),[MethodDecl(Id(_Z11),Instance,[param(Id(_),ClassType(Id(__))),param(Id(_),ArrayType(84,FloatType)),param(Id(_),ArrayType(84,FloatType)),param(Id(_D),ArrayType(84,FloatType)),param(Id(_3T7__wo),ArrayType(84,FloatType)),param(Id(f),ArrayType(84,ArrayType(4,ArrayType(7,FloatType))))],Block([])),AttributeDecl(Instance,ConstDecl(Id(_),BoolType,None))]),ClassDecl(Id(K),[MethodDecl(Id(Constructor),Instance,[param(Id(cC),StringType)],Block([])),MethodDecl(Id($_),Static,[],Block([]))]),ClassDecl(Id(v),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 384))
 
-    def test_complex_program35(self):
-        line = '''Class E_{Constructor (_2l,_N:Array [Array [Array [Array [Boolean ,87],05],87],0b11100];__2,L:Float ;B:_){Return ;}Val $4VW_:Array [Boolean ,036];_(){} }Class _:___{$48(){}Val _,J:_;}Class _:_{}Class _t{}Class _:N{Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(E_),[MethodDecl(Id(Constructor),Instance,[param(Id(_2l),ArrayType(28,ArrayType(87,ArrayType(5,ArrayType(87,BoolType))))),param(Id(_N),ArrayType(28,ArrayType(87,ArrayType(5,ArrayType(87,BoolType))))),param(Id(__2),FloatType),param(Id(L),FloatType),param(Id(B),ClassType(Id(_)))],Block([Return()])),AttributeDecl(Static,ConstDecl(Id($4VW_),ArrayType(30,BoolType),None)),MethodDecl(Id(_),Instance,[],Block([]))]),ClassDecl(Id(_),Id(___),[MethodDecl(Id($48),Static,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(_)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(J),ClassType(Id(_)),NullLiteral()))]),ClassDecl(Id(_),Id(_),[]),ClassDecl(Id(_t),[]),ClassDecl(Id(_),Id(N),[MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 385))
+    def test_35(self):
+        input = '''Class Q:_{}Class _K38{Constructor (_jdP,J:_;b,__m,G_:Array [Array [Array [Boolean ,91],0716],0X7];_,_Bg,_2:Boolean ;gNf:_;U:Array [Int ,026];_Ubm:j_P;__,i,j_7o42,f_:Boolean ;z,_:Array [Boolean ,0X7]){} }'''
+        expect = '''Program([ClassDecl(Id(Q),Id(_),[]),ClassDecl(Id(_K38),[MethodDecl(Id(Constructor),Instance,[param(Id(_jdP),ClassType(Id(_))),param(Id(J),ClassType(Id(_))),param(Id(b),ArrayType(7,ArrayType(462,ArrayType(91,BoolType)))),param(Id(__m),ArrayType(7,ArrayType(462,ArrayType(91,BoolType)))),param(Id(G_),ArrayType(7,ArrayType(462,ArrayType(91,BoolType)))),param(Id(_),BoolType),param(Id(_Bg),BoolType),param(Id(_2),BoolType),param(Id(gNf),ClassType(Id(_))),param(Id(U),ArrayType(22,IntType)),param(Id(_Ubm),ClassType(Id(j_P))),param(Id(__),BoolType),param(Id(i),BoolType),param(Id(j_7o42),BoolType),param(Id(f_),BoolType),param(Id(z),ArrayType(7,BoolType)),param(Id(_),ArrayType(7,BoolType))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 385))
 
-    def test_complex_program36(self):
-        line = '''Class _7_{Val $_,$w9M:Int ;$O(L_:Array [String ,0B1]){ {}Return ;Break ;Continue ;{} }Destructor (){}$__(V_j3,r,_K,___u,_f:J;_U,F:Int ;_5_:Array [Float ,0X5_61A]){} }'''
-        expect = '''Program([ClassDecl(Id(_7_),[AttributeDecl(Static,ConstDecl(Id($_),IntType,None)),AttributeDecl(Static,ConstDecl(Id($w9M),IntType,None)),MethodDecl(Id($O),Static,[param(Id(L_),ArrayType(1,StringType))],Block([Block([]),Return(),Break,Continue,Block([])])),MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id($__),Static,[param(Id(V_j3),ClassType(Id(J))),param(Id(r),ClassType(Id(J))),param(Id(_K),ClassType(Id(J))),param(Id(___u),ClassType(Id(J))),param(Id(_f),ClassType(Id(J))),param(Id(_U),IntType),param(Id(F),IntType),param(Id(_5_),ArrayType(22042,FloatType))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 386))
+    def test_36(self):
+        input = '''Class _{Var $_L,$7,$3V,$9__,$2,$_1_8,_k,$5_:Array [Array [Array [Array [Array [String ,0204_6_1],0x4],03],18],2_1];Constructor (U8lj:Array [Array [Array [Int ,9_24],0XC],0XC];L:f;G_C,l_,_,_:Q){} }'''
+        expect = '''Program([ClassDecl(Id(_),[AttributeDecl(Static,VarDecl(Id($_L),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($7),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($3V),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($9__),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($2),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($_1_8),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Instance,VarDecl(Id(_k),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),AttributeDecl(Static,VarDecl(Id($5_),ArrayType(21,ArrayType(18,ArrayType(3,ArrayType(4,ArrayType(8497,StringType))))))),MethodDecl(Id(Constructor),Instance,[param(Id(U8lj),ArrayType(12,ArrayType(12,ArrayType(924,IntType)))),param(Id(L),ClassType(Id(f))),param(Id(G_C),ClassType(Id(Q))),param(Id(l_),ClassType(Id(Q))),param(Id(_),ClassType(Id(Q))),param(Id(_),ClassType(Id(Q)))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 386))
 
-    def test_complex_program37(self):
-        line = '''Class o{$_X(_,d,_:Array [Array [Int ,014],0b1010000];s,KA:Int ;O,x0y_,I___,_43,M:H0;C:Float ){}Constructor (_0:Array [String ,0b1010000];TQ,z:_){} }Class _7{}Class __{}Class BdEiC:_4j{}'''
-        expect = '''Program([ClassDecl(Id(o),[MethodDecl(Id($_X),Static,[param(Id(_),ArrayType(80,ArrayType(12,IntType))),param(Id(d),ArrayType(80,ArrayType(12,IntType))),param(Id(_),ArrayType(80,ArrayType(12,IntType))),param(Id(s),IntType),param(Id(KA),IntType),param(Id(O),ClassType(Id(H0))),param(Id(x0y_),ClassType(Id(H0))),param(Id(I___),ClassType(Id(H0))),param(Id(_43),ClassType(Id(H0))),param(Id(M),ClassType(Id(H0))),param(Id(C),FloatType)],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(_0),ArrayType(80,StringType)),param(Id(TQ),ClassType(Id(_))),param(Id(z),ClassType(Id(_)))],Block([]))]),ClassDecl(Id(_7),[]),ClassDecl(Id(__),[]),ClassDecl(Id(BdEiC),Id(_4j),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 387))
+    def test_37(self):
+        input = '''Class h:S{_p(us:Array [Array [Boolean ,0b101],0X5E];RO,_,_:Array [Array [Array [Boolean ,9],84],03];__3__,Q,_0,_:Array [Boolean ,0X8_5];_1Djg:String ;Q61_,_,b,em,_i_:Array [Float ,0X5E];__,_w3,__x_o:_k;q:String ){} }'''
+        expect = '''Program([ClassDecl(Id(h),Id(S),[MethodDecl(Id(_p),Instance,[param(Id(us),ArrayType(94,ArrayType(5,BoolType))),param(Id(RO),ArrayType(3,ArrayType(84,ArrayType(9,BoolType)))),param(Id(_),ArrayType(3,ArrayType(84,ArrayType(9,BoolType)))),param(Id(_),ArrayType(3,ArrayType(84,ArrayType(9,BoolType)))),param(Id(__3__),ArrayType(133,BoolType)),param(Id(Q),ArrayType(133,BoolType)),param(Id(_0),ArrayType(133,BoolType)),param(Id(_),ArrayType(133,BoolType)),param(Id(_1Djg),StringType),param(Id(Q61_),ArrayType(94,FloatType)),param(Id(_),ArrayType(94,FloatType)),param(Id(b),ArrayType(94,FloatType)),param(Id(em),ArrayType(94,FloatType)),param(Id(_i_),ArrayType(94,FloatType)),param(Id(__),ClassType(Id(_k))),param(Id(_w3),ClassType(Id(_k))),param(Id(__x_o),ClassType(Id(_k))),param(Id(q),StringType)],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 387))
 
-    def test_complex_program38(self):
-        line = '''Class __:Q{Val $_DE8:Int ;Var $_,I,$7v:Array [String ,0B1_1];Constructor (){ {Return ;} }$8(){} }Class __T{Constructor (){} }Class o:A_{__0L(_Fb5,d:h;_,_:Boolean ){Val ___:Array [Array [Array [Array [Boolean ,064334],8],0XF_D_9],0XD];Break ;}Var z_,$6:Array [String ,19];}Class __9:cy{}'''
-        expect = '''Program([ClassDecl(Id(__),Id(Q),[AttributeDecl(Static,ConstDecl(Id($_DE8),IntType,None)),AttributeDecl(Static,VarDecl(Id($_),ArrayType(3,StringType))),AttributeDecl(Instance,VarDecl(Id(I),ArrayType(3,StringType))),AttributeDecl(Static,VarDecl(Id($7v),ArrayType(3,StringType))),MethodDecl(Id(Constructor),Instance,[],Block([Block([Return()])])),MethodDecl(Id($8),Static,[],Block([]))]),ClassDecl(Id(__T),[MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(o),Id(A_),[MethodDecl(Id(__0L),Instance,[param(Id(_Fb5),ClassType(Id(h))),param(Id(d),ClassType(Id(h))),param(Id(_),BoolType),param(Id(_),BoolType)],Block([ConstDecl(Id(___),ArrayType(13,ArrayType(4057,ArrayType(8,ArrayType(26844,BoolType)))),None),Break])),AttributeDecl(Instance,VarDecl(Id(z_),ArrayType(19,StringType))),AttributeDecl(Static,VarDecl(Id($6),ArrayType(19,StringType)))]),ClassDecl(Id(__9),Id(cy),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 388))
+    def test_38(self):
+        input = '''Class X{Destructor (){} }Class S1_{Val _z,$4hA,$f:Array [Array [String ,0b1_1],0X59];Val V,_R,_I:Array [Array [Array [Array [Boolean ,15],0X59],0b1_0],3_3];}Class b{Destructor (){Break ;Continue ;Val x7_:_U___O;}____(){Continue ;}_(){} }'''
+        expect = '''Program([ClassDecl(Id(X),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(S1_),[AttributeDecl(Instance,ConstDecl(Id(_z),ArrayType(89,ArrayType(3,StringType)),None)),AttributeDecl(Static,ConstDecl(Id($4hA),ArrayType(89,ArrayType(3,StringType)),None)),AttributeDecl(Static,ConstDecl(Id($f),ArrayType(89,ArrayType(3,StringType)),None)),AttributeDecl(Instance,ConstDecl(Id(V),ArrayType(33,ArrayType(2,ArrayType(89,ArrayType(15,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(_R),ArrayType(33,ArrayType(2,ArrayType(89,ArrayType(15,BoolType)))),None)),AttributeDecl(Instance,ConstDecl(Id(_I),ArrayType(33,ArrayType(2,ArrayType(89,ArrayType(15,BoolType)))),None))]),ClassDecl(Id(b),[MethodDecl(Id(Destructor),Instance,[],Block([Break,Continue,ConstDecl(Id(x7_),ClassType(Id(_U___O)),None)])),MethodDecl(Id(____),Instance,[],Block([Continue])),MethodDecl(Id(_),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 388))
 
-    def test_complex_program39(self):
-        line = '''Class M{Constructor (__:Boolean ){Break ;} }Class P:_g52{Val _:_;Constructor (p:Float ){ {}Return ;}Val $_5:Float ;$_(){}Constructor (){} }Class U:W{Var a2,_:Array [Array [Array [Array [Array [Array [Int ,075],0116],0B1],6],0x53],0116];Var h:Array [Array [Boolean ,26],0B1100001];}Class B:_{}Class RRG2{}'''
-        expect = '''Program([ClassDecl(Id(M),[MethodDecl(Id(Constructor),Instance,[param(Id(__),BoolType)],Block([Break]))]),ClassDecl(Id(P),Id(_g52),[AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(_)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(p),FloatType)],Block([Block([]),Return()])),AttributeDecl(Static,ConstDecl(Id($_5),FloatType,None)),MethodDecl(Id($_),Static,[],Block([])),MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(U),Id(W),[AttributeDecl(Instance,VarDecl(Id(a2),ArrayType(78,ArrayType(83,ArrayType(6,ArrayType(1,ArrayType(78,ArrayType(61,IntType)))))))),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(78,ArrayType(83,ArrayType(6,ArrayType(1,ArrayType(78,ArrayType(61,IntType)))))))),AttributeDecl(Instance,VarDecl(Id(h),ArrayType(97,ArrayType(26,BoolType))))]),ClassDecl(Id(B),Id(_),[]),ClassDecl(Id(RRG2),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 389))
+    def test_39(self):
+        input = '''Class P7:__2c{$_896h(z7_,ac:String ;c__,XG_6,_:Array [Array [Float ,12],01_40];o,_,d_:Int ;Z,_:_8;Hm34:Array [String ,0B1_1_11_11]){}Constructor (){} }Class _F:_{Var _W:y;}'''
+        expect = '''Program([ClassDecl(Id(P7),Id(__2c),[MethodDecl(Id($_896h),Static,[param(Id(z7_),StringType),param(Id(ac),StringType),param(Id(c__),ArrayType(96,ArrayType(12,FloatType))),param(Id(XG_6),ArrayType(96,ArrayType(12,FloatType))),param(Id(_),ArrayType(96,ArrayType(12,FloatType))),param(Id(o),IntType),param(Id(_),IntType),param(Id(d_),IntType),param(Id(Z),ClassType(Id(_8))),param(Id(_),ClassType(Id(_8))),param(Id(Hm34),ArrayType(63,StringType))],Block([])),MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(_F),Id(_),[AttributeDecl(Instance,VarDecl(Id(_W),ClassType(Id(y)),NullLiteral()))])])'''
+        self.assertTrue(TestAST.test(input, expect, 389))
 
-    def test_complex_program40(self):
-        line = '''Class P8O5w__:_{Val $__b0__Y,_,_,$5_,$h_,$3O_K:String ;}Class k{n(){Continue ;}Destructor (){}Val X,$e_,$R,_,_:_4;}Class Q:r{$2(){}Val $___:String ;}Class d7:F4{}'''
-        expect = '''Program([ClassDecl(Id(P8O5w__),Id(_),[AttributeDecl(Static,ConstDecl(Id($__b0__Y),StringType,None)),AttributeDecl(Instance,ConstDecl(Id(_),StringType,None)),AttributeDecl(Instance,ConstDecl(Id(_),StringType,None)),AttributeDecl(Static,ConstDecl(Id($5_),StringType,None)),AttributeDecl(Static,ConstDecl(Id($h_),StringType,None)),AttributeDecl(Static,ConstDecl(Id($3O_K),StringType,None))]),ClassDecl(Id(k),[MethodDecl(Id(n),Instance,[],Block([Continue])),MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(X),ClassType(Id(_4)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($e_),ClassType(Id(_4)),NullLiteral())),AttributeDecl(Static,ConstDecl(Id($R),ClassType(Id(_4)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(_4)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(_4)),NullLiteral()))]),ClassDecl(Id(Q),Id(r),[MethodDecl(Id($2),Static,[],Block([])),AttributeDecl(Static,ConstDecl(Id($___),StringType,None))]),ClassDecl(Id(d7),Id(F4),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 390))
+    def test_40(self):
+        input = '''Class __73:v_{}Class _04da:_70_0_63uq{Destructor (){Val M:_6__;{Break ;} }}Class c{}Class _:q{}Class _4{Constructor (Z:_M__7o){}$6_0(){Var _:Boolean ;} }Class _{Destructor (){} }Class t_8_:_6z_886{}Class _{}'''
+        expect = '''Program([ClassDecl(Id(__73),Id(v_),[]),ClassDecl(Id(_04da),Id(_70_0_63uq),[MethodDecl(Id(Destructor),Instance,[],Block([ConstDecl(Id(M),ClassType(Id(_6__)),None),Block([Break])]))]),ClassDecl(Id(c),[]),ClassDecl(Id(_),Id(q),[]),ClassDecl(Id(_4),[MethodDecl(Id(Constructor),Instance,[param(Id(Z),ClassType(Id(_M__7o)))],Block([])),MethodDecl(Id($6_0),Static,[],Block([VarDecl(Id(_),BoolType)]))]),ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(t_8_),Id(_6z_886),[]),ClassDecl(Id(_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 490))
 
-    def test_complex_program41(self):
-        line = '''Class H{Constructor (__h9:Array [Array [Array [Array [Float ,0x2_8C_4_8],43],0B1],43];b2L:e0l4;Bq_uP5n322:Boolean ;_,G,_:Boolean ){} }Class LB6:g{}Class _{Destructor (){}$_(){}Val _,__:__l_4;}'''
-        expect = '''Program([ClassDecl(Id(H),[MethodDecl(Id(Constructor),Instance,[param(Id(__h9),ArrayType(43,ArrayType(1,ArrayType(43,ArrayType(166984,FloatType))))),param(Id(b2L),ClassType(Id(e0l4))),param(Id(Bq_uP5n322),BoolType),param(Id(_),BoolType),param(Id(G),BoolType),param(Id(_),BoolType)],Block([]))]),ClassDecl(Id(LB6),Id(g),[]),ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id($_),Static,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(_),ClassType(Id(__l_4)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(__),ClassType(Id(__l_4)),NullLiteral()))])])'''
-        self.assertTrue(TestAST.test(line, expect, 391))
+    def test_41(self):
+        input = '''Class J_:_{Constructor (){}Var $u_:Array [Float ,03];Constructor (P:_;_,a,T:String ;X_Y_wp:Float ;_,t,_:_;_2J:Array [Float ,61]){}Constructor (hg,d,_,_,V:S;_,d__,SV:_Q){}I(){} }Class o1:_{$_(_,_06,_1_,_,_j4,__:Float ;t,_:String ){} }'''
+        expect = '''Program([ClassDecl(Id(J_),Id(_),[MethodDecl(Id(Constructor),Instance,[],Block([])),AttributeDecl(Static,VarDecl(Id($u_),ArrayType(3,FloatType))),MethodDecl(Id(Constructor),Instance,[param(Id(P),ClassType(Id(_))),param(Id(_),StringType),param(Id(a),StringType),param(Id(T),StringType),param(Id(X_Y_wp),FloatType),param(Id(_),ClassType(Id(_))),param(Id(t),ClassType(Id(_))),param(Id(_),ClassType(Id(_))),param(Id(_2J),ArrayType(61,FloatType))],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(hg),ClassType(Id(S))),param(Id(d),ClassType(Id(S))),param(Id(_),ClassType(Id(S))),param(Id(_),ClassType(Id(S))),param(Id(V),ClassType(Id(S))),param(Id(_),ClassType(Id(_Q))),param(Id(d__),ClassType(Id(_Q))),param(Id(SV),ClassType(Id(_Q)))],Block([])),MethodDecl(Id(I),Instance,[],Block([]))]),ClassDecl(Id(o1),Id(_),[MethodDecl(Id($_),Static,[param(Id(_),FloatType),param(Id(_06),FloatType),param(Id(_1_),FloatType),param(Id(_),FloatType),param(Id(_j4),FloatType),param(Id(__),FloatType),param(Id(t),StringType),param(Id(_),StringType)],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 491))
 
-    def test_complex_program42(self):
-        line = '''Class _:G_{}Class _{Destructor (){ {Continue ;}Val V_126:Array [Array [Int ,4_5],0104];}$_(z,F_:Boolean ;gU3:Boolean ;_,_lU0:Array [Float ,0B1100010];P,B,k,_,_,_,L:Array [Array [Float ,0XD],77]){} }'''
-        expect = '''Program([ClassDecl(Id(_),Id(G_),[]),ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([Block([Continue]),ConstDecl(Id(V_126),ArrayType(68,ArrayType(45,IntType)),None)])),MethodDecl(Id($_),Static,[param(Id(z),BoolType),param(Id(F_),BoolType),param(Id(gU3),BoolType),param(Id(_),ArrayType(98,FloatType)),param(Id(_lU0),ArrayType(98,FloatType)),param(Id(P),ArrayType(77,ArrayType(13,FloatType))),param(Id(B),ArrayType(77,ArrayType(13,FloatType))),param(Id(k),ArrayType(77,ArrayType(13,FloatType))),param(Id(_),ArrayType(77,ArrayType(13,FloatType))),param(Id(_),ArrayType(77,ArrayType(13,FloatType))),param(Id(_),ArrayType(77,ArrayType(13,FloatType))),param(Id(L),ArrayType(77,ArrayType(13,FloatType)))],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 392))
+    def test_42(self):
+        input = '''Class i:m{}Class t:Yo_{}Class w4:__42{Var C5X,$_,$2,$_,$_5,$7F:Array [Array [Array [Array [Array [Array [Array [Array [String ,0X38],0X58],0x7],0x3D],0X4],5],0b1_00],0x3D];Destructor (){Var s_:J_;}_u(___5,__:String ;ES:C48){Val _,Or__,n2_8:_;Break ;}Var D_:Boolean ;}'''
+        expect = '''Program([ClassDecl(Id(i),Id(m),[]),ClassDecl(Id(t),Id(Yo_),[]),ClassDecl(Id(w4),Id(__42),[AttributeDecl(Instance,VarDecl(Id(C5X),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),AttributeDecl(Static,VarDecl(Id($_),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),AttributeDecl(Static,VarDecl(Id($2),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),AttributeDecl(Static,VarDecl(Id($_),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),AttributeDecl(Static,VarDecl(Id($_5),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),AttributeDecl(Static,VarDecl(Id($7F),ArrayType(61,ArrayType(4,ArrayType(5,ArrayType(4,ArrayType(61,ArrayType(7,ArrayType(88,ArrayType(56,StringType)))))))))),MethodDecl(Id(Destructor),Instance,[],Block([VarDecl(Id(s_),ClassType(Id(J_)),NullLiteral())])),MethodDecl(Id(_u),Instance,[param(Id(___5),StringType),param(Id(__),StringType),param(Id(ES),ClassType(Id(C48)))],Block([ConstDecl(Id(_),ClassType(Id(_)),None),ConstDecl(Id(Or__),ClassType(Id(_)),None),ConstDecl(Id(n2_8),ClassType(Id(_)),None),Break])),AttributeDecl(Instance,VarDecl(Id(D_),BoolType))])])'''
+        self.assertTrue(TestAST.test(input, expect, 492))
 
-    def test_complex_program43(self):
-        line = '''Class _66NNM:k{Constructor (_,z,v:Boolean ;_8,_:Boolean ;G9c:String ){} }Class YK3{}Class _{}Class c:_C{Var j,_BT,$_c,A:_9;Destructor (){Continue ;}Destructor (){} }Class ____:_{}'''
-        expect = '''Program([ClassDecl(Id(_66NNM),Id(k),[MethodDecl(Id(Constructor),Instance,[param(Id(_),BoolType),param(Id(z),BoolType),param(Id(v),BoolType),param(Id(_8),BoolType),param(Id(_),BoolType),param(Id(G9c),StringType)],Block([]))]),ClassDecl(Id(YK3),[]),ClassDecl(Id(_),[]),ClassDecl(Id(c),Id(_C),[AttributeDecl(Instance,VarDecl(Id(j),ClassType(Id(_9)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_BT),ClassType(Id(_9)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_c),ClassType(Id(_9)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(A),ClassType(Id(_9)),NullLiteral())),MethodDecl(Id(Destructor),Instance,[],Block([Continue])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(____),Id(_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 393))
+    def test_43(self):
+        input = '''Class _:j_D{$q(__,D:Int ;A:_;__,v8,_:Float ){}_2__(Fw_,_,_6,_,_nh,_,g,_:_o;_P,v,A6,U_:Array [Array [Array [Boolean ,0x45],0b1100000],0b1100000];_,_:Boolean ;_:Array [Int ,4]){}Destructor (){} }Class H7{}Class R2__9:j{_(){} }'''
+        expect = '''Program([ClassDecl(Id(_),Id(j_D),[MethodDecl(Id($q),Static,[param(Id(__),IntType),param(Id(D),IntType),param(Id(A),ClassType(Id(_))),param(Id(__),FloatType),param(Id(v8),FloatType),param(Id(_),FloatType)],Block([])),MethodDecl(Id(_2__),Instance,[param(Id(Fw_),ClassType(Id(_o))),param(Id(_),ClassType(Id(_o))),param(Id(_6),ClassType(Id(_o))),param(Id(_),ClassType(Id(_o))),param(Id(_nh),ClassType(Id(_o))),param(Id(_),ClassType(Id(_o))),param(Id(g),ClassType(Id(_o))),param(Id(_),ClassType(Id(_o))),param(Id(_P),ArrayType(96,ArrayType(96,ArrayType(69,BoolType)))),param(Id(v),ArrayType(96,ArrayType(96,ArrayType(69,BoolType)))),param(Id(A6),ArrayType(96,ArrayType(96,ArrayType(69,BoolType)))),param(Id(U_),ArrayType(96,ArrayType(96,ArrayType(69,BoolType)))),param(Id(_),BoolType),param(Id(_),BoolType),param(Id(_),ArrayType(4,IntType))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(H7),[]),ClassDecl(Id(R2__9),Id(j),[MethodDecl(Id(_),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 493))
 
-    def test_complex_program44(self):
-        line = '''Class _:_{Constructor (_r2,c__:Array [Array [Array [Array [Float ,0B1100000],0X7],06_2_1],0116]){Return ;}Var _:Array [Array [String ,0b101010],0X3];Destructor (){}Var _P,$_6,$7:Array [String ,0116];}Class i:_5{}'''
-        expect = '''Program([ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_r2),ArrayType(78,ArrayType(401,ArrayType(7,ArrayType(96,FloatType))))),param(Id(c__),ArrayType(78,ArrayType(401,ArrayType(7,ArrayType(96,FloatType)))))],Block([Return()])),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(3,ArrayType(42,StringType)))),MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Instance,VarDecl(Id(_P),ArrayType(78,StringType))),AttributeDecl(Static,VarDecl(Id($_6),ArrayType(78,StringType))),AttributeDecl(Static,VarDecl(Id($7),ArrayType(78,StringType)))]),ClassDecl(Id(i),Id(_5),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 394))
+    def test_44(self):
+        input = '''Class _:_{Destructor (){} }Class _38_:__{}Class y{}Class _:z8{_(_,l_:Array [Array [Int ,68],1];_:_75;__,_P:String ;_:Boolean ){} }Class UZ6{Constructor (P3:k_0_){Break ;}Destructor (){} }'''
+        expect = '''Program([ClassDecl(Id(_),Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_38_),Id(__),[]),ClassDecl(Id(y),[]),ClassDecl(Id(_),Id(z8),[MethodDecl(Id(_),Instance,[param(Id(_),ArrayType(1,ArrayType(68,IntType))),param(Id(l_),ArrayType(1,ArrayType(68,IntType))),param(Id(_),ClassType(Id(_75))),param(Id(__),StringType),param(Id(_P),StringType),param(Id(_),BoolType)],Block([]))]),ClassDecl(Id(UZ6),[MethodDecl(Id(Constructor),Instance,[param(Id(P3),ClassType(Id(k_0_)))],Block([Break])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 494))
 
-    def test_complex_program45(self):
-        line = '''Class __:b{}Class _:N_{}Class _:_42{}Class C:y7{Constructor (__j,_8_D_V__4:F_X57;_:Float ){}Destructor (){} }Class _i__{}Class _:__{Constructor (_9:__B_0){} }Class _{$W(){} }'''
-        expect = '''Program([ClassDecl(Id(__),Id(b),[]),ClassDecl(Id(_),Id(N_),[]),ClassDecl(Id(_),Id(_42),[]),ClassDecl(Id(C),Id(y7),[MethodDecl(Id(Constructor),Instance,[param(Id(__j),ClassType(Id(F_X57))),param(Id(_8_D_V__4),ClassType(Id(F_X57))),param(Id(_),FloatType)],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(_i__),[]),ClassDecl(Id(_),Id(__),[MethodDecl(Id(Constructor),Instance,[param(Id(_9),ClassType(Id(__B_0)))],Block([]))]),ClassDecl(Id(_),[MethodDecl(Id($W),Static,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 395))
+    def test_45(self):
+        input = '''Class _:_{}Class _2W98{Destructor (){Continue ;}Val _6_:o_;}Class _:_882{Val _C_,$1_c,$4Pj,B4,$P,__:GE;}Class _{Var _q,l,_,u,$_T__8x,_p:Array [Array [Array [Int ,0B111000],69],0b1000101];}Class ___{}'''
+        expect = '''Program([ClassDecl(Id(_),Id(_),[]),ClassDecl(Id(_2W98),[MethodDecl(Id(Destructor),Instance,[],Block([Continue])),AttributeDecl(Instance,ConstDecl(Id(_6_),ClassType(Id(o_)),None))]),ClassDecl(Id(_),Id(_882),[AttributeDecl(Instance,ConstDecl(Id(_C_),ClassType(Id(GE)),None)),AttributeDecl(Static,ConstDecl(Id($1_c),ClassType(Id(GE)),None)),AttributeDecl(Static,ConstDecl(Id($4Pj),ClassType(Id(GE)),None)),AttributeDecl(Instance,ConstDecl(Id(B4),ClassType(Id(GE)),None)),AttributeDecl(Static,ConstDecl(Id($P),ClassType(Id(GE)),None)),AttributeDecl(Instance,ConstDecl(Id(__),ClassType(Id(GE)),None))]),ClassDecl(Id(_),[AttributeDecl(Instance,VarDecl(Id(_q),ArrayType(69,ArrayType(69,ArrayType(56,IntType))))),AttributeDecl(Instance,VarDecl(Id(l),ArrayType(69,ArrayType(69,ArrayType(56,IntType))))),AttributeDecl(Instance,VarDecl(Id(_),ArrayType(69,ArrayType(69,ArrayType(56,IntType))))),AttributeDecl(Instance,VarDecl(Id(u),ArrayType(69,ArrayType(69,ArrayType(56,IntType))))),AttributeDecl(Static,VarDecl(Id($_T__8x),ArrayType(69,ArrayType(69,ArrayType(56,IntType))))),AttributeDecl(Instance,VarDecl(Id(_p),ArrayType(69,ArrayType(69,ArrayType(56,IntType)))))]),ClassDecl(Id(___),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 495))
 
-    def test_complex_program46(self):
-        line = '''Class _{Destructor (){Return ;} }Class _3q:_{Val _:Array [Array [Array [Array [Array [Array [Array [Int ,11_8],65],65],65],8_8_0],0x8D_1_2],0xD];}Class S{}Class J4:_p{}Class ___:_{}'''
-        expect = '''Program([ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([Return()]))]),ClassDecl(Id(_3q),Id(_),[AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(13,ArrayType(36114,ArrayType(880,ArrayType(65,ArrayType(65,ArrayType(65,ArrayType(118,IntType))))))),None))]),ClassDecl(Id(S),[]),ClassDecl(Id(J4),Id(_p),[]),ClassDecl(Id(___),Id(_),[])])'''
-        self.assertTrue(TestAST.test(line, expect, 396))
+    def test_46(self):
+        input = '''Class v{Destructor (){} }Class R_:v7{}Class _c:_{$3(_00_:String ;I1Z_2:r;MS_,F6,_1,V:Array [Float ,0xA];k:Y21;M5b,Pg:O_;I:Int ;q,_7,_,l,_:Array [Int ,23];_9_gy_:Float ;l1,_:Array [Boolean ,0xD_F_3_8];_,__,_:Float ){ {} }}'''
+        expect = '''Program([ClassDecl(Id(v),[MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(R_),Id(v7),[]),ClassDecl(Id(_c),Id(_),[MethodDecl(Id($3),Static,[param(Id(_00_),StringType),param(Id(I1Z_2),ClassType(Id(r))),param(Id(MS_),ArrayType(10,FloatType)),param(Id(F6),ArrayType(10,FloatType)),param(Id(_1),ArrayType(10,FloatType)),param(Id(V),ArrayType(10,FloatType)),param(Id(k),ClassType(Id(Y21))),param(Id(M5b),ClassType(Id(O_))),param(Id(Pg),ClassType(Id(O_))),param(Id(I),IntType),param(Id(q),ArrayType(23,IntType)),param(Id(_7),ArrayType(23,IntType)),param(Id(_),ArrayType(23,IntType)),param(Id(l),ArrayType(23,IntType)),param(Id(_),ArrayType(23,IntType)),param(Id(_9_gy_),FloatType),param(Id(l1),ArrayType(57144,BoolType)),param(Id(_),ArrayType(57144,BoolType)),param(Id(_),FloatType),param(Id(__),FloatType),param(Id(_),FloatType)],Block([Block([])]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 496))
 
-    def test_complex_program47(self):
-        line = '''Class N:__{Constructor (r_:I8M;_:Array [Array [Boolean ,0x95],90_0]){}Constructor (){} }Class HY:l5{}Class U39{}Class _B_m{}Class z7_6:u{}Class S6:_{}Class _{Destructor (){} }'''
-        expect = '''Program([ClassDecl(Id(N),Id(__),[MethodDecl(Id(Constructor),Instance,[param(Id(r_),ClassType(Id(I8M))),param(Id(_),ArrayType(900,ArrayType(149,BoolType)))],Block([])),MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(HY),Id(l5),[]),ClassDecl(Id(U39),[]),ClassDecl(Id(_B_m),[]),ClassDecl(Id(z7_6),Id(u),[]),ClassDecl(Id(S6),Id(_),[]),ClassDecl(Id(_),[MethodDecl(Id(Destructor),Instance,[],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 397))
+    def test_47(self):
+        input = '''Class _:_{___(_365:Array [Float ,0B1_0_0_1];L:_A9){} }Class _:nre49_{}Class __:_k5{Constructor (_d3_:__){} }Class X{}Class I_6{Constructor (qdT,O:Float ){}Var d,$X:Array [Boolean ,01_023];}'''
+        expect = '''Program([ClassDecl(Id(_),Id(_),[MethodDecl(Id(___),Instance,[param(Id(_365),ArrayType(9,FloatType)),param(Id(L),ClassType(Id(_A9)))],Block([]))]),ClassDecl(Id(_),Id(nre49_),[]),ClassDecl(Id(__),Id(_k5),[MethodDecl(Id(Constructor),Instance,[param(Id(_d3_),ClassType(Id(__)))],Block([]))]),ClassDecl(Id(X),[]),ClassDecl(Id(I_6),[MethodDecl(Id(Constructor),Instance,[param(Id(qdT),FloatType),param(Id(O),FloatType)],Block([])),AttributeDecl(Instance,VarDecl(Id(d),ArrayType(531,BoolType))),AttributeDecl(Static,VarDecl(Id($X),ArrayType(531,BoolType)))])])'''
+        self.assertTrue(TestAST.test(input, expect, 497))
 
-    def test_complex_program48(self):
-        line = '''Class Z1:_k{Var $8,$_JBA:Boolean ;Constructor (E_a8:Array [Int ,0x55];h:P_;_,_1_4_:Array [Array [Array [Boolean ,0X5C],0X5C],0166];Js68:o;__,k:Boolean ){}Constructor (j:Boolean ){} }'''
-        expect = '''Program([ClassDecl(Id(Z1),Id(_k),[AttributeDecl(Static,VarDecl(Id($8),BoolType)),AttributeDecl(Static,VarDecl(Id($_JBA),BoolType)),MethodDecl(Id(Constructor),Instance,[param(Id(E_a8),ArrayType(85,IntType)),param(Id(h),ClassType(Id(P_))),param(Id(_),ArrayType(118,ArrayType(92,ArrayType(92,BoolType)))),param(Id(_1_4_),ArrayType(118,ArrayType(92,ArrayType(92,BoolType)))),param(Id(Js68),ClassType(Id(o))),param(Id(__),BoolType),param(Id(k),BoolType)],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(j),BoolType)],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 398))
+    def test_48(self):
+        input = '''Class h{$9(_:L){}x(WON7e_:_){ {}Continue ;}Val _,H,__8,_,$_,w:Boolean ;}Class _:_o89{Var __A7,f,$zB,$0_:String ;Constructor (mf,l_sJ_,_:_){}Destructor (){} }Class E_:_{}'''
+        expect = '''Program([ClassDecl(Id(h),[MethodDecl(Id($9),Static,[param(Id(_),ClassType(Id(L)))],Block([])),MethodDecl(Id(x),Instance,[param(Id(WON7e_),ClassType(Id(_)))],Block([Block([]),Continue])),AttributeDecl(Instance,ConstDecl(Id(_),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(H),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(__8),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(_),BoolType,None)),AttributeDecl(Static,ConstDecl(Id($_),BoolType,None)),AttributeDecl(Instance,ConstDecl(Id(w),BoolType,None))]),ClassDecl(Id(_),Id(_o89),[AttributeDecl(Instance,VarDecl(Id(__A7),StringType)),AttributeDecl(Instance,VarDecl(Id(f),StringType)),AttributeDecl(Static,VarDecl(Id($zB),StringType)),AttributeDecl(Static,VarDecl(Id($0_),StringType)),MethodDecl(Id(Constructor),Instance,[param(Id(mf),ClassType(Id(_))),param(Id(l_sJ_),ClassType(Id(_))),param(Id(_),ClassType(Id(_)))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))]),ClassDecl(Id(E_),Id(_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 498))
 
-    def test_complex_program49(self):
-        line = '''Class h{Var _6,J,_:Boolean ;Destructor (){Break ;}$t(E_X,N:CWL;__:Gv8;_5_z,_S6:Int ;x:Array [String ,056];s:Array [Int ,3_2_1];g,Rb:Array [Array [Array [String ,0X54],0xD_3],0x46];_f:Float ;_,v_,kJ6,_0:String ){} }'''
-        expect = '''Program([ClassDecl(Id(h),[AttributeDecl(Instance,VarDecl(Id(_6),BoolType)),AttributeDecl(Instance,VarDecl(Id(J),BoolType)),AttributeDecl(Instance,VarDecl(Id(_),BoolType)),MethodDecl(Id(Destructor),Instance,[],Block([Break])),MethodDecl(Id($t),Static,[param(Id(E_X),ClassType(Id(CWL))),param(Id(N),ClassType(Id(CWL))),param(Id(__),ClassType(Id(Gv8))),param(Id(_5_z),IntType),param(Id(_S6),IntType),param(Id(x),ArrayType(46,StringType)),param(Id(s),ArrayType(321,IntType)),param(Id(g),ArrayType(70,ArrayType(211,ArrayType(84,StringType)))),param(Id(Rb),ArrayType(70,ArrayType(211,ArrayType(84,StringType)))),param(Id(_f),FloatType),param(Id(_),StringType),param(Id(v_),StringType),param(Id(kJ6),StringType),param(Id(_0),StringType)],Block([]))])])'''
-        self.assertTrue(TestAST.test(line, expect, 399))
+    def test_49(self):
+        input = '''Class g_{Var $_:Array [Float ,25];Val _RA50j:Float ;}Class k{}Class o:__{}Class i8{}Class _:Y{Constructor (m,r,__,B:_;p_,_,_u1o_,_,v,B_0:String ){Continue ;}Var _h__,Qd_:Array [Array [Array [Boolean ,0x1_E],0b1110],06];Constructor (jf_:_6_;_58:_06){} }'''
+        expect = '''Program([ClassDecl(Id(g_),[AttributeDecl(Static,VarDecl(Id($_),ArrayType(25,FloatType))),AttributeDecl(Instance,ConstDecl(Id(_RA50j),FloatType,None))]),ClassDecl(Id(k),[]),ClassDecl(Id(o),Id(__),[]),ClassDecl(Id(i8),[]),ClassDecl(Id(_),Id(Y),[MethodDecl(Id(Constructor),Instance,[param(Id(m),ClassType(Id(_))),param(Id(r),ClassType(Id(_))),param(Id(__),ClassType(Id(_))),param(Id(B),ClassType(Id(_))),param(Id(p_),StringType),param(Id(_),StringType),param(Id(_u1o_),StringType),param(Id(_),StringType),param(Id(v),StringType),param(Id(B_0),StringType)],Block([Continue])),AttributeDecl(Instance,VarDecl(Id(_h__),ArrayType(6,ArrayType(14,ArrayType(30,BoolType))))),AttributeDecl(Instance,VarDecl(Id(Qd_),ArrayType(6,ArrayType(14,ArrayType(30,BoolType))))),MethodDecl(Id(Constructor),Instance,[param(Id(jf_),ClassType(Id(_6_))),param(Id(_58),ClassType(Id(_06)))],Block([]))])])'''
+        self.assertTrue(TestAST.test(input, expect, 499))
 
-    def test_complex_program50(self):
-        line = '''Class _X:_{Var $6,$11:Array [Array [Array [Array [String ,61],0133],0xA],0133];}Class C{}Class _:_{Constructor (_,r:_5;_:Array [Array [String ,1],0x57];b_9c9,Y:Array [Float ,5];xh,Ae40:_){} }Class K{Val x8_6:Boolean ;}'''
-        expect = '''Program([ClassDecl(Id(_X),Id(_),[AttributeDecl(Static,VarDecl(Id($6),ArrayType(91,ArrayType(10,ArrayType(91,ArrayType(61,StringType)))))),AttributeDecl(Static,VarDecl(Id($11),ArrayType(91,ArrayType(10,ArrayType(91,ArrayType(61,StringType))))))]),ClassDecl(Id(C),[]),ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[param(Id(_),ClassType(Id(_5))),param(Id(r),ClassType(Id(_5))),param(Id(_),ArrayType(87,ArrayType(1,StringType))),param(Id(b_9c9),ArrayType(5,FloatType)),param(Id(Y),ArrayType(5,FloatType)),param(Id(xh),ClassType(Id(_))),param(Id(Ae40),ClassType(Id(_)))],Block([]))]),ClassDecl(Id(K),[AttributeDecl(Instance,ConstDecl(Id(x8_6),BoolType,None))])])'''
-        self.assertTrue(TestAST.test(line, expect, 353))
+    def test_50(self):
+        input = '''Class _6h:_{Val RLt_:_Y;}Class L:__D{Val $__4:Int ;}Class W{Destructor (){Break ;Break ;Continue ;} }Class C{Var $5:String ;Constructor (_4_9,_:Boolean ;q:String ;J:String ;m,_,_,d3,T0X_:_){} }Class w:_{}'''
+        expect = '''Program([ClassDecl(Id(_6h),Id(_),[AttributeDecl(Instance,ConstDecl(Id(RLt_),ClassType(Id(_Y)),None))]),ClassDecl(Id(L),Id(__D),[AttributeDecl(Static,ConstDecl(Id($__4),IntType,None))]),ClassDecl(Id(W),[MethodDecl(Id(Destructor),Instance,[],Block([Break,Break,Continue]))]),ClassDecl(Id(C),[AttributeDecl(Static,VarDecl(Id($5),StringType)),MethodDecl(Id(Constructor),Instance,[param(Id(_4_9),BoolType),param(Id(_),BoolType),param(Id(q),StringType),param(Id(J),StringType),param(Id(m),ClassType(Id(_))),param(Id(_),ClassType(Id(_))),param(Id(_),ClassType(Id(_))),param(Id(d3),ClassType(Id(_))),param(Id(T0X_),ClassType(Id(_)))],Block([]))]),ClassDecl(Id(w),Id(_),[])])'''
+        self.assertTrue(TestAST.test(input, expect, 356))

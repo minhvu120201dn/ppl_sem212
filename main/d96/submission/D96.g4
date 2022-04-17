@@ -48,9 +48,10 @@ declNonInit: ID (COMMA ID)* COLON vartype;
 identifier: ID | VID;
 
 asnStmt: lhs ASNOP expr SEMI;
-lhs: identifier | SELF_
+lhs: identifier
    | lhs (LSB expr RSB)+
    | lhs DOT ID
+   | SELF_ DOT ID
    | ID CSMEM VID;
 
 ifStmt: IF_ LB expr RB scope (elifStmt | elseStmt)?;
@@ -109,7 +110,7 @@ fragment HEXLIT: '0'[xX] ([0-9A-F] | [1-9A-F]('_'?[0-9A-F])* );
 fragment BINLIT: '0'[bB] ([01] | '1'('_'?[01])* );
 
 // Float
-FLOATLIT: INT_PART DEC_PART? EXP_PART? {self.text = self.text.replace('_','')};
+FLOATLIT: INT_PART DEC_PART? EXP_PART? | DEC_PART EXP_PART {self.text = self.text.replace('_','')};
 fragment INT_PART: [0-9] | [1-9]('_'?[0-9])*;
 fragment DEC_PART: '.' [0-9]*;
 fragment EXP_PART: [eE] [-+]? INT_PART;

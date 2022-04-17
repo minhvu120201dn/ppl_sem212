@@ -30,13 +30,13 @@ class ASTGeneration(D96Visitor):
 
 
     def visitAttribute(self, ctx:D96Parser.AttributeContext):
-        decl = VarDecl if ctx.VAR_() else ConstDecl
+        self.decl = VarDecl if ctx.VAR_() else ConstDecl
         vars, inits, type = ctx.attrBody().accept(self) if ctx.attrBody() else\
                             ctx.attrNonInit().accept(self)
         vars.reverse() if ctx.attrBody() else None
 
         return [(AttributeDecl(Static() if vars[i].name[0] == '$' else Instance(),
-                               decl(vars[i], type, inits[i])))
+                               self.decl(vars[i], type, inits[i])))
                 for i in range(len(vars))]
 
 
@@ -56,7 +56,7 @@ class ASTGeneration(D96Visitor):
     def visitAttrNonInit(self, ctx:D96Parser.AttrNonInitContext):
         vars = [ident.accept(self) for ident in ctx.identifier()]
         typ = ctx.vartype().accept(self)
-        inits = [NullLiteral() if type(typ) == ClassType else None] * len(ctx.identifier())
+        inits = [NullLiteral() if type(typ) == ClassType and self.decl == VarDecl else None] * len(ctx.identifier())
         return vars, inits, typ
 
 
@@ -109,14 +109,12 @@ class ASTGeneration(D96Visitor):
 
 
     def visitDeclStmt(self, ctx:D96Parser.DeclStmtContext):
-        mutable = True if ctx.VAR_() else False
+        self.decl = VarDecl if ctx.VAR_() else ConstDecl
         vars, inits, type = ctx.declBody().accept(self) if ctx.declBody() else\
                             ctx.declNonInit().accept(self)
         vars.reverse() if ctx.declBody() else None
 
-        return [VarDecl  (vars[i], type, inits[i]) if mutable else\
-                ConstDecl(vars[i], type, inits[i])
-                for i in range(len(vars))]
+        return [self.decl(vars[i], type, inits[i]) for i in range(len(vars))]
 
 
     def visitDeclBody(self, ctx:D96Parser.DeclBodyContext):
@@ -135,7 +133,7 @@ class ASTGeneration(D96Visitor):
     def visitDeclNonInit(self, ctx:D96Parser.DeclNonInitContext):
         vars = [Id(ident.getText()) for ident in ctx.ID()]
         typ = ctx.vartype().accept(self)
-        inits = [NullLiteral() if type(typ) == ClassType else None] * len(ctx.ID())
+        inits = [NullLiteral() if type(typ) == ClassType and self.decl == VarDecl else None] * len(ctx.ID())
         return vars, inits, typ
 
 
@@ -150,10 +148,10 @@ class ASTGeneration(D96Visitor):
     def visitLhs(self, ctx:D96Parser.LhsContext):
         if ctx.identifier():
             return ctx.identifier().accept(self)
-        elif ctx.SELF_():
-            return SelfLiteral()
         elif ctx.LSB() and ctx.RSB():
             return ArrayCell(ctx.lhs().accept(self), [expr.accept(self) for expr in ctx.expr()])
+        elif ctx.SELF_() and ctx.DOT():
+            return FieldAccess(SelfLiteral(), Id(ctx.ID().getText()))
         elif ctx.DOT():
             return FieldAccess(ctx.lhs().accept(self), Id(ctx.ID().getText()))
         elif ctx.CSMEM():
@@ -188,34 +186,6 @@ class ASTGeneration(D96Visitor):
                    exprs[1],
                    ctx.scope().accept(self),
                    exprs[2])
-
-
-    # def visitScopeLoop(self, ctx:D96Parser.ScopeLoopContext):
-    #     return Block(reduce(lambda l, c: l+c if type(c)==list else l+[c], [stmt.accept(self) for stmt in ctx.stmtLoop()], []))
-
-
-    # def visitStmtLoop(self, ctx:D96Parser.StmtLoopContext):
-    #     return ctx.getChild(0).accept(self)
-
-
-    # def visitIfStmtLoop(self, ctx:D96Parser.IfStmtLoopContext):
-    #     return If(expr= ctx.expr().accept(self),
-    #               thenStmt= ctx.scopeLoop().accept(self),
-    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
-    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
-    #                         None)
-
-
-    # def visitElifStmtLoop(self, ctx:D96Parser.ElifStmtLoopContext):
-    #     return If(expr= ctx.expr().accept(self),
-    #               thenStmt= ctx.scopeLoop().accept(self),
-    #               elseStmt= ctx.elifStmtLoop().accept(self) if ctx.elifStmtLoop() else\
-    #                         ctx.elseStmtLoop().accept(self) if ctx.elseStmtLoop() else\
-    #                         None)
-
-
-    # def visitElseStmtLoop(self, ctx:D96Parser.ElseStmtLoopContext):
-    #     return ctx.scopeLoop().accept(self)
 
 
     def visitBreakStmt(self, ctx:D96Parser.BreakStmtContext):

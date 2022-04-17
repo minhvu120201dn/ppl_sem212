@@ -1,6 +1,1 @@
-
-Class Program {
-    main() {
-        _class::$obj1[1].obj2.obj3[3].obj4[4].obj5.method(1,2,x);
-    }
-}
+Class _{}Class _{Var Y,_,_,$_10_AX,X_,_,$8:Array [String ,02_122];}Class Jx:F_{$_(_o1,_,O_9,M__5_W:String ){}Var _:Array [Float ,0B1001101];$_(G6_:Array [String ,0x1_4E];o7,F:Array [Boolean ,0x5F]){} }Class __{}

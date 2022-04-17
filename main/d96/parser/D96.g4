@@ -47,11 +47,12 @@ declNonInit: ID (COMMA ID)* COLON vartype;
 
 identifier: ID | VID;
 
-asnStmt: expr ASNOP expr SEMI;
-// lhs: identifier | SELF_
-//    | lhs (LSB expr RSB)+
-//    | lhs DOT ID
-//    | ID CSMEM VID;
+asnStmt: lhs ASNOP expr SEMI;
+lhs: identifier
+   | lhs (LSB expr RSB)+
+   | lhs DOT ID
+   | SELF_ DOT ID
+   | ID CSMEM VID;
 
 ifStmt: IF_ LB expr RB scope (elifStmt | elseStmt)?;
 elifStmt: ELSEIF_ LB expr RB scope (elifStmt | elseStmt)?;

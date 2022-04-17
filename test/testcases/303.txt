@@ -1,9 +1,1 @@
-
-Class _class1 {
-    Var a, b: Int;
-    Var $c: Float;
-}
-Class _class2 {
-    Var $d: Boolean;
-    Var e, $f: String;
-}
+Class r:__P{Constructor (){ {} }}Class _{Constructor (I:Array [Array [Array [String ,016],3],016];_Y:p){}Destructor (){}Var $P,Z:Float ;}Class k08:_l{Val q,l,$23,X_,$q6D_,_,U0o:Boolean ;}

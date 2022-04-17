@@ -1,8 +1,1 @@
-
-Class _class {
-    Var x: Int = 1;
-}
-Class Program {
-    Var objs: Array[_class,5];
-    Var x: Int = objs[4].x;
-}
+Class _2{}Class n__3:r{Destructor (){}Var $Bp6_W58,$Hb,$s,$683,$Y_:Array [Array [Array [Array [Array [Array [Array [Array [String ,0b1],052],06],79],057],0b1_0101],79],79];}

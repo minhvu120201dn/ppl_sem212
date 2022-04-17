@@ -1,10 +1,1 @@
-
-Class _class {
-    Var x: Int = 1;
-}
-Class Program {
-    main() {
-        Var objs: Array[_class,5];
-        Var x: Int = objs[4].x;
-    }
-}
+Class avS{Constructor (){} }Class _{$42u(_:u2;_9k_,_:Lv5Y;_,t9L:_){Continue ;}Destructor (){}Destructor (){}Constructor (_O_:k;Q9m:Float ;_4,y:Cn){} }Class _{}Class v:_B{}Class f_:m{Destructor (){} }
