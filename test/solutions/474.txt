@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(_),Id(f_Bia),[MethodDecl(Id(_Z11),Instance,[param(Id(_),ClassType(Id(__))),param(Id(_),ArrayType(84,FloatType)),param(Id(_),ArrayType(84,FloatType)),param(Id(_D),ArrayType(84,FloatType)),param(Id(_3T7__wo),ArrayType(84,FloatType)),param(Id(f),ArrayType(84,ArrayType(4,ArrayType(7,FloatType))))],Block([])),AttributeDecl(Instance,ConstDecl(Id(_),BoolType,None))]),ClassDecl(Id(K),[MethodDecl(Id(Constructor),Instance,[param(Id(cC),StringType)],Block([])),MethodDecl(Id($_),Static,[],Block([]))]),ClassDecl(Id(v),[])])
+[]

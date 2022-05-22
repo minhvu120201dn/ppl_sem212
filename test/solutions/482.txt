@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(z),Id(G),[MethodDecl(Id(Destructor),Instance,[],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([])),AttributeDecl(Instance,ConstDecl(Id(OZ),ArrayType(325,ArrayType(19,ArrayType(457,ArrayType(19,ArrayType(64,ArrayType(64,IntType)))))),None)),AttributeDecl(Instance,ConstDecl(Id(_),ArrayType(325,ArrayType(19,ArrayType(457,ArrayType(19,ArrayType(64,ArrayType(64,IntType)))))),None)),AttributeDecl(Static,ConstDecl(Id($_),ArrayType(19,ArrayType(60,ArrayType(179,ArrayType(253,ArrayType(64,IntType))))),None))])])
+Undeclared Attribute: x

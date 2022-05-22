@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(YT),Id(i),[MethodDecl(Id($ES),Static,[param(Id(_4),ArrayType(69,ArrayType(8,ArrayType(49,IntType)))),param(Id(_),BoolType),param(Id(XN),IntType)],Block([])),AttributeDecl(Static,ConstDecl(Id($zh),ArrayType(16,ArrayType(8,ArrayType(16,ArrayType(16,ArrayType(1,ArrayType(44,ArrayType(14,BoolType))))))),None))])])

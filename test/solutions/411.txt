@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(_),Id(JU),[MethodDecl(Id(Constructor),Instance,[param(Id(v),StringType),param(Id(w_B),StringType),param(Id(e),StringType),param(Id(GJ),StringType),param(Id(k_),ArrayType(1,ArrayType(34,ArrayType(84,ArrayType(47,FloatType)))))],Block([])),AttributeDecl(Static,ConstDecl(Id($o),ArrayType(19,ArrayType(133,ArrayType(63,StringType))),None))]),ClassDecl(Id(_),[])])
+Undeclared Class: B

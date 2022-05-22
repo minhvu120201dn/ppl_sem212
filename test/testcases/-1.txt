@@ -1,9 +1,1 @@
-
-Class _class {
-    Var x, $x: Int = 1, 1;
-}
-Class Program {
-    Val obj: _class = Null;
-    Var x: Int = New _class().x;
-    Var $x: Int = _class::$x;
-}
+Class A{Var x: Array[Int,3] = Array(1.0,2.0,3.0);}

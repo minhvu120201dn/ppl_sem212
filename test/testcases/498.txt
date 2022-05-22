@@ -1,1 +1,22 @@
-Class _:j{$hO_6N(_x,_:Array [String ,0B1]){}Var $UE:Boolean ;}Class _:h{Constructor (_,Oo2Eq,i,_6:_s_;p,_e:Array [Float ,0X8];_,__,b,_z9__:Int ;b,_:Float ){}__89Iv(){}Val $X:_;}
+
+        Class Math {
+            Var $pi: Float = 3.14;
+            $fact(n:Int) {
+                If (n <= 1) { Return 1; }
+                Else { Return Math::$fact(n-1) * n; }
+            }
+            $P(n,k:Int) {
+                Return Math::$fact(n) / Math::$fact(n-k);
+            }
+            $C(n,k:Int) {
+                Return Math::$fact(n) / (Math::$fact(k) * Math::$fact(n-k));
+            }
+        }
+        Class Program {
+            main() {
+                Var x: Int = Math::$C(10000,5);
+                x = Math::$P(10000,5);
+                Math::$pi = 3.141592653589;
+            }
+        }
+        

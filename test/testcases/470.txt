@@ -1,1 +1,10 @@
-Class G5Vk{Destructor (){Continue ;} }Class _8{}Class __{Val _:Array [Int ,0B1011001];}Class o___n{Var _42,$_5,e8w69,_P,_:Array [Array [Array [Float ,0b1],0X8],7];}Class l_{}
+
+        Class A {
+            Constructor(x:Int) {}
+        }
+        Class Program {
+            main() {
+                Var x: A = New A();
+            }
+        }
+        

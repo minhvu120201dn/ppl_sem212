@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(Z_),[MethodDecl(Id(Constructor),Instance,[param(Id(__),ArrayType(9,ArrayType(10,ArrayType(246,ArrayType(149,ArrayType(6,ArrayType(64,ArrayType(75,ArrayType(38,ArrayType(2,ArrayType(6,FloatType))))))))))),param(Id(_),IntType),param(Id(h0),ClassType(Id(q))),param(Id(u),ClassType(Id(q)))],Block([Break,ConstDecl(Id(N_),ClassType(Id(M2F_)),None),Return()]))])])

@@ -1,1 +1,4 @@
-Class Q{Var $_:_;Val $9:Array [Array [Int ,0122],96];$5(_Ce5H9:M;E,_:Float ;G0:Array [Array [Array [Array [Array [Array [Array [Array [Array [Array [Boolean ,96],0X1_54],0xA],0122],0b1],0xD_A_2F],0X5A],96],0B1],0x3C]){} }Class _{}
+
+        Class A { $method(x,y:Int;z:Float){ Return 1; } }
+        Class Program { main(){} Var x: Int = A::$method(1,2)}
+        

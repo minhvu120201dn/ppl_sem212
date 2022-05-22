@@ -1,1 +1,7 @@
-Class i:m{}Class t:Yo_{}Class w4:__42{Var C5X,$_,$2,$_,$_5,$7F:Array [Array [Array [Array [Array [Array [Array [Array [String ,0X38],0X58],0x7],0x3D],0X4],5],0b1_00],0x3D];Destructor (){Var s_:J_;}_u(___5,__:String ;ES:C48){Val _,Or__,n2_8:_;Break ;}Var D_:Boolean ;}
+
+        Class Program {
+            main() {
+                Var arr: Array[Int,5] = Array(1,2,3,4);
+            }
+        }
+        

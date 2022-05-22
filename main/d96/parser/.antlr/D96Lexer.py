@@ -1,4 +1,4 @@
-# Generated from g:\sem_212\ppl\assignment1\src\main\d96\parser\D96.g4 by ANTLR 4.8
+# Generated from g:\sem_212\ppl\assignment\src\main\d96\parser\D96 copy.g4 by ANTLR 4.8
 from antlr4 import *
 from io import StringIO
 from typing.io import TextIO
@@ -388,7 +388,7 @@ class D96Lexer(Lexer):
                   "SADDOP", "CSMEM", "ID", "VID", "COMMENT", "CMT_CHAR", 
                   "WS", "ERROR_CHAR", "UNCLOSE_STRING", "ILLEGAL_ESCAPE" ]
 
-    grammarFileName = "D96.g4"
+    grammarFileName = "D96 copy.g4"
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)

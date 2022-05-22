@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(_),[MethodDecl(Id($xB),Static,[],Block([]))]),ClassDecl(Id(_1),Id(I),[]),ClassDecl(Id(b0_),[AttributeDecl(Instance,ConstDecl(Id(V),ArrayType(15,ArrayType(67,ArrayType(77,FloatType))),None))]),ClassDecl(Id(_hc_d),[AttributeDecl(Instance,ConstDecl(Id(Z),ArrayType(29,ArrayType(70,ArrayType(1,BoolType))),None))]),ClassDecl(Id(F),[])])
+[]

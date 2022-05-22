@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(_class),[AttributeDecl(Instance,VarDecl(Id(x),IntType,IntLit(1))),AttributeDecl(Static,VarDecl(Id($x),IntType,IntLit(1)))]),ClassDecl(Id(Program),[AttributeDecl(Instance,ConstDecl(Id(obj),ClassType(Id(_class)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(x),IntType,FieldAccess(NewExpr(Id(_class),[]),Id(x)))),AttributeDecl(Static,VarDecl(Id($x),IntType,FieldAccess(Id(_class),Id($x))))])])
+Type Mismatch In Statement: VarDecl(Id(x),ArrayType(3,IntType),[FloatLit(1.0),FloatLit(2.0),FloatLit(3.0)])

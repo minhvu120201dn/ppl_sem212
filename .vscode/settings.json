@@ -4,6 +4,7 @@
         "./main/d96/parser",
         "./main/d96/astgen",
         "./main/d96/utils",
-        "./test"
+        "./test",
+        "./main/d96/checker"
     ]
 }

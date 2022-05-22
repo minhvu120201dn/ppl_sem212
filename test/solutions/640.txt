@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(_),[]),ClassDecl(Id(_),[AttributeDecl(Instance,VarDecl(Id(z),ArrayType(52,ArrayType(72,FloatType))))]),ClassDecl(Id(____),[MethodDecl(Id(Destructor),Instance,[],Block([Continue])),AttributeDecl(Static,VarDecl(Id($M),ArrayType(1,ArrayType(94,ArrayType(5231,ArrayType(94,ArrayType(2282,IntType))))))),AttributeDecl(Static,ConstDecl(Id($_7c6c),BoolType,None))])])

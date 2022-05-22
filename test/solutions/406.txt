@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(_),Id(L_),[MethodDecl(Id(Constructor),Instance,[param(Id(__7w),FloatType),param(Id(_7),FloatType)],Block([])),AttributeDecl(Static,ConstDecl(Id($_2),ArrayType(12,ArrayType(47,FloatType)),None)),MethodDecl(Id(Constructor),Instance,[],Block([]))]),ClassDecl(Id(R9),[AttributeDecl(Instance,ConstDecl(Id(_AhD_),ArrayType(20,ArrayType(47,StringType)),None)),AttributeDecl(Instance,ConstDecl(Id(l_),ArrayType(20,ArrayType(47,StringType)),None)),MethodDecl(Id(Destructor),Instance,[],Block([]))])])
+Redeclared Attribute: a

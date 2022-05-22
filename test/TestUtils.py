@@ -1,6 +1,8 @@
 import sys,os
 from antlr4 import *
 from antlr4.error.ErrorListener import ConsoleErrorListener,ErrorListener
+
+from main.d96.checker.StaticCheck import StaticChecker
 if not './main/d96/parser/' in sys.path:
     sys.path.append('./main/d96/parser/')
 if os.path.isdir('../target/main/d96/parser') and not '../target/main/d96/parser/' in sys.path:
@@ -9,8 +11,8 @@ from D96Lexer import D96Lexer
 from D96Parser import D96Parser
 from lexererr import *
 from ASTGeneration import ASTGeneration
-#from StaticCheck import StaticChecker
-#from StaticError import *
+from StaticCheck import StaticChecker
+from StaticError import *
 #from CodeGenerator import CodeGenerator
 #import subprocess
 
@@ -141,7 +143,7 @@ class TestChecker:
 
     @staticmethod
     def check(soldir,asttree,num):  
-        dest = open(os.path.join(soldir, str(num) + ".txt"),"w")     
+        dest = open(os.path.join(soldir, str(num) + ".txt"),"w")    
         checker = StaticChecker(asttree)
         try:
             res = checker.check()

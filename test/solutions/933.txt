@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(__),[MethodDecl(Id(Constructor),Instance,[param(Id(z2q),ArrayType(1,ArrayType(6,StringType))),param(Id(E),ArrayType(14,ArrayType(95,ArrayType(48,IntType)))),param(Id(Qx),ArrayType(14,ArrayType(711480924,ArrayType(14,FloatType))))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])

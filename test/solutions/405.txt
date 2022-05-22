@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(t),[]),ClassDecl(Id(F),[]),ClassDecl(Id(_),Id(_),[MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(_),Instance,[param(Id(_),ArrayType(16,StringType)),param(Id(_),ArrayType(16,StringType)),param(Id(_RE1),ClassType(Id(Hm_r7))),param(Id(_7_),ArrayType(8,ArrayType(3,IntType))),param(Id(a),ArrayType(1,ArrayType(1,IntType))),param(Id(r),ClassType(Id(C_))),param(Id(_2),ArrayType(82,ArrayType(70,BoolType)))],Block([]))])])
+Redeclared Attribute: a

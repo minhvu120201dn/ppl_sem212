@@ -1,1 +1,7 @@
-Class z:G{Destructor (){}Destructor (){}Val OZ,_:Array [Array [Array [Array [Array [Array [Int ,0b1000000],0x40],023],457],023],0505];Val $_:Array [Array [Array [Array [Array [Int ,0b1000000],0xFD],0263],074],023];}
+
+        Class A {}
+        Class Program {
+            Var x: Int = (New A()).x;
+            main() {}
+        }
+        
